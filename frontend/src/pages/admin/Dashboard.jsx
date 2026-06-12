@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   if (!stats) {
     return (
-      <div className="text-center py-16 text-slate-500">
+      <div className="text-center py-16 text-slate-500 dark:text-slate-400">
         <p>Failed to load dashboard data. Please try again.</p>
       </div>
     );
@@ -53,26 +53,26 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Dashboard</h1>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {cards.map(({ label, count, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-xl shadow-sm p-6 flex items-center gap-4">
+          <div key={label} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 flex items-center gap-4">
             <div className={`${color} text-white p-3 rounded-lg`}>
               <Icon size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{label}</p>
-              <p className="text-2xl font-bold text-gray-800">{count}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{count}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Chart */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Content Overview</h2>
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-8">
+        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Content Overview</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -86,58 +86,58 @@ const Dashboard = () => {
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent Messages */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Messages</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Recent Messages</h2>
           {stats?.recentMessages?.length > 0 ? (
             <div className="space-y-3">
               {stats.recentMessages.map((msg) => (
-                <div key={msg._id} className="border border-gray-100 rounded-lg p-4">
+                <div key={msg._id} className="border border-gray-100 dark:border-slate-700 rounded-lg p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-800">{msg.name}</p>
-                      <p className="text-sm text-gray-500">{msg.email}</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">{msg.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{msg.email}</p>
                     </div>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
                       {new Date(msg.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-gray-600 mt-2 text-sm">{msg.message}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">{msg.message}</p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No messages yet.</p>
+            <p className="text-gray-500 dark:text-gray-400">No messages yet.</p>
           )}
         </div>
 
         {/* Recent Bookings */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Bookings</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Recent Bookings</h2>
           {stats?.recentBookings?.length > 0 ? (
             <div className="space-y-3">
               {stats.recentBookings.map((b) => (
-                <div key={b._id} className="border border-gray-100 rounded-lg p-4">
+                <div key={b._id} className="border border-gray-100 dark:border-slate-700 rounded-lg p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-800">{b.visitorName}</p>
-                      <p className="text-sm text-gray-500">Guide: {b.guideId?.name || 'N/A'}</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">{b.visitorName}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Guide: {b.guideId?.name || 'N/A'}</p>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      b.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                      b.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                      'bg-yellow-100 text-yellow-700'
+                      b.status === 'confirmed' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' :
+                      b.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400' :
+                      'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
                     }`}>
                       {b.status}
                     </span>
                   </div>
-                  <p className="text-gray-500 mt-1 text-sm">
+                  <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
                     {new Date(b.date).toLocaleDateString()} at {b.time} — {b.groupSize} people
                   </p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No bookings yet.</p>
+            <p className="text-gray-500 dark:text-gray-400">No bookings yet.</p>
           )}
         </div>
       </div>

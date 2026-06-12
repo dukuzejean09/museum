@@ -17,7 +17,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
+    <footer className="bg-slate-900 dark:bg-slate-950 text-slate-300 border-t border-slate-800">
       {/* Imigongo cultural band at the top of footer */}
       <ImigongoBorder />
 
@@ -89,7 +89,7 @@ const Layout = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <Navbar />
       <main className="flex-1">
         <ErrorBoundary key={location.pathname}>

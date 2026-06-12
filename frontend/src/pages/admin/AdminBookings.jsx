@@ -6,16 +6,16 @@ import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
 const statusStyles = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  confirmed: 'bg-green-100 text-green-700',
-  rejected: 'bg-red-100 text-red-700',
-  cancelled: 'bg-gray-100 text-gray-500',
-  completed: 'bg-blue-100 text-blue-700',
+  pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
+  confirmed: 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
+  rejected: 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400',
+  cancelled: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
+  completed: 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400',
 };
 
 const typeStyles = {
-  physical: { bg: 'bg-amber-50 text-amber-700', icon: MapPin, label: 'In-Person' },
-  online: { bg: 'bg-emerald-50 text-emerald-700', icon: Globe, label: 'Online' },
+  physical: { bg: 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400', icon: MapPin, label: 'In-Person' },
+  online: { bg: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400', icon: Globe, label: 'Online' },
 };
 
 const AdminBookings = () => {
@@ -103,8 +103,8 @@ const AdminBookings = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Bookings & Access Requests</h1>
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Bookings & Access Requests</h1>
+        <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-800 rounded-lg p-1">
           {[
             { key: 'all', label: 'All' },
             { key: 'physical', label: 'Tours' },
@@ -114,7 +114,7 @@ const AdminBookings = () => {
               key={f.key}
               onClick={() => { setLoading(true); setFilter(f.key); }}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
-                filter === f.key ? 'bg-white shadow text-gray-800' : 'text-gray-500 hover:text-gray-700'
+                filter === f.key ? 'bg-white dark:bg-slate-700 shadow text-gray-800 dark:text-gray-200' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               {f.label}
@@ -124,15 +124,15 @@ const AdminBookings = () => {
       </div>
 
       {bookings.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-8 text-center text-gray-500">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8 text-center text-gray-500 dark:text-gray-400">
           <Clock size={48} className="mx-auto mb-3 opacity-50" />
           <p>No bookings yet.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+              <thead className="bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-400 uppercase text-xs">
                 <tr>
                   <th className="px-4 py-3 text-left">Type</th>
                   <th className="px-4 py-3 text-left">Visitor</th>
@@ -144,12 +144,12 @@ const AdminBookings = () => {
                   <th className="px-4 py-3 text-left">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
                 {bookings.map(b => {
                   const vType = typeStyles[b.visitType] || typeStyles.physical;
                   const TypeIcon = vType.icon;
                   return (
-                    <tr key={b._id} className="hover:bg-gray-50">
+                    <tr key={b._id} className="hover:bg-gray-50 dark:hover:bg-slate-800">
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${vType.bg}`}>
                           <TypeIcon size={12} /> {vType.label}
@@ -157,31 +157,31 @@ const AdminBookings = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div>
-                          <p className="font-medium text-gray-800">{b.visitorName}</p>
-                          <p className="text-xs text-gray-500">{b.visitorEmail}</p>
-                          {b.visitorPhone && <p className="text-xs text-gray-400">{b.visitorPhone}</p>}
+                          <p className="font-medium text-gray-800 dark:text-gray-200">{b.visitorName}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{b.visitorEmail}</p>
+                          {b.visitorPhone && <p className="text-xs text-gray-400 dark:text-gray-500">{b.visitorPhone}</p>}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-700">
+                      <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
                         {b.guideId?.name || (b.visitType === 'online' ? '—' : 'Unknown')}
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-gray-800">{new Date(b.date).toLocaleDateString()}</p>
-                        {b.time && <p className="text-xs text-gray-500">{b.time}</p>}
+                        <p className="text-gray-800 dark:text-gray-200">{new Date(b.date).toLocaleDateString()}</p>
+                        {b.time && <p className="text-xs text-gray-500 dark:text-gray-400">{b.time}</p>}
                       </td>
-                      <td className="px-4 py-3 text-gray-700">{b.groupSize}</td>
+                      <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{b.groupSize}</td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[b.status] || 'bg-gray-100'}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[b.status] || 'bg-gray-100 dark:bg-gray-800'}`}>
                           {b.status}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         {b.accessCodeId ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-mono bg-green-50 text-green-700 px-2 py-1 rounded-lg">
+                          <span className="inline-flex items-center gap-1 text-xs font-mono bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded-lg">
                             <Key size={12} /> {b.accessCodeId.code}
                           </span>
                         ) : (
-                          <span className="text-xs text-gray-400">—</span>
+                          <span className="text-xs text-gray-400 dark:text-gray-500">—</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -190,14 +190,14 @@ const AdminBookings = () => {
                             <>
                               <button
                                 onClick={() => handleStatus(b._id, 'confirmed')}
-                                className="p-1.5 rounded-lg text-green-600 hover:bg-green-50"
+                                className="p-1.5 rounded-lg text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
                                 title="Confirm"
                               >
                                 <CheckCircle size={18} />
                               </button>
                               <button
                                 onClick={() => handleStatus(b._id, 'rejected')}
-                                className="p-1.5 rounded-lg text-red-600 hover:bg-red-50"
+                                className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                                 title="Reject"
                               >
                                 <XCircle size={18} />
@@ -207,7 +207,7 @@ const AdminBookings = () => {
                           {!b.accessCodeId && b.status !== 'rejected' && b.status !== 'cancelled' && (
                             <button
                               onClick={() => handleGrantAccess(b._id)}
-                              className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50"
+                              className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                               title="Grant Access Code"
                             >
                               <QrCode size={18} />
@@ -216,7 +216,7 @@ const AdminBookings = () => {
                           {isAdmin && (
                             <button
                               onClick={() => handleDelete(b._id)}
-                              className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-red-600"
+                              className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-red-600"
                               title="Delete"
                             >
                               <Trash2 size={18} />
@@ -235,18 +235,18 @@ const AdminBookings = () => {
 
       {/* Special requests */}
       {bookings.filter(b => b.message).length > 0 && (
-        <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Special Requests & Messages</h2>
+        <div className="mt-6 bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Special Requests & Messages</h2>
           <div className="space-y-3">
             {bookings.filter(b => b.message).map(b => (
-              <div key={b._id} className="border border-gray-100 rounded-lg p-3">
+              <div key={b._id} className="border border-gray-100 dark:border-slate-700 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-medium text-gray-800">{b.visitorName}</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{b.visitorName}</p>
                   <span className={`text-xs px-1.5 py-0.5 rounded ${(typeStyles[b.visitType] || typeStyles.physical).bg}`}>
                     {(typeStyles[b.visitType] || typeStyles.physical).label}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600">{b.message}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{b.message}</p>
               </div>
             ))}
           </div>
@@ -256,11 +256,11 @@ const AdminBookings = () => {
       {/* Access Code Modal */}
       {accessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setAccessModal(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-800">Access Code Generated</h3>
-              <button onClick={() => setAccessModal(null)} className="p-1 rounded-lg hover:bg-gray-100">
-                <X size={20} />
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">Access Code Generated</h3>
+              <button onClick={() => setAccessModal(null)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800">
+                <X size={20} className="dark:text-gray-400" />
               </button>
             </div>
 
@@ -270,23 +270,23 @@ const AdminBookings = () => {
             </div>
 
             {/* Code */}
-            <div className="bg-gray-50 rounded-xl p-3 mb-3">
-              <p className="text-xs text-gray-500 mb-1">Access Code</p>
+            <div className="bg-gray-50 dark:bg-slate-800 rounded-xl p-3 mb-3">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Access Code</p>
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-lg text-gray-800">{accessModal.code}</span>
-                <button onClick={() => copyToClipboard(accessModal.code)} className="p-1.5 rounded-lg hover:bg-gray-200" title="Copy">
-                  <Copy size={16} />
+                <span className="font-mono font-bold text-lg text-gray-800 dark:text-gray-200">{accessModal.code}</span>
+                <button onClick={() => copyToClipboard(accessModal.code)} className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700" title="Copy">
+                  <Copy size={16} className="dark:text-gray-400" />
                 </button>
               </div>
             </div>
 
             {/* Gateway Link */}
-            <div className="bg-gray-50 rounded-xl p-3 mb-4">
-              <p className="text-xs text-gray-500 mb-1">Gateway Link</p>
+            <div className="bg-gray-50 dark:bg-slate-800 rounded-xl p-3 mb-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Gateway Link</p>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs text-blue-600 truncate">{accessModal.gatewayUrl}</span>
-                <button onClick={() => copyToClipboard(accessModal.gatewayUrl)} className="p-1.5 rounded-lg hover:bg-gray-200 flex-shrink-0" title="Copy">
-                  <Copy size={16} />
+                <span className="text-xs text-blue-600 dark:text-blue-400 truncate">{accessModal.gatewayUrl}</span>
+                <button onClick={() => copyToClipboard(accessModal.gatewayUrl)} className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 flex-shrink-0" title="Copy">
+                  <Copy size={16} className="dark:text-gray-400" />
                 </button>
               </div>
             </div>

@@ -62,8 +62,8 @@ const Artifacts = () => {
  return (
  <div className="container mx-auto px-4 py-8">
  <div className="mb-8">
- <h1 className="text-3xl font-bold">{t('artifact.title') || 'Artifacts'}</h1>
- <p className="text-slate-600 mt-1">{t('artifact.subtitle') || 'Discover historical objects and their stories'}</p>
+ <h1 className="text-3xl font-bold dark:text-white">{t('artifact.title') || 'Artifacts'}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-1">{t('artifact.subtitle') || 'Discover historical objects and their stories'}</p>
  </div>
 
  {/* Search */}
@@ -75,7 +75,7 @@ const Artifacts = () => {
  placeholder={t('common.search') + '...'}
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  />
  </div>
  </div>
@@ -90,9 +90,9 @@ const Artifacts = () => {
  <Link
  key={artifact._id}
  to={`/artifacts/${artifact._id}`}
- className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 group"
+ className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
  >
- <div className="relative h-44 overflow-hidden bg-slate-100">
+ <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {artifact.image ? (
  <img
  src={imageUrl(artifact.image)}
@@ -100,7 +100,7 @@ const Artifacts = () => {
  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
  />
  ) : (
- <div className="w-full h-full flex items-center justify-center text-slate-400">
+ <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-600">
  <Sparkles size={40} />
  </div>
  )}
@@ -111,10 +111,10 @@ const Artifacts = () => {
  )}
  </div>
  <div className="p-4">
- <h3 className="font-bold text-slate-900 group-hover:text-amber-600 transition-colors line-clamp-1">
+ <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
  {getLocalizedText(artifact.name, lang)}
  </h3>
- <p className="mt-1.5 text-sm text-slate-600 line-clamp-2">
+ <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
  {getLocalizedText(artifact.description, lang)}
  </p>
  </div>
@@ -128,7 +128,7 @@ const Artifacts = () => {
  <button
  onClick={() => setPage(p => Math.max(1, p - 1))}
  disabled={page === 1}
- className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 transition"
+ className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
  >
  <ChevronLeft size={18} />
  </button>
@@ -142,7 +142,7 @@ const Artifacts = () => {
  className={`w-9 h-9 rounded-lg text-sm font-medium transition ${
  p === page
  ? 'bg-amber-600 text-white'
- : 'border border-slate-200 hover:bg-slate-100 text-slate-700'
+ : 'border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
  }`}
  >
  {p}
@@ -152,7 +152,7 @@ const Artifacts = () => {
  <button
  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
  disabled={page === totalPages}
- className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 transition"
+ className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
  >
  <ChevronRight size={18} />
  </button>
@@ -161,8 +161,8 @@ const Artifacts = () => {
  </>
  ) : (
  <div className="text-center py-20">
- <Sparkles size={48} className="mx-auto mb-4 text-slate-300" />
- <p className="text-lg font-medium text-slate-500">{t('search.noResults') || 'No results found'}</p>
+ <Sparkles size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
+ <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('search.noResults') || 'No results found'}</p>
  </div>
  )}
  </div>

@@ -25,7 +25,7 @@ const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 const TABS = ['Basic Info', 'Stops', 'Settings'];
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 outline-none';
+ 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
 
 const emptyMultilang = () => ({ en: '', fr: '', rw: '' });
 
@@ -239,7 +239,7 @@ const TrailForm = () => {
  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${
  current === lang
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 hover:bg-slate-100'
+ : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
  }`}
  >
  {LANG_LABELS[lang]}
@@ -301,12 +301,12 @@ const TrailForm = () => {
  <div>
  <button
  onClick={() => navigate('/admin/trails')}
- className="flex items-center gap-2 text-slate-600 hover:text-amber-600 mb-6 transition"
+ className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-amber-600 mb-6 transition"
  >
  <ArrowLeft size={20} /> Back to Trails
  </button>
 
- <h1 className="text-2xl font-bold text-gray-800 mb-6">
+ <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
  {isEditing ? 'Edit Trail' : 'Create Trail'}
  </h1>
 
@@ -320,7 +320,7 @@ const TrailForm = () => {
  className={`px-4 py-2 text-sm rounded-xl font-medium whitespace-nowrap transition ${
  activeTab === idx
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 hover:bg-slate-100 bg-white border border-slate-200'
+ : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'
  }`}
  >
  {tab}
@@ -331,23 +331,23 @@ const TrailForm = () => {
  <form onSubmit={handleSubmit}>
  {/* TAB 0: Basic Info */}
  {activeTab === 0 && (
- <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  Title *
  </label>
  {renderMultiLangInput('title', titleLang, setTitleLang, 'input', 'Trail title')}
  </div>
 
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  Introduction
  </label>
  {renderMultiLangInput('introduction', introLang, setIntroLang, 'textarea', 'Introduction')}
  </div>
 
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  Description
  </label>
  {renderMultiLangInput('description', descLang, setDescLang, 'textarea', 'Description')}
@@ -355,14 +355,14 @@ const TrailForm = () => {
 
  {/* Cover Image */}
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-2">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
  Cover Image
  </label>
  <div className="flex items-center gap-4">
  {coverPreview && (
  <img src={coverPreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
  )}
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-amber-500 cursor-pointer transition">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
  <Upload size={18} />
  <span>{coverPreview ? 'Change' : 'Upload'}</span>
  <input
@@ -385,9 +385,9 @@ const TrailForm = () => {
 
  {/* TAB 1: Stops */}
  {activeTab === 1 && (
- <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
  <div className="flex justify-between items-center mb-4">
- <h2 className="text-lg font-semibold text-slate-800">
+ <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
  Trail Stops ({form.stops.length})
  </h2>
  <button
@@ -400,7 +400,7 @@ const TrailForm = () => {
  </div>
 
  {form.stops.length === 0 && (
- <p className="text-slate-500 text-sm py-8 text-center">
+ <p className="text-slate-500 dark:text-slate-400 text-sm py-8 text-center">
  No stops yet. Click "Add Stop" to build this trail.
  </p>
  )}
@@ -428,10 +428,10 @@ const TrailForm = () => {
 
  {/* TAB 2: Settings */}
  {activeTab === 2 && (
- <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
  <div className="grid md:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  Estimated Duration (minutes)
  </label>
  <input
@@ -443,7 +443,7 @@ const TrailForm = () => {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  Difficulty
  </label>
  <select
@@ -457,7 +457,7 @@ const TrailForm = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  Tags (comma-separated)
  </label>
  <input
@@ -478,7 +478,7 @@ const TrailForm = () => {
  onChange={(e) => handleChange('isFeatured', e.target.checked)}
  className="w-4 h-4 text-amber-600 border-slate-300 rounded focus:ring-amber-500"
  />
- <span className="text-sm text-slate-700">Featured</span>
+ <span className="text-sm text-slate-700 dark:text-slate-300">Featured</span>
  </label>
  <label className="flex items-center gap-2 cursor-pointer">
  <input
@@ -487,7 +487,7 @@ const TrailForm = () => {
  onChange={(e) => handleChange('isActive', e.target.checked)}
  className="w-4 h-4 text-amber-600 border-slate-300 rounded focus:ring-amber-500"
  />
- <span className="text-sm text-slate-700">Active</span>
+ <span className="text-sm text-slate-700 dark:text-slate-300">Active</span>
  </label>
  </div>
  </div>
@@ -527,11 +527,11 @@ const StopCard = ({
  const [dropdownOpen, setDropdownOpen] = useState(false);
 
  return (
- <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
+ <div className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-800/50">
  <div className="flex items-center justify-between mb-3">
  <div className="flex items-center gap-2">
  <GripVertical size={16} className="text-slate-400" />
- <span className="text-sm font-semibold text-slate-700">
+ <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
  Stop #{stop.order}
  </span>
  </div>
@@ -540,7 +540,7 @@ const StopCard = ({
  type="button"
  onClick={() => onMove(idx, -1)}
  disabled={idx === 0}
- className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30 transition"
+ className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 disabled:opacity-30 transition"
  title="Move up"
  >
  <ChevronUp size={16} />
@@ -549,7 +549,7 @@ const StopCard = ({
  type="button"
  onClick={() => onMove(idx, 1)}
  disabled={idx === total - 1}
- className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30 transition"
+ className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 disabled:opacity-30 transition"
  title="Move down"
  >
  <ChevronDown size={16} />
@@ -557,7 +557,7 @@ const StopCard = ({
  <button
  type="button"
  onClick={() => onRemove(idx)}
- className="p-1 text-red-500 hover:bg-red-50 rounded-lg transition ml-1"
+ className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition ml-1"
  title="Remove stop"
  >
  <X size={16} />
@@ -567,7 +567,7 @@ const StopCard = ({
 
  {/* Artifact selector */}
  <div className="mb-3 relative">
- <label className="block text-xs font-medium text-slate-600 mb-1">
+ <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
  Artifact *
  </label>
  <button
@@ -582,14 +582,14 @@ const StopCard = ({
  </button>
 
  {dropdownOpen && (
- <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-auto">
- <div className="sticky top-0 bg-white p-2 border-b border-slate-100">
+ <div className="absolute z-20 mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg max-h-60 overflow-auto">
+ <div className="sticky top-0 bg-white dark:bg-slate-800 p-2 border-b border-slate-100 dark:border-slate-700">
  <input
  type="text"
  value={artifactSearch}
  onChange={(e) => setArtifactSearch(e.target.value)}
  placeholder="Search artifacts..."
- className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-900 outline-none focus:ring-1 focus:ring-amber-500"
+ className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-amber-500"
  autoFocus
  />
  </div>
@@ -605,10 +605,10 @@ const StopCard = ({
  setDropdownOpen(false);
  setArtifactSearch('');
  }}
- className={`w-full text-left px-3 py-2 text-sm hover:bg-amber-50 transition ${
+ className={`w-full text-left px-3 py-2 text-sm hover:bg-amber-50 dark:hover:bg-amber-900/20 transition ${
  stop.artifactId === art._id
- ? 'bg-amber-50 text-amber-700 font-medium'
- : 'text-slate-700'
+ ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-medium'
+ : 'text-slate-700 dark:text-slate-300'
  }`}
  >
  {art.title?.en || art.title || art.name?.en || art.name || 'Unnamed'}
@@ -620,7 +620,7 @@ const StopCard = ({
 
  {/* Stop description (multilingual) */}
  <div>
- <label className="block text-xs font-medium text-slate-600 mb-1">
+ <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
  Stop Description
  </label>
  <div className="flex gap-1 mb-1">
@@ -632,7 +632,7 @@ const StopCard = ({
  className={`px-2 py-1 text-xs rounded-md font-medium transition ${
  descLang === lang
  ? 'bg-amber-600 text-white'
- : 'text-slate-500 hover:bg-slate-100'
+ : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
  }`}
  >
  {LANG_LABELS[lang]}
@@ -644,7 +644,7 @@ const StopCard = ({
  key={lang}
  value={stop.description[lang]}
  onChange={(e) => onUpdateStopDesc(idx, lang, e.target.value)}
- className={`w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 outline-none focus:ring-1 focus:ring-amber-500 ${
+ className={`w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-amber-500 ${
  descLang !== lang ? 'hidden' : ''
  }`}
  placeholder={`Description (${LANG_LABELS[lang]})`}

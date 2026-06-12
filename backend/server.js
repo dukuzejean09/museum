@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import mongoSanitize from 'express-mongo-sanitize';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -81,20 +80,19 @@ app.use('/api/ai', aiLimiter);
 
 app.use(express.json({ limit: '10mb' }));
 
-// Sanitize request data — prevent NoSQL injection and XSS
-app.use(mongoSanitize());
-
-// Strip HTML tags from string inputs to prevent XSS
-const stripHtmlTags = (obj) => {
+// Sanitize input — prevent NoSQL injection ($-prefixed keys) and XSS
+const sanitize = (obj) => {
   if (typeof obj === 'string') {
-    return obj.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-              .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+    return obj
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
   }
-  if (Array.isArray(obj)) return obj.map(stripHtmlTags);
+  if (Array.isArray(obj)) return obj.map(sanitize);
   if (obj && typeof obj === 'object') {
     const clean = {};
     for (const [key, val] of Object.entries(obj)) {
-      clean[key] = stripHtmlTags(val);
+      if (key.startsWith('$')) continue; // strip NoSQL operators
+      clean[key] = sanitize(val);
     }
     return clean;
   }
@@ -103,7 +101,7 @@ const stripHtmlTags = (obj) => {
 
 app.use((req, res, next) => {
   if (req.body && typeof req.body === 'object') {
-    req.body = stripHtmlTags(req.body);
+    req.body = sanitize(req.body);
   }
   next();
 });

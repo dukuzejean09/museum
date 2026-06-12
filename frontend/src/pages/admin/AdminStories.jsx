@@ -51,7 +51,7 @@ const AdminStories = () => {
  return (
  <div>
  <div className="flex justify-between items-center mb-6">
- <h1 className="text-2xl font-bold text-gray-800">Stories</h1>
+ <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Stories</h1>
  <Link
  to="/admin/stories/new"
  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition font-medium"
@@ -65,7 +65,7 @@ const AdminStories = () => {
  <select
  value={statusFilter}
  onChange={(e) => setStatusFilter(e.target.value)}
- className="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 outline-none text-sm"
+ className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none text-sm"
  >
  <option value="all">All Status</option>
  <option value="draft">Draft</option>
@@ -74,46 +74,46 @@ const AdminStories = () => {
  </select>
  </div>
 
- <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
  <table className="w-full">
- <thead className="bg-slate-50 border-b border-slate-200">
+ <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
  <tr>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Title</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Exhibition</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Status</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Created</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Actions</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Title</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Exhibition</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Status</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Created</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-slate-100">
+ <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
  {filtered.map((story) => {
  const linkedTo = story.exhibitionId?.title?.en || '-';
  return (
- <tr key={story._id} className="hover:bg-slate-50">
+ <tr key={story._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+ <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
  <BookOpen size={18} />
  </div>
- <span className="font-medium text-slate-800">
+ <span className="font-medium text-slate-800 dark:text-white">
  {story.title?.en || story.title || '-'}
  </span>
  </div>
  </td>
- <td className="px-6 py-4 text-slate-600">
+ <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
  {linkedTo}
  </td>
  <td className="px-6 py-4">
  <StatusBadge status={story.status || 'draft'} />
  </td>
- <td className="px-6 py-4 text-slate-600 text-sm">
+ <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
  {story.createdAt ? new Date(story.createdAt).toLocaleDateString() : '-'}
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
  <Link
  to={`/admin/stories/edit/${story._id}`}
- className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition"
+ className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
  title="Edit"
  >
  <Edit size={18} />
@@ -121,7 +121,7 @@ const AdminStories = () => {
  {isAdmin && (
  <button
  onClick={() => handleDelete(story._id, story.title?.en || story.title)}
- className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+ className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
  title="Delete"
  >
  <Trash2 size={18} />
@@ -134,7 +134,7 @@ const AdminStories = () => {
  })}
  {filtered.length === 0 && (
  <tr>
- <td colSpan="5" className="px-6 py-12 text-center text-slate-500">
+ <td colSpan="5" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
  No stories found.
  </td>
  </tr>

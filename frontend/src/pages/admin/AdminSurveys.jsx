@@ -45,44 +45,44 @@ const AdminSurveys = () => {
   const renderStars = (rating) => (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map(s => (
-        <Star key={s} size={14} className={s <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'} />
+        <Star key={s} size={14} className={s <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-600'} />
       ))}
     </div>
   );
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Visitor Surveys</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Visitor Surveys</h1>
 
       {/* Stats Cards */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
             <div className="bg-blue-500 text-white p-3 rounded-lg"><BarChart3 size={24} /></div>
             <div>
-              <p className="text-sm text-gray-500">Total Responses</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total Responses</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{stats.total}</p>
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
             <div className="bg-amber-500 text-white p-3 rounded-lg"><Star size={24} /></div>
             <div>
-              <p className="text-sm text-gray-500">Average Rating</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.avgRating}/5</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Average Rating</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{stats.avgRating}/5</p>
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
             <div className="bg-green-500 text-white p-3 rounded-lg"><ThumbsUp size={24} /></div>
             <div>
-              <p className="text-sm text-gray-500">Would Recommend</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.recommendRate}%</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Would Recommend</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{stats.recommendRate}%</p>
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
             <div className="bg-purple-500 text-white p-3 rounded-lg"><Clock size={24} /></div>
             <div>
-              <p className="text-sm text-gray-500">Most Common Duration</p>
-              <p className="text-sm font-bold text-gray-800">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Most Common Duration</p>
+              <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
                 {stats.durationBreakdown && Object.keys(stats.durationBreakdown).length > 0
                   ? Object.entries(stats.durationBreakdown).sort((a, b) => b[1] - a[1])[0][0]
                   : 'N/A'}
@@ -94,19 +94,19 @@ const AdminSurveys = () => {
 
       {/* Rating Distribution */}
       {stats && stats.total > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Rating Distribution</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-8">
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Rating Distribution</h2>
           <div className="space-y-2">
             {[5, 4, 3, 2, 1].map(rating => {
               const count = surveys.filter(s => s.overallRating === rating).length;
               const pct = stats.total > 0 ? (count / stats.total) * 100 : 0;
               return (
                 <div key={rating} className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600 w-6">{rating}★</span>
-                  <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 w-6">{rating}★</span>
+                  <div className="flex-1 bg-gray-100 dark:bg-slate-800 rounded-full h-4 overflow-hidden">
                     <div className="bg-amber-500 h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="text-sm text-gray-500 w-16 text-right">{count} ({Math.round(pct)}%)</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 w-16 text-right">{count} ({Math.round(pct)}%)</span>
                 </div>
               );
             })}
@@ -116,34 +116,34 @@ const AdminSurveys = () => {
 
       {/* Survey List */}
       {surveys.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-8 text-center text-gray-500">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8 text-center text-gray-500 dark:text-gray-400">
           <BarChart3 size={48} className="mx-auto mb-3 opacity-50" />
           <p>No survey responses yet.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Individual Responses</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Individual Responses</h2>
           <div className="space-y-4">
             {surveys.map(s => (
-              <div key={s._id} className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50">
+              <div key={s._id} className="border border-gray-100 dark:border-slate-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-slate-800">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
-                      <p className="font-medium text-gray-800">{s.visitorName || 'Anonymous'}</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">{s.visitorName || 'Anonymous'}</p>
                       {renderStars(s.overallRating)}
                     </div>
-                    <p className="text-xs text-gray-400">{new Date(s.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{new Date(s.createdAt).toLocaleDateString()}</p>
                   </div>
-                  <button onClick={() => handleDelete(s._id)} className="text-gray-400 hover:text-red-600">
+                  <button onClick={() => handleDelete(s._id)} className="text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400">
                     <Trash2 size={16} />
                   </button>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-3 text-xs text-gray-500">
+                <div className="mt-2 flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
                   {(s.favoriteExhibitionName || s.favoriteExhibition) && <span>Favorite: <strong>{s.favoriteExhibitionName || (typeof s.favoriteExhibition === 'object' ? s.favoriteExhibition?.title?.en : s.favoriteExhibition)}</strong></span>}
                   {s.visitDuration && <span>Duration: <strong>{s.visitDuration}</strong></span>}
                   <span>{s.wouldRecommend ? '✓ Would recommend' : '✗ Would not recommend'}</span>
                 </div>
-                {s.comments && <p className="mt-2 text-sm text-gray-600">{s.comments}</p>}
+                {s.comments && <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{s.comments}</p>}
               </div>
             ))}
           </div>

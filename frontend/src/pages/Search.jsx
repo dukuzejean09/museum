@@ -21,9 +21,9 @@ const getLocalizedText = (field, lang) => {
 };
 
 const typeConfig = {
- exhibition: { icon: Sparkles, color: 'bg-purple-100 text-purple-700', path: '/exhibitions' },
- trail: { icon: Compass, color: 'bg-amber-100 text-amber-700', path: '/trails' },
- artifact: { icon: ImageIcon, color: 'bg-emerald-100 text-emerald-700', path: '/artifacts' },
+ exhibition: { icon: Sparkles, color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', path: '/exhibitions' },
+ trail: { icon: Compass, color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', path: '/trails' },
+ artifact: { icon: ImageIcon, color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', path: '/artifacts' },
 };
 
 const typeFilters = ['all', 'exhibition', 'trail', 'artifact'];
@@ -232,18 +232,18 @@ const SearchPage = () => {
  <div className="container mx-auto px-4 py-8 max-w-3xl">
  {/* Header */}
  <div className="text-center mb-6">
- <h1 className="text-2xl font-bold mb-1">{t('search.title')}</h1>
- <p className="text-slate-500 text-sm">{t('search.subtitle') || t('search.placeholder')}</p>
+ <h1 className="text-2xl font-bold dark:text-white mb-1">{t('search.title')}</h1>
+ <p className="text-slate-500 dark:text-slate-400 text-sm">{t('search.subtitle') || t('search.placeholder')}</p>
  </div>
 
  {/* Tab Switch: Text Search vs Image Search */}
- <div className="flex bg-slate-100 rounded-xl p-1 mb-6">
+ <div className="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 mb-6">
  <button
  onClick={() => switchTab('text')}
  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition ${
  activeTab === 'text'
- ? 'bg-white text-amber-700 shadow-sm'
- : 'text-slate-500 hover:text-slate-700'
+ ? 'bg-white dark:bg-slate-700 text-amber-700 dark:text-amber-400 shadow-sm'
+ : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
  }`}
  >
  <SearchIcon size={16} />
@@ -253,8 +253,8 @@ const SearchPage = () => {
  onClick={() => switchTab('image')}
  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition ${
  activeTab === 'image'
- ? 'bg-white text-amber-700 shadow-sm'
- : 'text-slate-500 hover:text-slate-700'
+ ? 'bg-white dark:bg-slate-700 text-amber-700 dark:text-amber-400 shadow-sm'
+ : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
  }`}
  >
  <Camera size={16} />
@@ -276,7 +276,7 @@ const SearchPage = () => {
  value={query}
  onChange={(e) => setQuery(e.target.value)}
  placeholder={t('search.placeholder')}
- className="w-full pl-12 pr-10 py-4 text-lg border border-slate-200 rounded-2xl bg-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition shadow-sm"
+ className="w-full pl-12 pr-10 py-4 text-lg border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition shadow-sm"
  />
  {query && (
  <button onClick={() => setQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -294,7 +294,7 @@ const SearchPage = () => {
  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${
  typeFilter === type
  ? 'bg-amber-600 text-white shadow-sm'
- : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+ : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
  }`}
  >
  {type === 'all' ? t('search.allTypes') : type.charAt(0).toUpperCase() + type.slice(1) + 's'}
@@ -315,7 +315,7 @@ const SearchPage = () => {
  const TypeIcon = config.icon;
  return (
  <div key={type}>
- <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
  <TypeIcon size={16} />
  {type.charAt(0).toUpperCase() + type.slice(1)}s ({items.length})
  </h3>
@@ -324,17 +324,17 @@ const SearchPage = () => {
  <Link
  key={result._id || i}
  to={getResultLink(result)}
- className="flex items-start gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-amber-400 hover:shadow-md transition group"
+ className="flex items-start gap-4 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:shadow-md transition group"
  >
  <span className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-semibold ${config.color}`}>
  {type}
  </span>
  <div className="flex-1 min-w-0">
- <h4 className="font-semibold group-hover:text-amber-600 transition-colors">
+ <h4 className="font-semibold dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
  {getLocalizedText(result.title || result.name, lang)}
  </h4>
  {(result.description || result.shortDescription) && (
- <p className="text-sm text-slate-500 mt-1 line-clamp-2">
+ <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
  {getLocalizedText(result.shortDescription || result.description, lang)}
  </p>
  )}
@@ -352,9 +352,9 @@ const SearchPage = () => {
  {/* No Results */}
  {!loading && searched && results.length === 0 && (
  <div className="text-center py-16">
- <SearchIcon size={48} className="mx-auto mb-4 text-slate-300" />
- <p className="text-lg font-medium text-slate-500">{t('search.noResults')}</p>
- <p className="text-sm text-slate-400 mt-2">
+ <SearchIcon size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
+ <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('search.noResults')}</p>
+ <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
  {t('search.tryImage') || 'Try searching with an image instead'}
  </p>
  <button
@@ -371,7 +371,7 @@ const SearchPage = () => {
  {!searched && recentSearches.length > 0 && (
  <div>
  <div className="flex items-center justify-between mb-4">
- <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
  <Clock size={14} />
  {t('search.recentSearches')}
  </h3>
@@ -384,7 +384,7 @@ const SearchPage = () => {
  <button
  key={i}
  onClick={() => setQuery(s)}
- className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm hover:bg-amber-100 hover:text-amber-700 transition"
+ className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-sm hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-700 dark:hover:text-amber-400 transition"
  >
  <Clock size={12} />
  {s}
@@ -397,9 +397,9 @@ const SearchPage = () => {
  {/* Initial State */}
  {!searched && recentSearches.length === 0 && (
  <div className="text-center py-12">
- <SearchIcon size={48} className="mx-auto mb-4 text-slate-300" />
- <p className="text-slate-500 mb-4">{t('search.placeholder')}</p>
- <p className="text-sm text-slate-400">
+ <SearchIcon size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
+ <p className="text-slate-500 dark:text-slate-400 mb-4">{t('search.placeholder')}</p>
+ <p className="text-sm text-slate-400 dark:text-slate-500">
  {t('search.orUseImage') || "Don't know the name? Use Image Search to identify an exhibit by photo."}
  </p>
  </div>
@@ -417,23 +417,23 @@ const SearchPage = () => {
  <div className="grid gap-4 sm:grid-cols-2 mb-8">
  <button
  onClick={startCamera}
- className="flex flex-col items-center gap-3 p-8 rounded-2xl border-2 border-dashed border-slate-300 hover:border-amber-500 hover:bg-amber-50 transition group"
+ className="flex flex-col items-center gap-3 p-8 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition group"
  >
- <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+ <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
  <Camera size={28} className="text-amber-600" />
  </div>
- <span className="font-semibold">{t('scanner.takePhoto')}</span>
- <span className="text-sm text-slate-500">{t('scanner.takePhotoDesc')}</span>
+ <span className="font-semibold dark:text-white">{t('scanner.takePhoto')}</span>
+ <span className="text-sm text-slate-500 dark:text-slate-400">{t('scanner.takePhotoDesc')}</span>
  </button>
  <button
  onClick={() => fileInputRef.current?.click()}
- className="flex flex-col items-center gap-3 p-8 rounded-2xl border-2 border-dashed border-slate-300 hover:border-amber-500 hover:bg-amber-50 transition group"
+ className="flex flex-col items-center gap-3 p-8 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition group"
  >
- <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+ <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
  <Upload size={28} className="text-amber-600" />
  </div>
- <span className="font-semibold">{t('scanner.uploadPhoto')}</span>
- <span className="text-sm text-slate-500">{t('scanner.uploadPhotoDesc')}</span>
+ <span className="font-semibold dark:text-white">{t('scanner.uploadPhoto')}</span>
+ <span className="text-sm text-slate-500 dark:text-slate-400">{t('scanner.uploadPhotoDesc')}</span>
  </button>
  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
  </div>
@@ -452,7 +452,7 @@ const SearchPage = () => {
  <button onClick={capturePhoto} className="w-16 h-16 rounded-full bg-amber-600 text-white flex items-center justify-center hover:bg-amber-700 transition shadow-lg">
  <Camera size={28} />
  </button>
- <button onClick={() => { stopCamera(); setScanMode(null); }} className="w-16 h-16 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-300 transition">
+ <button onClick={() => { stopCamera(); setScanMode(null); }} className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-600 transition">
  <Square size={24} />
  </button>
  </div>
@@ -485,7 +485,7 @@ const SearchPage = () => {
  )}
  <button
  onClick={handleScanReset}
- className="inline-flex items-center gap-2 bg-slate-200 text-slate-700 px-6 py-3 rounded-full font-semibold hover:bg-slate-300 transition"
+ className="inline-flex items-center gap-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-6 py-3 rounded-full font-semibold hover:bg-slate-300 dark:hover:bg-slate-600 transition"
  >
  <RotateCcw size={18} />
  {t('scanner.tryAnother')}
@@ -496,7 +496,7 @@ const SearchPage = () => {
 
  {/* Scan error */}
  {scanError && (
- <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 text-center">
+ <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 p-4 rounded-xl mb-6 text-center">
  {scanError}
  </div>
  )}
@@ -508,8 +508,8 @@ const SearchPage = () => {
  <div className="flex items-center justify-center gap-2">
  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
  scanResult.matched
- ? 'bg-green-100 text-green-700'
- : 'bg-amber-100 text-amber-700'
+ ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+ : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
  }`}>
  <SearchIcon size={14} />
  {scanResult.matched ? t('scanner.matchFound') : t('scanner.noMatch')}
@@ -518,12 +518,12 @@ const SearchPage = () => {
  </div>
 
  {/* Narration */}
- <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
- <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+ <h3 className="font-semibold text-lg dark:text-white mb-3 flex items-center gap-2">
  <Volume2 size={18} className="text-amber-600" />
  {t('scanner.narration')}
  </h3>
- <p className="text-slate-700 leading-relaxed">{scanResult.description}</p>
+ <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{scanResult.description}</p>
 
  {narrating && (
  <div className="flex items-center gap-3 mt-4 text-amber-600">
@@ -532,10 +532,10 @@ const SearchPage = () => {
  </div>
  )}
  {fullAudioUrl && (
- <div className="mt-4 bg-slate-50 rounded-xl p-4">
+ <div className="mt-4 bg-slate-50 dark:bg-slate-800 rounded-xl p-4">
  <div className="flex items-center gap-2 mb-2">
  <Volume2 size={18} className="text-amber-600" />
- <span className="text-sm font-medium">{t('scanner.listenNarration')}</span>
+ <span className="text-sm font-medium dark:text-white">{t('scanner.listenNarration')}</span>
  </div>
  <audio ref={audioRef} controls autoPlay className="w-full" preload="auto">
  <source src={fullAudioUrl} type="audio/mpeg" />
@@ -548,7 +548,7 @@ const SearchPage = () => {
  {scanResult.exhibition && (
  <Link
  to={`/exhibitions/${scanResult.exhibition._id}`}
- className="block bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition group"
+ className="block bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition group"
  >
  <div className="flex gap-4 p-4">
  {scanResult.exhibition.coverImage && (
@@ -559,22 +559,22 @@ const SearchPage = () => {
  />
  )}
  <div className="flex-1 min-w-0">
- <h4 className="font-bold group-hover:text-amber-600 transition">
+ <h4 className="font-bold dark:text-white group-hover:text-amber-600 transition">
  {getLocalizedText(scanResult.exhibition.title, lang)}
  </h4>
- <p className="text-sm text-slate-600 line-clamp-2">
+ <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
  {getLocalizedText(scanResult.exhibition.shortDescription, lang)}
  </p>
  {scanResult.exhibition.tags?.length > 0 && (
  <div className="flex flex-wrap gap-1 mt-2">
  {scanResult.exhibition.tags.slice(0, 3).map((tag, i) => (
- <span key={i} className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-xs">
+ <span key={i} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-xs">
  {tag}
  </span>
  ))}
  </div>
  )}
- <p className="mt-2 text-sm text-amber-600 font-medium">{t('scanner.viewFull')} →</p>
+ <p className="mt-2 text-sm text-amber-600 dark:text-amber-400 font-medium">{t('scanner.viewFull')} →</p>
  </div>
  </div>
  </Link>
@@ -584,15 +584,15 @@ const SearchPage = () => {
 
  {/* How it works — idle state */}
  {!scanMode && !preview && !scanResult && (
- <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
- <h3 className="font-semibold mb-4">{t('scanner.howItWorks')}</h3>
+ <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+ <h3 className="font-semibold dark:text-white mb-4">{t('scanner.howItWorks')}</h3>
  <div className="space-y-3">
  {[t('scanner.step1'), t('scanner.step2'), t('scanner.step3')].map((step, i) => (
  <div key={i} className="flex items-start gap-3">
- <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">
+ <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 flex items-center justify-center text-sm font-bold">
  {i + 1}
  </span>
- <p className="text-sm text-slate-600 pt-0.5">{step}</p>
+ <p className="text-sm text-slate-600 dark:text-slate-400 pt-0.5">{step}</p>
  </div>
  ))}
  </div>

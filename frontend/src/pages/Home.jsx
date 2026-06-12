@@ -89,34 +89,34 @@ const Home = () => {
  Kandt House Museum · History & Heritage · QR-AR intro · CTAs · Stats
  ═══════════════════════════════════════════════════════════════ */}
  <section className="relative overflow-hidden">
- <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-orange-50" />
+ <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950" />
  <div className="container relative mx-auto px-4 pt-10 pb-12 lg:pt-16 lg:pb-14">
  <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr] items-center">
  {/* Left — text */}
  <div className="space-y-5 text-center lg:text-left">
- <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+ <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
  {t('home.badge')}
  </span>
- <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+ <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl dark:text-white">
  {t('home.title')}
  </h1>
- <p className="text-sm font-medium text-amber-700 uppercase tracking-widest">
+ <p className="text-sm font-medium text-amber-700 dark:text-amber-300 uppercase tracking-widest">
  {t('home.heritageSubtitle')}
  </p>
- <p className="mx-auto max-w-2xl text-base leading-7 text-slate-600 lg:mx-0">
+ <p className="mx-auto max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300 lg:mx-0">
  {t('home.subtitle')}
  </p>
 
  {/* QR-enabled AR intro — compact inline */}
- <div className="flex items-center gap-4 bg-white/70 backdrop-blur rounded-2xl p-4 border border-slate-200 max-w-lg mx-auto lg:mx-0">
- <div className="flex-shrink-0 rounded-xl bg-slate-50 p-2.5">
+ <div className="flex items-center gap-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur rounded-2xl p-4 border border-slate-200 dark:border-slate-700 max-w-lg mx-auto lg:mx-0">
+ <div className="flex-shrink-0 rounded-xl bg-slate-50 dark:bg-slate-700 p-2.5">
  <QRCodeSVG value={window.location.origin + '/exhibitions'} size={72} />
  </div>
  <div className="min-w-0">
- <p className="text-xs font-bold uppercase tracking-widest text-amber-600 mb-1">
+ <p className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 mb-1">
  {t('home.webAr')}
  </p>
- <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+ <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
  {t('home.webArDesc')}
  </p>
  </div>
@@ -132,7 +132,7 @@ const Home = () => {
  </Link>
  <Link
  to="/exhibitions"
- className="inline-flex justify-center rounded-full border border-amber-600 px-6 py-3 text-amber-700 hover:bg-amber-50 transition font-semibold"
+ className="inline-flex justify-center rounded-full border border-amber-600 px-6 py-3 text-amber-700 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-white/5 transition font-semibold"
  >
  {t('home.viewExhibitions')}
  </Link>
@@ -141,7 +141,7 @@ const Home = () => {
 
  {/* Right — hero image */}
  <div className="relative mx-auto w-full max-w-md">
- <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40">
+ <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
  <img src={HomeCt} alt="Kandt House Museum" className="h-full w-full object-cover" />
  </div>
  </div>
@@ -149,7 +149,7 @@ const Home = () => {
  </div>
 
  {/* Stats bar — integrated at bottom of hero */}
- <div className="relative bg-amber-600">
+ <div className="relative bg-amber-600 dark:bg-amber-700">
  <div className="container mx-auto px-4 py-5">
  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
  {stats.map((stat, i) => {
@@ -171,12 +171,12 @@ const Home = () => {
  2. EXPLORE THE MUSEUM
  Quick-link grid: Exhibitions, Artifacts, Trails, Search, Guides, Feedback
  ═══════════════════════════════════════════════════════════════ */}
- <section className="border-b border-slate-200 bg-slate-50 py-16">
+ <section className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 py-16">
  <div className="container mx-auto px-4">
- <h2 className="text-center text-2xl font-bold text-slate-900 mb-2">
+ <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
  {t('home.exploreTitle')}
  </h2>
- <p className="text-center text-sm text-slate-500 mb-10">
+ <p className="text-center text-sm text-slate-500 dark:text-slate-400 mb-10">
  {t('home.exploreSubtitle')}
  </p>
 
@@ -187,16 +187,16 @@ const Home = () => {
  <Link
  key={link.to}
  to={link.to}
- className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-xl hover:border-amber-400 hover:-translate-y-1 transition-all duration-300"
+ className="group flex items-start gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm hover:shadow-xl hover:border-amber-400 hover:-translate-y-1 transition-all duration-300"
  >
  <div className={`flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${link.color} group-hover:scale-110 transition-transform duration-300`}>
  <Icon size={22} className="text-white" />
  </div>
  <div>
- <h3 className="text-base font-bold text-slate-900 group-hover:text-amber-600 transition-colors">
+ <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
  {t(link.labelKey)}
  </h3>
- <p className="text-sm text-slate-500 leading-relaxed mt-1 line-clamp-2">
+ <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mt-1 line-clamp-2">
  {t(link.descKey)}
  </p>
  </div>
@@ -212,16 +212,16 @@ const Home = () => {
  Featured trail cards with slideshow, difficulty, stops, duration
  ═══════════════════════════════════════════════════════════════ */}
  {trails.length > 0 && (
- <section className="bg-gradient-to-b from-white via-amber-50/30 to-white border-b border-slate-200 py-16">
+ <section className="bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-slate-900 dark:via-slate-800/30 dark:to-slate-900 border-b border-slate-200 dark:border-slate-800 py-16">
  <div className="container mx-auto px-4">
  <div className="text-center mb-10">
- <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-widest mb-3">
+ <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
  {t('home.guidedJourneys')}
  </span>
- <h2 className="text-3xl font-extrabold text-slate-900">
+ <h2 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
  {t('home.exploreTrails')}
  </h2>
- <p className="text-slate-500 mt-2 max-w-lg mx-auto">
+ <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-lg mx-auto">
  {t('home.trailsDesc')}
  </p>
  </div>
@@ -238,7 +238,7 @@ const Home = () => {
  <Link
  key={trail._id}
  to={`/trails/${trail._id}`}
- className="group rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-500"
+ className="group rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-500"
  >
  <div className="relative h-44 overflow-hidden">
  {trail.stops?.some(s => s.artifact?.image || s.artifact?.coverImage) ? (
@@ -267,7 +267,7 @@ const Home = () => {
  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${accent} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
  </div>
  <div className="p-4">
- <div className="flex items-center gap-3 text-xs text-slate-500 mb-2">
+ <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mb-2">
  {trail.estimatedMinutes && (
  <span className="flex items-center gap-1"><Clock size={12} /> {trail.estimatedMinutes} min</span>
  )}
@@ -275,7 +275,7 @@ const Home = () => {
  <span className="flex items-center gap-1"><MapPin size={12} /> {trail.stops.length} stops</span>
  )}
  </div>
- <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+ <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
  {desc}
  </p>
  <span className={`inline-flex items-center gap-1 mt-3 text-xs font-bold bg-gradient-to-r ${accent} bg-clip-text text-transparent`}>
@@ -303,17 +303,17 @@ const Home = () => {
  4. MUSEUM COLLECTIONS & HISTORICAL CONTENT
  Six collection categories + Notable Artifacts banner
  ═══════════════════════════════════════════════════════════════ */}
- <section className="bg-gradient-to-b from-amber-50 to-white border-b border-slate-200">
+ <section className="bg-gradient-to-b from-amber-50 to-white dark:from-slate-900 dark:to-slate-950 border-b border-slate-200 dark:border-slate-800">
  <ImigongoBorder />
  <div className="container mx-auto px-4 py-14">
  <div className="text-center mb-4">
- <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-widest mb-3">
+ <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
  Kandt House Museum
  </span>
- <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+ <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100">
  {t('home.collectionsTitle')}
  </h2>
- <p className="text-slate-500 mt-3 max-w-2xl mx-auto text-sm leading-relaxed">
+ <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-2xl mx-auto text-sm leading-relaxed">
  {t('home.collectionsDesc')}
  </p>
  <ImigongoDivider className="mt-6 text-amber-500 max-w-xs mx-auto" />
@@ -363,17 +363,17 @@ const Home = () => {
  return (
  <div
  key={i}
- className="group relative rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-500 overflow-hidden"
+ className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-500 overflow-hidden"
  >
  <div className={`h-1 bg-gradient-to-r ${item.gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-300`} />
  <div className="p-6">
  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
  {item.isCustomIcon ? <IconComp size={24} className="text-white" /> : <IconComp size={22} className="text-white" />}
  </div>
- <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">
+ <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-amber-600 transition-colors">
  {t(item.titleKey)}
  </h3>
- <p className="text-sm text-slate-600 leading-relaxed">
+ <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
  {t(item.descKey)}
  </p>
  </div>
@@ -383,7 +383,7 @@ const Home = () => {
  </div>
 
  {/* Notable artifacts banner */}
- <div className="mt-12 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white">
+ <div className="mt-12 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-700 p-8 text-white">
  <div className="flex flex-col md:flex-row md:items-center gap-6">
  <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/30">
  <Gem size={28} className="text-amber-400" />
@@ -410,42 +410,42 @@ const Home = () => {
  5. ABOUT THE MUSEUM
  Overview · History of Kandt House · Living Heritage · Visit info
  ═══════════════════════════════════════════════════════════════ */}
- <section className="bg-white">
+ <section className="bg-white dark:bg-slate-900">
  <div className="container mx-auto px-4 py-16">
  <div className="max-w-5xl mx-auto">
  {/* Section header */}
  <div className="text-center mb-12">
- <span className="inline-block px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-widest mb-3">
+ <span className="inline-block px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-widest mb-3">
  {t('home.about')}
  </span>
- <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+ <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100">
  {t('home.aboutTitle')}
  </h2>
- <p className="text-slate-600 leading-relaxed mt-3 max-w-2xl mx-auto">
+ <p className="text-slate-600 dark:text-slate-300 leading-relaxed mt-3 max-w-2xl mx-auto">
  {t('home.aboutText')}
  </p>
  </div>
 
  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
  {/* History of the Kandt House */}
- <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
- <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 text-amber-600 mb-4">
+ <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+ <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 mb-4">
  <Landmark size={20} />
  </div>
- <h3 className="text-lg font-semibold text-slate-900 mb-3">
+ <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
  {t('home.historyTitle')}
  </h3>
- <p className="text-sm text-slate-600 leading-relaxed">
+ <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
  {t('home.historyText')}
  </p>
  </div>
 
  {/* Living Heritage */}
- <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
- <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 mb-4">
+ <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+ <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 mb-4">
  <Heart size={20} />
  </div>
- <h3 className="text-lg font-semibold text-slate-900 mb-3">
+ <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
  {t('home.livingHeritage')}
  </h3>
  <p className="text-sm text-slate-600 leading-relaxed">
@@ -454,14 +454,14 @@ const Home = () => {
  </div>
 
  {/* Visit Information */}
- <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 md:col-span-2 lg:col-span-1">
- <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100 text-sky-600 mb-4">
+ <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 md:col-span-2 lg:col-span-1">
+ <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 mb-4">
  <MapPin size={20} />
  </div>
- <h3 className="text-lg font-semibold text-slate-900 mb-3">
+ <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
  {t('home.visitTitle')}
  </h3>
- <div className="space-y-3 text-sm text-slate-600">
+ <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
  <p>{t('home.visitAddress')}</p>
  <p className="flex items-start gap-2">
  <Clock size={15} className="text-slate-400 mt-0.5 flex-shrink-0" />

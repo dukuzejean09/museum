@@ -48,7 +48,7 @@ const StoryDetail = () => {
  if (!story) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4">{t('common.noData') || 'Not found'}</h1>
+ <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData') || 'Not found'}</h1>
  <Link to="/stories" className="text-amber-600 hover:underline">{t('common.back') || 'Back'}</Link>
  </div>
  );
@@ -83,8 +83,8 @@ const StoryDetail = () => {
  {/* Story Content */}
  {contentText && (
  <div>
- <h2 className="text-xl font-bold mb-3">{t('story.content') || 'Story'}</h2>
- <div className="text-slate-700 leading-relaxed space-y-4">
+ <h2 className="text-xl font-bold mb-3 dark:text-white">{t('story.content') || 'Story'}</h2>
+ <div className="text-slate-700 dark:text-slate-300 leading-relaxed space-y-4">
  {contentText.split('\n').filter(p => p.trim()).map((paragraph, i) => (
  <p key={i}>{paragraph}</p>
  ))}
@@ -98,13 +98,13 @@ const StoryDetail = () => {
  <div className="space-y-6">
  {/* Linked Exhibition */}
  {story.exhibitionId && (
- <div className="bg-white rounded-2xl border border-slate-200 p-5">
- <h3 className="font-semibold mb-4">{t('story.exhibition') || 'Exhibition'}</h3>
+ <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <h3 className="font-semibold mb-4 dark:text-white">{t('story.exhibition') || 'Exhibition'}</h3>
  <Link
  to={`/exhibitions/${story.exhibitionId._id || story.exhibitionId}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition group"
+ className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+ <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
  {story.exhibitionId.coverImage ? (
  <img src={imgUrl(story.exhibitionId.coverImage)} alt="" className="w-full h-full object-cover" />
  ) : (
@@ -112,7 +112,7 @@ const StoryDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
  {getLocalizedText(story.exhibitionId.title, lang) || t('story.viewExhibition') || 'View Exhibition'}
  </p>
  </div>

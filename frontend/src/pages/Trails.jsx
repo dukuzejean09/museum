@@ -21,9 +21,9 @@ const getLocalizedText = (field, lang) => {
 };
 
 const difficultyColors = {
- easy: 'bg-green-100 text-green-700',
- moderate: 'bg-yellow-100 text-yellow-700',
- detailed: 'bg-red-100 text-red-700',
+ easy: 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
+ moderate: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
+ detailed: 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400',
 };
 
 const Trails = () => {
@@ -53,8 +53,8 @@ const Trails = () => {
  return (
  <div className="container mx-auto px-4 py-8">
  <div className="mb-8">
- <h1 className="text-3xl font-bold">{t('trail.title') || 'Guided Trails'}</h1>
- <p className="text-slate-600 mt-1">{t('trail.subtitle') || 'Explore the museum through curated guided journeys'}</p>
+ <h1 className="text-3xl font-bold dark:text-white">{t('trail.title') || 'Guided Trails'}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-1">{t('trail.subtitle') || 'Explore the museum through curated guided journeys'}</p>
  </div>
 
  {loading ? (
@@ -65,10 +65,10 @@ const Trails = () => {
  <Link
  key={trail._id}
  to={`/trails/${trail._id}`}
- className="flex flex-col sm:flex-row bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 group"
+ className="flex flex-col sm:flex-row bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
  >
  {/* Image — slideshow of stop artifact images */}
- <div className="relative sm:w-72 h-48 sm:h-auto flex-shrink-0 overflow-hidden bg-slate-100">
+ <div className="relative sm:w-72 h-48 sm:h-auto flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {trail.stops?.some(s => s.artifact?.image || s.artifact?.coverImage) ? (
  <ArtifactSlideshowCard
  artifacts={trail.stops.map(s => s.artifact).filter(Boolean)}
@@ -95,22 +95,22 @@ const Trails = () => {
  <span className={`px-2.5 py-0.5 rounded text-xs font-semibold ${difficultyColors[trail.difficulty] || difficultyColors.easy}`}>
  {trail.difficulty}
  </span>
- <span className="flex items-center gap-1 text-slate-500 text-xs">
+ <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs">
  <Clock size={12} /> {trail.estimatedMinutes || 30} min
  </span>
- <span className="flex items-center gap-1 text-slate-500 text-xs">
+ <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs">
  <MapPin size={12} /> {trail.stopCount || trail.stops?.length || 0} stops
  </span>
  </div>
- <h2 className="text-xl font-bold group-hover:text-amber-600 transition-colors">
+ <h2 className="text-xl font-bold dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
  {getLocalizedText(trail.title, lang)}
  </h2>
- <p className="mt-2 text-slate-600 line-clamp-2">
+ <p className="mt-2 text-slate-600 dark:text-slate-400 line-clamp-2">
  {getLocalizedText(trail.description || trail.introduction, lang)}
  </p>
  </div>
 
- <div className="mt-4 flex items-center text-amber-600 font-semibold text-sm group-hover:gap-2 transition-all">
+ <div className="mt-4 flex items-center text-amber-600 dark:text-amber-400 font-semibold text-sm group-hover:gap-2 transition-all">
  {t('trail.startTrail') || 'Start Trail'} <ChevronRight size={16} />
  </div>
  </div>
@@ -119,8 +119,8 @@ const Trails = () => {
  </div>
  ) : (
  <div className="text-center py-20">
- <Sparkles size={48} className="mx-auto mb-4 text-slate-300" />
- <p className="text-lg font-medium text-slate-500">{t('common.noData') || 'No trails available'}</p>
+ <Sparkles size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
+ <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('common.noData') || 'No trails available'}</p>
  </div>
  )}
  </div>

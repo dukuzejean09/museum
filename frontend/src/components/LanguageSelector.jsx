@@ -21,19 +21,19 @@ const LanguageSelector = () => {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-amber-50 transition text-sm"
+        className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-amber-50 dark:hover:bg-slate-800 transition text-sm"
       >
         <Globe size={16} className="text-amber-600" />
-        <span className="text-slate-600">{current?.flag} {current?.code.toUpperCase()}</span>
+        <span className="text-slate-600 dark:text-slate-300">{current?.flag} {current?.code.toUpperCase()}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-slate-200 py-1 min-w-[140px] z-50">
+        <div className="absolute right-0 top-full mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-1 min-w-[140px] z-50">
           {LANGUAGES.map(l => (
             <button
               key={l.code}
               onClick={() => { setLang(l.code); setOpen(false); }}
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-amber-50 flex items-center gap-2 ${
-                lang === l.code ? 'text-amber-600 font-medium' : 'text-slate-700'
+              className={`w-full text-left px-3 py-2 text-sm hover:bg-amber-50 dark:hover:bg-slate-700 flex items-center gap-2 ${
+                lang === l.code ? 'text-amber-600 font-medium' : 'text-slate-700 dark:text-slate-300'
               }`}
             >
               <span>{l.flag}</span>

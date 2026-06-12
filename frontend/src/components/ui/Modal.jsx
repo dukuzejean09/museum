@@ -44,16 +44,16 @@ const Modal = ({ title, children, onClose }) => {
  role="dialog"
  aria-modal="true"
  aria-labelledby="modal-title"
- className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+ className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-lg max-h-[90vh] overflow-y-auto"
  style={{ animation: 'scaleIn 150ms ease-out' }}
  >
- <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
- <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
+ <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+ <h2 id="modal-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
  {title}
  </h2>
  <button
  onClick={onClose}
- className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+ className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
  >
  <X size={18} />
  </button>

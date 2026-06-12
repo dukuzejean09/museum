@@ -62,14 +62,14 @@ const Guides = () => {
  finally { setSubmitting(false); }
  };
 
- const inputClass = "w-full px-4 py-2 border border-slate-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition";
+ const inputClass = "w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition";
 
  return (
  <div className="container mx-auto px-4 py-8">
  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
  <div>
- <h1 className="text-3xl font-bold">{t('guides.title')}</h1>
- <p className="text-slate-600 mt-1">{t('booking.subtitle')}</p>
+ <h1 className="text-3xl font-bold dark:text-white">{t('guides.title')}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-1">{t('booking.subtitle')}</p>
  </div>
  </div>
 
@@ -78,7 +78,7 @@ const Guides = () => {
  )}
 
  {!loading && guides.length === 0 && (
- <div className="text-center py-20 text-slate-500">
+ <div className="text-center py-20 text-slate-500 dark:text-slate-400">
  <Users size={48} className="mx-auto mb-4 opacity-50" />
  <p>No guides available at the moment.</p>
  </div>
@@ -87,18 +87,18 @@ const Guides = () => {
  {/* Guide Cards */}
  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
  {guides.map((g) => (
- <div key={g._id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+ <div key={g._id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700">
  {g.imageUrl && (
  <img src={imageUrl(g.imageUrl)} alt={g.name} className="w-full h-48 object-cover" />
  )}
  <div className="p-5">
- <h2 className="text-xl font-bold">{g.name}</h2>
- <p className="text-slate-600 mt-2">{g.bio}</p>
+ <h2 className="text-xl font-bold dark:text-white">{g.name}</h2>
+ <p className="text-slate-600 dark:text-slate-300 mt-2">{g.bio}</p>
  <div className="mt-3">
- <p className="text-sm text-slate-500 mb-1">{t('guides.languages')}:</p>
+ <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('guides.languages')}:</p>
  <div className="flex flex-wrap gap-1">
  {g.languages.map((lang, i) => (
- <span key={i} className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-xs">
+ <span key={i} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-xs">
  {lang}
  </span>
  ))}
@@ -118,13 +118,13 @@ const Guides = () => {
  {/* Booking Modal */}
  {bookingGuide && (
  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeBooking}>
- <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
- <div className="flex items-center justify-between p-6 border-b border-slate-200">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+ <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
  <div>
- <h2 className="text-xl font-bold">{t('booking.title')}</h2>
- <p className="text-sm text-amber-600 mt-1">{t('booking.with')} {bookingGuide.name}</p>
+ <h2 className="text-xl font-bold dark:text-white">{t('booking.title')}</h2>
+ <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">{t('booking.with')} {bookingGuide.name}</p>
  </div>
- <button onClick={closeBooking} className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 transition">
+ <button onClick={closeBooking} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 transition">
  <X size={20} />
  </button>
  </div>
@@ -132,13 +132,13 @@ const Guides = () => {
  {submitted ? (
  <div className="p-8 text-center">
  <CheckCircle size={64} className="text-green-500 mx-auto mb-4" />
- <h3 className="text-xl font-bold mb-2">{t('booking.submitted')}</h3>
- <p className="text-slate-600 mb-6">{t('booking.submittedMsg')}</p>
+ <h3 className="text-xl font-bold dark:text-white mb-2">{t('booking.submitted')}</h3>
+ <p className="text-slate-600 dark:text-slate-400 mb-6">{t('booking.submittedMsg')}</p>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
  <button onClick={closeBooking} className="bg-amber-600 text-white px-6 py-2 rounded-xl hover:bg-amber-700 transition font-semibold">
  {t('booking.bookAnother')}
  </button>
- <Link to="/map" onClick={closeBooking} className="inline-flex items-center justify-center gap-2 border border-amber-600 text-amber-700 px-6 py-2 rounded-xl hover:bg-amber-50 transition font-semibold">
+ <Link to="/map" onClick={closeBooking} className="inline-flex items-center justify-center gap-2 border border-amber-600 text-amber-700 dark:text-amber-400 px-6 py-2 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition font-semibold">
  <MapPin size={16} /> {t('nav.map')}
  </Link>
  </div>
@@ -147,28 +147,28 @@ const Guides = () => {
  <form onSubmit={handleSubmit} className="p-6 space-y-4">
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.name')} *</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.name')} *</label>
  <input type="text" name="visitorName" value={form.visitorName} onChange={handleChange} required className={inputClass} />
  </div>
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.email')} *</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.email')} *</label>
  <input type="email" name="visitorEmail" value={form.visitorEmail} onChange={handleChange} required className={inputClass} />
  </div>
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.phone')}</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.phone')}</label>
  <input type="tel" name="visitorPhone" value={form.visitorPhone} onChange={handleChange} className={inputClass} />
  </div>
 
  <div className="grid sm:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.date')} *</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.date')} *</label>
  <input type="date" name="date" value={form.date} onChange={handleChange} required
  min={new Date().toISOString().split('T')[0]} className={inputClass} />
  </div>
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.time')} *</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.time')} *</label>
  <select name="time" value={form.time} onChange={handleChange} required className={inputClass}>
  <option value="">{t('booking.select')}</option>
  {['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'].map(t => (
@@ -177,7 +177,7 @@ const Guides = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.groupSize')} *</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.groupSize')} *</label>
  <div className="flex items-center gap-2">
  <Users size={18} className="text-slate-400" />
  <input type="number" name="groupSize" value={form.groupSize} onChange={handleChange} min="1" max="50" required className={inputClass} />
@@ -186,7 +186,7 @@ const Guides = () => {
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1">{t('booking.specialRequests')}</label>
+ <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.specialRequests')}</label>
  <textarea name="message" value={form.message} onChange={handleChange} rows="2" placeholder={t('booking.specialRequestsPlaceholder')}
  className={inputClass} />
  </div>

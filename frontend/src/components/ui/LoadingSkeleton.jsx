@@ -1,7 +1,7 @@
-const pulse = 'animate-pulse bg-slate-200 rounded';
+const pulse = 'animate-pulse bg-slate-200 dark:bg-slate-700 rounded';
 
 export const CardSkeleton = () => (
-  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+  <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
     <div className={`${pulse} h-48 w-full`} />
     <div className="p-4 space-y-3">
       <div className={`${pulse} h-5 w-3/4`} />
@@ -30,10 +30,10 @@ export const TableRowSkeleton = ({ cols = 4 }) => (
 );
 
 export const TableSkeleton = ({ rows = 5, cols = 4 }) => (
-  <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+  <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
     <table className="w-full">
       <thead>
-        <tr className="border-b border-slate-200">
+        <tr className="border-b border-slate-200 dark:border-slate-700">
           {Array.from({ length: cols }).map((_, i) => (
             <th key={i} className="px-4 py-3 text-left">
               <div className={`${pulse} h-4 w-20`} />
@@ -79,7 +79,7 @@ export const DetailPageSkeleton = () => (
 );
 
 export const StatCardSkeleton = () => (
-  <div className="bg-white rounded-xl shadow-sm p-6 flex items-center gap-4">
+  <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 flex items-center gap-4">
     <div className={`${pulse} h-12 w-12 rounded-lg`} />
     <div className="space-y-2 flex-1">
       <div className={`${pulse} h-3 w-16`} />
@@ -96,7 +96,7 @@ export const DashboardSkeleton = () => (
         <StatCardSkeleton key={i} />
       ))}
     </div>
-    <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-8">
       <div className={`${pulse} h-5 w-40 mb-4`} />
       <div className={`${pulse} h-[300px] w-full rounded`} />
     </div>

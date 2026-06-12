@@ -90,26 +90,26 @@ const BookVisit = () => {
  return (
  <div className="min-h-[70vh] flex items-center justify-center px-4">
  <div className="max-w-md w-full text-center space-y-6">
- <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100">
- <CheckCircle size={40} className="text-green-600" />
+ <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30">
+ <CheckCircle size={40} className="text-green-600 dark:text-green-400" />
  </div>
- <h2 className="text-2xl font-bold text-slate-900">
+ <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
  {visitType === 'online' ? 'Access Request Submitted!' : 'Tour Booking Submitted!'}
  </h2>
- <p className="text-slate-600">
+ <p className="text-slate-600 dark:text-slate-300">
  {visitType === 'online'
  ? 'Your online access request is being reviewed. Once approved, you will receive an access code to explore the museum virtually.'
  : 'Your tour booking is pending confirmation. You will receive an email with your booking details.'}
  </p>
- <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
- <p className="text-xs uppercase tracking-wider text-amber-600 font-semibold mb-1">Reference Number</p>
- <p className="text-2xl font-mono font-bold text-amber-800">{refNumber}</p>
- <p className="text-xs text-amber-600 mt-1">Save this for your records</p>
+ <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
+ <p className="text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400 font-semibold mb-1">Reference Number</p>
+ <p className="text-2xl font-mono font-bold text-amber-800 dark:text-amber-200">{refNumber}</p>
+ <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Save this for your records</p>
  </div>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
  <button
  onClick={() => { setSubmitted(false); setVisitType(null); setForm({ visitorName: '', visitorEmail: '', visitorPhone: '', date: '', time: '', guideId: '', groupSize: 1, message: '' }); }}
- className="px-5 py-2.5 rounded-full border border-amber-600 text-amber-700 hover:bg-amber-50 font-semibold transition"
+ className="px-5 py-2.5 rounded-full border border-amber-600 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 font-semibold transition"
  >
  Book Another
  </button>
@@ -131,13 +131,13 @@ const BookVisit = () => {
  <div className="min-h-[70vh] flex items-center justify-center px-4">
  <div className="max-w-3xl w-full">
  <div className="text-center mb-10">
- <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-widest mb-3">
+ <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
  {t('nav.booking') || 'Book a Visit'}
  </span>
- <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+ <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100">
  How would you like to visit?
  </h1>
- <p className="text-slate-500 mt-3 max-w-lg mx-auto">
+ <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-lg mx-auto">
  Choose between an in-person guided tour at the museum or request online access to explore our digital collections remotely.
  </p>
  </div>
@@ -146,23 +146,23 @@ const BookVisit = () => {
  {/* Physical Tour */}
  <button
  onClick={() => setVisitType('physical')}
- className="group text-left rounded-2xl border-2 border-slate-200 bg-white p-8 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Landmark size={28} />
  </div>
- <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">
+ <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-amber-600 transition-colors">
  Visit In Person
  </h3>
- <p className="text-sm text-slate-500 leading-relaxed mb-4">
+ <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
  Book a guided tour with one of our expert guides. Walk through the museum and experience the exhibits in person.
  </p>
- <ul className="space-y-2 text-sm text-slate-600">
+ <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
  <li className="flex items-center gap-2"><MapPin size={14} className="text-amber-500" /> On-site guided experience</li>
  <li className="flex items-center gap-2"><Users size={14} className="text-amber-500" /> Groups up to 50 people</li>
  <li className="flex items-center gap-2"><Clock size={14} className="text-amber-500" /> Choose your preferred time</li>
  </ul>
- <div className="mt-5 flex items-center gap-2 text-amber-600 font-semibold text-sm group-hover:gap-3 transition-all">
+ <div className="mt-5 flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold text-sm group-hover:gap-3 transition-all">
  Book Tour <ArrowRight size={16} />
  </div>
  </button>
@@ -170,23 +170,23 @@ const BookVisit = () => {
  {/* Online Access */}
  <button
  onClick={() => setVisitType('online')}
- className="group text-left rounded-2xl border-2 border-slate-200 bg-white p-8 hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Wifi size={28} />
  </div>
- <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">
+ <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-emerald-600 transition-colors">
  Explore Online
  </h3>
- <p className="text-sm text-slate-500 leading-relaxed mb-4">
+ <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
  Request remote access to browse exhibitions, artifacts, and trails from anywhere in the world.
  </p>
- <ul className="space-y-2 text-sm text-slate-600">
+ <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
  <li className="flex items-center gap-2"><Globe size={14} className="text-emerald-500" /> Access from anywhere</li>
  <li className="flex items-center gap-2"><Calendar size={14} className="text-emerald-500" /> Choose your visit date</li>
  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-emerald-500" /> Get access code upon approval</li>
  </ul>
- <div className="mt-5 flex items-center gap-2 text-emerald-600 font-semibold text-sm group-hover:gap-3 transition-all">
+ <div className="mt-5 flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-sm group-hover:gap-3 transition-all">
  Request Access <ArrowRight size={16} />
  </div>
  </button>
@@ -204,7 +204,7 @@ const BookVisit = () => {
  {/* Back to chooser */}
  <button
  onClick={() => setVisitType(null)}
- className="text-sm text-slate-500 hover:text-amber-600 mb-6 flex items-center gap-1"
+ className="text-sm text-slate-500 dark:text-slate-400 hover:text-amber-600 mb-6 flex items-center gap-1"
  >
  &larr; Change visit type
  </button>
@@ -213,36 +213,36 @@ const BookVisit = () => {
  <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${isPhysical ? 'from-amber-500 to-orange-500' : 'from-emerald-500 to-teal-500'} text-white mb-4`}>
  {isPhysical ? <Landmark size={28} /> : <Wifi size={28} />}
  </div>
- <h1 className="text-2xl font-bold text-slate-900">
+ <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
  {isPhysical ? 'Book a Guided Tour' : 'Request Online Access'}
  </h1>
- <p className="text-slate-500 mt-1 text-sm">
+ <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
  {isPhysical
  ? 'Fill in your details and choose a guide for your museum visit.'
  : 'Submit your request and receive an access code once approved.'}
  </p>
  </div>
 
- <form onSubmit={handleSubmit} className="space-y-5 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+ <form onSubmit={handleSubmit} className="space-y-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 shadow-sm">
  {/* Name & Email */}
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <User size={14} className="inline mr-1" /> Full Name *
  </label>
  <input
  type="text" name="visitorName" value={form.visitorName} onChange={handleChange} required
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
  placeholder="Your full name"
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <Mail size={14} className="inline mr-1" /> Email *
  </label>
  <input
  type="email" name="visitorEmail" value={form.visitorEmail} onChange={handleChange} required
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
  placeholder="you@example.com"
  />
  </div>
@@ -250,12 +250,12 @@ const BookVisit = () => {
 
  {/* Phone */}
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <Phone size={14} className="inline mr-1" /> Phone (optional)
  </label>
  <input
  type="tel" name="visitorPhone" value={form.visitorPhone} onChange={handleChange}
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
  placeholder="+250 7XX XXX XXX"
  />
  </div>
@@ -263,22 +263,22 @@ const BookVisit = () => {
  {/* Date & Time (time only for physical) */}
  <div className={`grid ${isPhysical ? 'sm:grid-cols-2' : ''} gap-4`}>
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <Calendar size={14} className="inline mr-1" /> {isPhysical ? 'Visit Date *' : 'Preferred Date *'}
  </label>
  <input
  type="date" name="date" value={form.date} onChange={handleChange} required min={today}
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
  />
  </div>
  {isPhysical && (
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <Clock size={14} className="inline mr-1" /> Time Slot *
  </label>
  <select
  name="time" value={form.time} onChange={handleChange} required
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
  >
  <option value="">Select time</option>
  {timeSlots.map(slot => (
@@ -292,7 +292,7 @@ const BookVisit = () => {
  {/* Guide selection (physical only) */}
  {isPhysical && (
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-2">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
  Choose a Guide *
  </label>
  {guides.length === 0 ? (
@@ -306,18 +306,18 @@ const BookVisit = () => {
  onClick={() => setForm(prev => ({ ...prev, guideId: g._id }))}
  className={`text-center p-3 rounded-xl border-2 transition-all ${
  form.guideId === g._id
- ? 'border-amber-500 bg-amber-50 shadow-md'
- : 'border-slate-200 hover:border-amber-300'
+ ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 shadow-md'
+ : 'border-slate-200 dark:border-slate-600 hover:border-amber-300'
  }`}
  >
  {g.imageUrl ? (
  <img src={imgUrl(g.imageUrl)} alt={g.name} className="w-12 h-12 rounded-full mx-auto mb-2 object-cover" />
  ) : (
- <div className="w-12 h-12 rounded-full mx-auto mb-2 bg-amber-100 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-full mx-auto mb-2 bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
  <User size={20} className="text-amber-600" />
  </div>
  )}
- <p className="text-sm font-medium text-slate-800 truncate">{g.name}</p>
+ <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{g.name}</p>
  </button>
  ))}
  </div>
@@ -327,23 +327,23 @@ const BookVisit = () => {
 
  {/* Group size */}
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <Users size={14} className="inline mr-1" /> {isPhysical ? 'Group Size' : 'Number of People'}
  </label>
  <input
  type="number" name="groupSize" value={form.groupSize} onChange={handleChange} min="1" max="50"
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
  />
  </div>
 
  {/* Message */}
  <div>
- <label className="block text-sm font-medium text-slate-700 mb-1">
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
  <MessageSquare size={14} className="inline mr-1" /> {isPhysical ? 'Special Requests' : 'Message'} (optional)
  </label>
  <textarea
  name="message" value={form.message} onChange={handleChange} rows={3}
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"
+ className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"
  placeholder={isPhysical ? 'Any special requirements or accessibility needs...' : 'Tell us about your interest in the museum...'}
  />
  </div>

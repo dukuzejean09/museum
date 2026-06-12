@@ -55,7 +55,7 @@ const AudioPlayer = ({ src, title, duration }) => {
  const progress = totalDuration ? (currentTime / totalDuration) * 100 : 0;
 
  return (
- <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 border border-amber-200">
+ <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40">
  <audio ref={audioRef} src={src} preload="metadata" />
 
  <button
@@ -68,12 +68,12 @@ const AudioPlayer = ({ src, title, duration }) => {
 
  <div className="flex-1 min-w-0">
  {title && (
- <p className="text-xs font-medium text-slate-700 truncate mb-1">
+ <p className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate mb-1">
  {title}
  </p>
  )}
  <div
- className="h-1.5 rounded-full bg-amber-200 cursor-pointer"
+ className="h-1.5 rounded-full bg-amber-200 dark:bg-amber-800/40 cursor-pointer"
  onClick={handleSeek}
  >
  <div
@@ -82,11 +82,11 @@ const AudioPlayer = ({ src, title, duration }) => {
  />
  </div>
  <div className="flex items-center justify-between mt-1">
- <span className="text-[10px] text-slate-500">
+ <span className="text-[10px] text-slate-500 dark:text-slate-400">
  {formatTime(currentTime)} / {formatTime(totalDuration)}
  </span>
  {duration && (
- <span className="text-[10px] text-amber-600 font-medium">
+ <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
  {duration}
  </span>
  )}

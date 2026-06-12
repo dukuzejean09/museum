@@ -84,7 +84,7 @@ const ExhibitionDetail = () => {
  if (!exhibition) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4">{t('common.noData')}</h1>
+ <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData')}</h1>
  <Link to="/exhibitions" className="text-amber-600 hover:underline">{t('common.back')}</Link>
  </div>
  );
@@ -126,15 +126,15 @@ const ExhibitionDetail = () => {
 
  <div className="container mx-auto px-4 py-8">
  {/* Tab Navigation */}
- <div className="flex gap-1 border-b border-slate-200 mb-8 overflow-x-auto">
+ <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-8 overflow-x-auto">
  {tabs.map(tab => (
  <button
  key={tab}
  onClick={() => setActiveTab(tab)}
  className={`px-5 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap ${
  activeTab === tab
- ? 'border-amber-600 text-amber-600'
- : 'border-transparent text-slate-500 hover:text-slate-700'
+ ? 'border-amber-600 text-amber-600 dark:text-amber-400'
+ : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
  }`}
  >
  {t(`exhibition.${tab}`)}
@@ -150,8 +150,8 @@ const ExhibitionDetail = () => {
  <div className="space-y-8">
  {getLocalizedText(exhibition.fullDescription || exhibition.description, lang) && (
  <div>
- <h2 className="text-xl font-bold mb-3">{t('exhibits.description')}</h2>
- <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+ <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.description')}</h2>
+ <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
  {getLocalizedText(exhibition.fullDescription || exhibition.description, lang)}
  </p>
  </div>
@@ -159,8 +159,8 @@ const ExhibitionDetail = () => {
 
  {getLocalizedText(exhibition.historicalSignificance, lang) && (
  <div>
- <h2 className="text-xl font-bold mb-3">{t('exhibits.historicalContext')}</h2>
- <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+ <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext')}</h2>
+ <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
  {getLocalizedText(exhibition.historicalSignificance, lang)}
  </p>
  </div>
@@ -169,13 +169,13 @@ const ExhibitionDetail = () => {
  {/* Timeline */}
  {exhibition.timeline?.length > 0 && (
  <div>
- <h2 className="text-xl font-bold mb-4">{t('exhibition.timeline')}</h2>
- <div className="relative border-l-2 border-amber-300 ml-4 space-y-6">
+ <h2 className="text-xl font-bold mb-4 dark:text-white">{t('exhibition.timeline')}</h2>
+ <div className="relative border-l-2 border-amber-300 dark:border-amber-700 ml-4 space-y-6">
  {exhibition.timeline.map((entry, i) => (
  <div key={i} className="relative pl-8">
- <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-600 border-2 border-white" />
- <span className="text-sm font-bold text-amber-600">{entry.year}</span>
- <p className="text-slate-700 mt-1">
+ <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-600 border-2 border-white dark:border-slate-900" />
+ <span className="text-sm font-bold text-amber-600 dark:text-amber-400">{entry.year}</span>
+ <p className="text-slate-700 dark:text-slate-300 mt-1">
  {getLocalizedText(entry.event, lang)}
  </p>
  </div>
@@ -188,7 +188,7 @@ const ExhibitionDetail = () => {
  {exhibition.tags?.length > 0 && (
  <div className="flex flex-wrap gap-2">
  {exhibition.tags.map((tag, i) => (
- <span key={i} className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm">
+ <span key={i} className="inline-flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-sm">
  <Tag size={12} /> {tag}
  </span>
  ))}
@@ -206,9 +206,9 @@ const ExhibitionDetail = () => {
  <Link
  key={artifact._id}
  to={`/artifacts/${artifact._id}`}
- className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition group"
+ className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition group"
  >
- <div className="h-40 overflow-hidden bg-slate-100">
+ <div className="h-40 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {artifact.image ? (
  <img src={imgUrl(artifact.image)} alt={getLocalizedText(artifact.name, lang)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
  ) : (
@@ -217,12 +217,12 @@ const ExhibitionDetail = () => {
  </div>
  <div className="p-4">
  {artifact.category && (
- <span className="text-xs font-medium text-amber-600 uppercase">{artifact.category}</span>
+ <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
  )}
- <h3 className="font-bold mt-1 group-hover:text-amber-600 transition-colors">
+ <h3 className="font-bold dark:text-white mt-1 group-hover:text-amber-600 transition-colors">
  {getLocalizedText(artifact.name, lang)}
  </h3>
- <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+ <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
  {getLocalizedText(artifact.description, lang)}
  </p>
  </div>
@@ -230,7 +230,7 @@ const ExhibitionDetail = () => {
  ))}
  </div>
  ) : (
- <div className="text-center py-16 text-slate-500">
+ <div className="text-center py-16 text-slate-500 dark:text-slate-400">
  <Sparkles size={40} className="mx-auto mb-3 opacity-40" />
  <p>{t('common.noData')}</p>
  </div>
@@ -244,16 +244,16 @@ const ExhibitionDetail = () => {
  {stories.length > 0 ? (
  <div className="space-y-6">
  {stories.map(story => (
- <div key={story._id} className="bg-white rounded-2xl border border-slate-200 p-6">
- <h3 className="text-lg font-bold">{getLocalizedText(story.title, lang)}</h3>
- <p className="mt-2 text-slate-600 leading-relaxed whitespace-pre-line">
+ <div key={story._id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+ <h3 className="text-lg font-bold dark:text-white">{getLocalizedText(story.title, lang)}</h3>
+ <p className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">
  {getLocalizedText(story.content, lang)}
  </p>
  </div>
  ))}
  </div>
  ) : (
- <div className="text-center py-16 text-slate-500">
+ <div className="text-center py-16 text-slate-500 dark:text-slate-400">
  <BookOpen size={40} className="mx-auto mb-3 opacity-40" />
  <p>{t('common.noData')}</p>
  </div>
@@ -269,7 +269,7 @@ const ExhibitionDetail = () => {
  {allImages.map((img, i) => (
  <div
  key={i}
- className="aspect-square rounded-xl overflow-hidden cursor-pointer group bg-slate-100"
+ className="aspect-square rounded-xl overflow-hidden cursor-pointer group bg-slate-100 dark:bg-slate-800"
  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
  >
  <img src={imgUrl(img)} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -277,7 +277,7 @@ const ExhibitionDetail = () => {
  ))}
  </div>
  ) : (
- <div className="text-center py-16 text-slate-500">
+ <div className="text-center py-16 text-slate-500 dark:text-slate-400">
  <ImageIcon size={40} className="mx-auto mb-3 opacity-40" />
  <p>{t('common.noData')}</p>
  </div>
@@ -290,10 +290,10 @@ const ExhibitionDetail = () => {
  <div className="space-y-6">
  {/* Audio Narration */}
  {narrationSrc && (
- <div className="bg-white rounded-2xl border border-slate-200 p-5">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
  <div className="flex items-center gap-2 mb-3">
  <Volume2 size={18} className="text-amber-600" />
- <h3 className="font-semibold">{t('exhibits.audioNarration')}</h3>
+ <h3 className="font-semibold dark:text-white">{t('exhibits.audioNarration')}</h3>
  </div>
  <audio controls className="w-full" preload="metadata">
  <source src={narrationSrc} />
@@ -311,7 +311,7 @@ const ExhibitionDetail = () => {
  {t('exhibits.share')}
  </button>
  {showShare && (
- <div className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-lg p-4 space-y-2 z-10 border border-slate-200">
+ <div className="absolute top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 space-y-2 z-10 border border-slate-200 dark:border-slate-700">
  <a href={`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`} target="_blank" rel="noopener noreferrer"
  className="block w-full text-center py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition">WhatsApp</a>
  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer"
@@ -324,16 +324,16 @@ const ExhibitionDetail = () => {
 
  {/* Related Exhibitions */}
  {relatedExhibitions.length > 0 && (
- <div className="bg-white rounded-2xl border border-slate-200 p-5">
- <h3 className="font-semibold mb-4">{t('exhibition.related')}</h3>
+ <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <h3 className="font-semibold mb-4 dark:text-white">{t('exhibition.related')}</h3>
  <div className="space-y-3">
  {relatedExhibitions.map(rel => (
  <Link
  key={rel._id}
  to={`/exhibitions/${rel._id}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition group"
+ className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+ <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
  {(rel.coverImage || rel.media?.images?.[0]) ? (
  <img src={imgUrl(rel.coverImage || rel.media?.images?.[0])} alt="" className="w-full h-full object-cover" />
  ) : (
@@ -341,7 +341,7 @@ const ExhibitionDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
  {getLocalizedText(rel.title, lang)}
  </p>
  </div>

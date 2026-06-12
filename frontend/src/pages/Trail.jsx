@@ -49,7 +49,7 @@ const Trail = () => {
  return (
  <div className="container mx-auto px-4 py-8 max-w-5xl text-center">
  <Compass size={48} className="mx-auto mb-4 text-slate-400" />
- <p className="text-slate-500">Failed to load trails. Please try again later.</p>
+ <p className="text-slate-500 dark:text-slate-400">Failed to load trails. Please try again later.</p>
  </div>
  );
  }
@@ -62,12 +62,12 @@ const Trail = () => {
  <Compass size={16} />
  {t('trail.discover')}
  </div>
- <h1 className="text-3xl font-bold mb-3">{t('trail.title')}</h1>
- <p className="text-slate-600 max-w-2xl mx-auto">{t('trail.intro')}</p>
+ <h1 className="text-3xl font-bold dark:text-white mb-3">{t('trail.title')}</h1>
+ <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">{t('trail.intro')}</p>
  </div>
 
  {trails.length === 0 ? (
- <div className="text-center py-20 text-slate-500">
+ <div className="text-center py-20 text-slate-500 dark:text-slate-400">
  <Compass size={48} className="mx-auto mb-4 opacity-50" />
  <p>{t('trail.noEvents')}</p>
  </div>
@@ -86,7 +86,7 @@ const Trail = () => {
  <Link
  key={trail._id}
  to={linkTo}
- className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-lg hover:border-amber-400 transition-all duration-300"
+ className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-amber-400 transition-all duration-300"
  >
  {cover && (
  <div className="relative h-48 overflow-hidden">
@@ -100,12 +100,12 @@ const Trail = () => {
  )}
  <div className="p-5">
  {exhibitionTitle && (
- <p className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-1">{exhibitionTitle}</p>
+ <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1">{exhibitionTitle}</p>
  )}
- <h3 className="text-lg font-bold mb-2 group-hover:text-amber-600 transition-colors">{title}</h3>
- {hook && <p className="text-sm text-slate-700 italic mb-2">"{hook}"</p>}
- {teaser && <p className="text-sm text-slate-500 line-clamp-3 mb-4">{teaser}</p>}
- <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 group-hover:gap-2.5 transition-all">
+ <h3 className="text-lg font-bold dark:text-white mb-2 group-hover:text-amber-600 transition-colors">{title}</h3>
+ {hook && <p className="text-sm text-slate-700 dark:text-slate-300 italic mb-2">"{hook}"</p>}
+ {teaser && <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 mb-4">{teaser}</p>}
+ <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 dark:text-amber-400 group-hover:gap-2.5 transition-all">
  {cta} <ArrowRight size={16} />
  </span>
  </div>
@@ -113,7 +113,7 @@ const Trail = () => {
  {trail.discoveryTags?.length > 0 && (
  <div className="px-5 pb-4 flex flex-wrap gap-1">
  {trail.discoveryTags.slice(0, 3).map((tag, i) => (
- <span key={i} className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-xs">{tag}</span>
+ <span key={i} className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded text-xs">{tag}</span>
  ))}
  </div>
  )}

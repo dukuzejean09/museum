@@ -64,8 +64,8 @@ const Stories = () => {
  return (
  <div className="container mx-auto px-4 py-8">
  <div className="mb-8">
- <h1 className="text-3xl font-bold">{t('story.title') || 'Stories'}</h1>
- <p className="text-slate-600 mt-1">{t('story.subtitle') || 'Narratives and tales from the museum collection'}</p>
+ <h1 className="text-3xl font-bold dark:text-white">{t('story.title') || 'Stories'}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-1">{t('story.subtitle') || 'Narratives and tales from the museum collection'}</p>
  </div>
 
  {/* Search */}
@@ -77,7 +77,7 @@ const Stories = () => {
  placeholder={t('common.search') + '...'}
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  />
  </div>
  </div>
@@ -92,22 +92,22 @@ const Stories = () => {
  <Link
  key={story._id}
  to={`/stories/${story._id}`}
- className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 group"
+ className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
  >
- <div className="relative h-48 overflow-hidden bg-slate-100">
- <div className="w-full h-full flex items-center justify-center text-slate-400">
+ <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+ <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-600">
  <BookOpen size={48} />
  </div>
  </div>
  <div className="p-5">
- <h3 className="font-bold text-lg text-slate-900 group-hover:text-amber-600 transition-colors line-clamp-1">
+ <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
  {getLocalizedText(story.title, lang)}
  </h3>
- <p className="mt-2 text-sm text-slate-600 line-clamp-3">
+ <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
  {getLocalizedText(story.content, lang)}
  </p>
  {story.exhibitionId && (
- <p className="mt-3 text-xs text-amber-600 font-medium truncate">
+ <p className="mt-3 text-xs text-amber-600 dark:text-amber-400 font-medium truncate">
  {getLocalizedText(story.exhibitionId.title, lang) || t('story.linkedExhibition') || 'View Exhibition'}
  </p>
  )}
@@ -122,7 +122,7 @@ const Stories = () => {
  <button
  onClick={() => setPage(p => Math.max(1, p - 1))}
  disabled={page === 1}
- className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 transition"
+ className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
  >
  <ChevronLeft size={18} />
  </button>
@@ -136,7 +136,7 @@ const Stories = () => {
  className={`w-9 h-9 rounded-lg text-sm font-medium transition ${
  p === page
  ? 'bg-amber-600 text-white'
- : 'border border-slate-200 hover:bg-slate-100 text-slate-700'
+ : 'border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
  }`}
  >
  {p}
@@ -146,7 +146,7 @@ const Stories = () => {
  <button
  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
  disabled={page === totalPages}
- className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 transition"
+ className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
  >
  <ChevronRight size={18} />
  </button>
@@ -155,9 +155,9 @@ const Stories = () => {
  </>
  ) : (
  <div className="text-center py-20">
- <BookOpen size={48} className="mx-auto mb-4 text-slate-300" />
- <p className="text-lg font-medium text-slate-500">{t('search.noResults') || 'No results found'}</p>
- <p className="text-sm text-slate-400 mt-1">{t('common.noData') || 'No data available'}</p>
+ <BookOpen size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
+ <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('search.noResults') || 'No results found'}</p>
+ <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">{t('common.noData') || 'No data available'}</p>
  </div>
  )}
  </div>

@@ -50,7 +50,7 @@ const ArtifactDetail = () => {
  if (!artifact) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4">{t('common.noData')}</h1>
+ <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData')}</h1>
  <Link to="/artifacts" className="text-amber-600 hover:underline">{t('common.back')}</Link>
  </div>
  );
@@ -100,8 +100,8 @@ const ArtifactDetail = () => {
  {/* Description */}
  {getLocalizedText(artifact.description, lang) && (
  <div>
- <h2 className="text-xl font-bold mb-3">{t('exhibits.description') || 'Description'}</h2>
- <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+ <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.description') || 'Description'}</h2>
+ <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
  {getLocalizedText(artifact.description, lang)}
  </p>
  </div>
@@ -110,8 +110,8 @@ const ArtifactDetail = () => {
  {/* Historical Story */}
  {getLocalizedText(artifact.historicalStory, lang) && (
  <div>
- <h2 className="text-xl font-bold mb-3">{t('exhibits.historicalContext') || 'Historical Story'}</h2>
- <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+ <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext') || 'Historical Story'}</h2>
+ <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
  {getLocalizedText(artifact.historicalStory, lang)}
  </p>
  </div>
@@ -123,8 +123,8 @@ const ArtifactDetail = () => {
  <div className="flex items-start gap-2">
  <Calendar size={18} className="text-amber-600 mt-1 flex-shrink-0" />
  <div>
- <h3 className="font-semibold">Date Discovered / Collected</h3>
- <p className="text-slate-600">{artifact.dateDiscovered}</p>
+ <h3 className="font-semibold dark:text-white">Date Discovered / Collected</h3>
+ <p className="text-slate-600 dark:text-slate-400">{artifact.dateDiscovered}</p>
  </div>
  </div>
  )}
@@ -133,8 +133,8 @@ const ArtifactDetail = () => {
  <div className="flex items-start gap-2">
  <MapPin size={18} className="text-amber-600 mt-1 flex-shrink-0" />
  <div>
- <h3 className="font-semibold">Origin / Location</h3>
- <p className="text-slate-600">{getLocalizedText(artifact.originLocation, lang)}</p>
+ <h3 className="font-semibold dark:text-white">Origin / Location</h3>
+ <p className="text-slate-600 dark:text-slate-400">{getLocalizedText(artifact.originLocation, lang)}</p>
  </div>
  </div>
  )}
@@ -143,12 +143,12 @@ const ArtifactDetail = () => {
  {/* Image Gallery */}
  {allImages.length > 1 && (
  <div>
- <h2 className="text-xl font-bold mb-4">{t('exhibition.gallery') || 'Gallery'}</h2>
+ <h2 className="text-xl font-bold mb-4 dark:text-white">{t('exhibition.gallery') || 'Gallery'}</h2>
  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
  {allImages.map((img, i) => (
  <div
  key={i}
- className="aspect-square rounded-xl overflow-hidden cursor-pointer group bg-slate-100"
+ className="aspect-square rounded-xl overflow-hidden cursor-pointer group bg-slate-100 dark:bg-slate-800"
  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
  >
  <img src={imgUrl(img)} alt={`Image ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -163,16 +163,16 @@ const ArtifactDetail = () => {
  <div className="space-y-6">
  {/* Related Exhibitions */}
  {artifact.exhibitions?.length > 0 && (
- <div className="bg-white rounded-2xl border border-slate-200 p-5">
- <h3 className="font-semibold mb-4">{t('artifact.inExhibitions') || 'Found in Exhibitions'}</h3>
+ <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <h3 className="font-semibold mb-4 dark:text-white">{t('artifact.inExhibitions') || 'Found in Exhibitions'}</h3>
  <div className="space-y-3">
  {artifact.exhibitions.map(ex => (
  <Link
  key={ex._id}
  to={`/exhibitions/${ex._id}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition group"
+ className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+ <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
  {ex.coverImage ? (
  <img src={imgUrl(ex.coverImage)} alt="" className="w-full h-full object-cover" />
  ) : (
@@ -180,7 +180,7 @@ const ArtifactDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
  {getLocalizedText(ex.title, lang)}
  </p>
  </div>
@@ -193,16 +193,16 @@ const ArtifactDetail = () => {
 
  {/* Related Trails */}
  {artifact.trails?.length > 0 && (
- <div className="bg-white rounded-2xl border border-slate-200 p-5">
- <h3 className="font-semibold mb-4">{t('artifact.inTrails') || 'Featured in Trails'}</h3>
+ <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <h3 className="font-semibold mb-4 dark:text-white">{t('artifact.inTrails') || 'Featured in Trails'}</h3>
  <div className="space-y-3">
  {artifact.trails.map(trail => (
  <Link
  key={trail._id}
  to={`/trails/${trail._id}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition group"
+ className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+ <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
  {trail.coverImage ? (
  <img src={imgUrl(trail.coverImage)} alt="" className="w-full h-full object-cover" />
  ) : (
@@ -210,7 +210,7 @@ const ArtifactDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
  {getLocalizedText(trail.title, lang)}
  </p>
  </div>

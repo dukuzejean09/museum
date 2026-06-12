@@ -37,15 +37,15 @@ const FloorMap = () => {
  return (
  <div className="container mx-auto px-4 py-8">
  <div className="text-center mb-8">
- <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-4">
+ <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
  <MapPin size={32} className="text-amber-600" />
  </div>
- <h1 className="text-3xl font-bold">{t('map.title')}</h1>
- <p className="text-slate-600 mt-2">{t('map.subtitle')}</p>
+ <h1 className="text-3xl font-bold dark:text-white">{t('map.title')}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-2">{t('map.subtitle')}</p>
  </div>
 
  {exhibitions.length === 0 ? (
- <div className="text-center py-20 text-slate-500">
+ <div className="text-center py-20 text-slate-500 dark:text-slate-400">
  <MapPin size={48} className="mx-auto mb-4 opacity-50" />
  <p>{t('common.noData')}</p>
  </div>
@@ -59,9 +59,9 @@ const FloorMap = () => {
  <Link
  key={ex._id}
  to={`/exhibitions/${ex._id}`}
- className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:border-amber-400 transition group"
+ className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-amber-400 transition group"
  >
- <div className="h-40 overflow-hidden bg-slate-100">
+ <div className="h-40 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {coverSrc ? (
  <img src={coverSrc} alt={getLocalizedText(ex.title, lang)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
  ) : (
@@ -72,14 +72,14 @@ const FloorMap = () => {
  </div>
  <div className="p-5">
  <div className="flex items-center gap-2 mb-2">
- <span className="w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">
+ <span className="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 flex items-center justify-center text-xs font-bold">
  {i + 1}
  </span>
- <h3 className="font-semibold group-hover:text-amber-600 transition-colors">
+ <h3 className="font-semibold dark:text-white group-hover:text-amber-600 transition-colors">
  {getLocalizedText(ex.title, lang)}
  </h3>
  </div>
- <p className="text-sm text-slate-500 line-clamp-2">
+ <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
  {getLocalizedText(ex.shortDescription, lang)}
  </p>
  </div>
