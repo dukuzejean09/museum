@@ -12,6 +12,8 @@ const adminRouter = express.Router();
 const artifactUpload = upload.fields([
   { name: 'image', maxCount: 1 },
   { name: 'additionalImages', maxCount: 20 },
+  { name: 'audio', maxCount: 1 },
+  { name: 'video', maxCount: 1 },
 ]);
 
 // Public

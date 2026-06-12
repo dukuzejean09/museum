@@ -63,6 +63,13 @@ export const createExhibition = asyncHandler(async (req, res) => {
       const lang = req.body.narrationPreviewLang || 'en';
       data.narration.preview[lang] = result.url;
     }
+    if (req.files.videos) {
+      const uploads = await Promise.all(
+        req.files.videos.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/videos', resource_type: 'video' }))
+      );
+      data.media = data.media || {};
+      data.media.videos = uploads.map(u => u.url);
+    }
   }
 
   // Parse artifacts array if sent as JSON string
@@ -101,6 +108,16 @@ export const updateExhibition = asyncHandler(async (req, res) => {
       data.narration.preview = data.narration.preview || {};
       const lang = req.body.narrationPreviewLang || 'en';
       data.narration.preview[lang] = result.url;
+    }
+    if (req.files.videos) {
+      const uploads = await Promise.all(
+        req.files.videos.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/videos', resource_type: 'video' }))
+      );
+      data.media = data.media || exhibition.media?.toObject?.() || {};
+      data.media.videos = [
+        ...(exhibition.media?.videos || []),
+        ...uploads.map(u => u.url),
+      ];
     }
   }
 

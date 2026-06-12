@@ -63,6 +63,14 @@ export const createArtifact = asyncHandler(async (req, res) => {
       );
       data.additionalImages = uploads.map(u => u.url);
     }
+    if (req.files.audio?.[0]) {
+      const result = await uploadToCloudinary(req.files.audio[0].buffer, { folder: 'museum/audio', resource_type: 'video' });
+      data.audio = result.url;
+    }
+    if (req.files.video?.[0]) {
+      const result = await uploadToCloudinary(req.files.video[0].buffer, { folder: 'museum/video', resource_type: 'video' });
+      data.video = result.url;
+    }
   }
 
   const artifact = await Artifact.create(data);
@@ -89,6 +97,14 @@ export const updateArtifact = asyncHandler(async (req, res) => {
         ...(artifact.additionalImages || []),
         ...uploads.map(u => u.url),
       ];
+    }
+    if (req.files.audio?.[0]) {
+      const result = await uploadToCloudinary(req.files.audio[0].buffer, { folder: 'museum/audio', resource_type: 'video' });
+      data.audio = result.url;
+    }
+    if (req.files.video?.[0]) {
+      const result = await uploadToCloudinary(req.files.video[0].buffer, { folder: 'museum/video', resource_type: 'video' });
+      data.video = result.url;
     }
   }
 

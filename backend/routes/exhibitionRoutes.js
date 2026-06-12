@@ -15,6 +15,7 @@ const adminRouter = express.Router();
 const exhibitionUpload = upload.fields([
   { name: 'narrationFull', maxCount: 1 },
   { name: 'narrationPreview', maxCount: 1 },
+  { name: 'videos', maxCount: 5 },
 ]);
 
 // Public

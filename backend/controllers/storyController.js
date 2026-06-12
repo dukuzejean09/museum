@@ -1,5 +1,6 @@
 import Story from '../models/Story.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // @desc    Get stories — paginated, filterable
 // @route   GET /api/stories
@@ -46,6 +47,22 @@ export const createStory = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Exhibition is required. Every story must belong to an exhibition.' });
   }
   const data = { ...req.body, createdBy: req.admin._id };
+
+  if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/stories' });
+      data.coverImage = result.url;
+    }
+    if (req.files.audio?.[0]) {
+      const result = await uploadToCloudinary(req.files.audio[0].buffer, { folder: 'museum/audio', resource_type: 'video' });
+      data.audio = result.url;
+    }
+    if (req.files.video?.[0]) {
+      const result = await uploadToCloudinary(req.files.video[0].buffer, { folder: 'museum/video', resource_type: 'video' });
+      data.video = result.url;
+    }
+  }
+
   const story = await Story.create(data);
   res.status(201).json(story);
 });
@@ -57,6 +74,22 @@ export const updateStory = asyncHandler(async (req, res) => {
   if (!story) throw new NotFoundError('Story');
 
   const data = { ...req.body };
+
+  if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/stories' });
+      data.coverImage = result.url;
+    }
+    if (req.files.audio?.[0]) {
+      const result = await uploadToCloudinary(req.files.audio[0].buffer, { folder: 'museum/audio', resource_type: 'video' });
+      data.audio = result.url;
+    }
+    if (req.files.video?.[0]) {
+      const result = await uploadToCloudinary(req.files.video[0].buffer, { folder: 'museum/video', resource_type: 'video' });
+      data.video = result.url;
+    }
+  }
+
   Object.assign(story, data);
   await story.save();
   res.json(story);

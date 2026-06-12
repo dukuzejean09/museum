@@ -12,6 +12,9 @@ const storySchema = new mongoose.Schema({
     fr: { type: String, default: '' },
     rw: { type: String, default: '' },
   },
+  coverImage: String,
+  audio: String,
+  video: String,
   order: { type: Number, default: 0 },
   status: {
     type: String,
