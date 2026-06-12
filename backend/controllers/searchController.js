@@ -78,23 +78,23 @@ export const globalSearch = asyncHandler(async (req, res) => {
       Artifact.find({
         status: 'published',
         $or: [
-          { 'title.en': regex },
-          { 'title.fr': regex },
-          { 'title.rw': regex },
+          { 'name.en': regex },
+          { 'name.fr': regex },
+          { 'name.rw': regex },
           { 'description.en': regex },
-          { tags: regex },
+          { category: regex },
         ],
       })
-        .select('title description coverImage type tags')
+        .select('name description image category')
         .limit(limit)
         .lean()
         .then(items => items.map(item => ({
           type: 'artifact',
           _id: item._id,
-          title: item.title,
+          title: item.name,
           description: item.description,
-          image: item.coverImage,
-          artifactType: item.type,
+          image: item.image,
+          category: item.category,
           link: `/artifacts/${item._id}`,
         })))
     );

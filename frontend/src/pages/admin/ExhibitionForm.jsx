@@ -356,14 +356,14 @@ const ExhibitionForm = () => {
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {availableArtifacts
                     .filter((a) => {
-                      const title = typeof a.title === 'object' ? (a.title.en || a.title.fr || a.title.rw || '') : (a.title || '');
-                      return title.toLowerCase().includes(artifactSearch.toLowerCase());
+                      const n = typeof a.name === 'object' ? (a.name.en || a.name.fr || a.name.rw || '') : (a.name || '');
+                      return n.toLowerCase().includes(artifactSearch.toLowerCase());
                     })
                     .map((artifact) => {
                       const isSelected = form.artifacts.includes(artifact._id);
-                      const title = typeof artifact.title === 'object' ? (artifact.title.en || artifact.title.fr || artifact.title.rw || 'Untitled') : (artifact.title || 'Untitled');
+                      const title = typeof artifact.name === 'object' ? (artifact.name.en || artifact.name.fr || artifact.name.rw || 'Untitled') : (artifact.name || artifact.title?.en || 'Untitled');
                       const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-                      const thumb = artifact.coverImage ? `${base}${artifact.coverImage}` : null;
+                      const thumb = artifact.image ? `${base}${artifact.image}` : null;
                       return (
                         <div
                           key={artifact._id}
@@ -382,8 +382,8 @@ const ExhibitionForm = () => {
                           )}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-slate-800 dark:text-white truncate">{title}</p>
-                            {artifact.type && (
-                              <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{artifact.type}</p>
+                            {artifact.category && (
+                              <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{artifact.category}</p>
                             )}
                           </div>
                           <button
@@ -412,10 +412,10 @@ const ExhibitionForm = () => {
                   {form.artifacts.map((artId) => {
                     const artifact = availableArtifacts.find((a) => a._id === artId);
                     const title = artifact
-                      ? (typeof artifact.title === 'object' ? (artifact.title.en || artifact.title.fr || artifact.title.rw || 'Untitled') : (artifact.title || 'Untitled'))
+                      ? (typeof artifact.name === 'object' ? (artifact.name.en || artifact.name.fr || artifact.name.rw || 'Untitled') : (artifact.name || artifact.title?.en || 'Untitled'))
                       : artId;
                     const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-                    const thumb = artifact?.coverImage ? `${base}${artifact.coverImage}` : null;
+                    const thumb = artifact?.coverImage ? `${base}${artifact.image}` : null;
                     return (
                       <div
                         key={artId}
@@ -430,8 +430,8 @@ const ExhibitionForm = () => {
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-slate-800 dark:text-white truncate">{title}</p>
-                          {artifact?.type && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{artifact.type}</p>
+                          {artifact?.category && (
+                            <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{artifact.category}</p>
                           )}
                         </div>
                         <button

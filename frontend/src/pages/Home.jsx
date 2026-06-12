@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
-import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints } from 'lucide-react';
+import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints, Sparkles, Heart } from 'lucide-react';
 import HomeCt from '../assets/HomeCt.jpeg';
 import { useLanguage } from '../i18n/LanguageContext';
 import { fetchFeaturedTrails, fetchExhibitions, fetchGuides, fetchArtifacts } from '../api';
 import { ImigongoBorder, ImigongoDivider, AgasekeIcon } from '../components/RwandanPatterns';
+import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 
 const quickLinks = [
   { to: '/exhibitions', icon: BookOpen,      labelKey: 'nav.exhibitions', descKey: 'home.linkExhibitions', color: 'from-amber-500 to-orange-500' },
@@ -83,22 +84,46 @@ const Home = () => {
 
   return (
     <main>
-      {/* Hero Section */}
+      {/* ═══════════════════════════════════════════════════════════════
+          1. HERO SECTION
+          Kandt House Museum · History & Heritage · QR-AR intro · CTAs · Stats
+          ═══════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950" />
-        <div className="container relative mx-auto px-4 pt-10 pb-16 lg:pt-16 lg:pb-20">
+        <div className="container relative mx-auto px-4 pt-10 pb-12 lg:pt-16 lg:pb-14">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr] items-center">
-            <div className="space-y-6 text-center lg:text-left">
+            {/* Left — text */}
+            <div className="space-y-5 text-center lg:text-left">
               <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
                 {t('home.badge')}
               </span>
-              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl dark:text-white">
                 {t('home.title')}
               </h1>
-              <p className="mx-auto max-w-3xl text-lg leading-8 text-slate-700 dark:text-slate-300 lg:mx-0">
+              <p className="text-sm font-medium text-amber-700 dark:text-amber-300 uppercase tracking-widest">
+                History &amp; Heritage of Rwanda
+              </p>
+              <p className="mx-auto max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300 lg:mx-0">
                 {t('home.subtitle')}
               </p>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+
+              {/* QR-enabled AR intro — compact inline */}
+              <div className="flex items-center gap-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur rounded-2xl p-4 border border-slate-200 dark:border-slate-700 max-w-lg mx-auto lg:mx-0">
+                <div className="flex-shrink-0 rounded-xl bg-slate-50 dark:bg-slate-700 p-2.5">
+                  <QRCodeSVG value={window.location.origin + '/exhibitions'} size={72} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 mb-1">
+                    {t('home.webAr')}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+                    {t('home.webArDesc')}
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start pt-1">
                 <Link
                   to="/book"
                   className="inline-flex justify-center rounded-full bg-amber-600 px-6 py-3 text-white shadow hover:bg-amber-700 transition font-semibold"
@@ -114,56 +139,38 @@ const Home = () => {
               </div>
             </div>
 
+            {/* Right — hero image */}
             <div className="relative mx-auto w-full max-w-md">
               <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
-                <img src={HomeCt} alt="Kandt House AR experience" className="h-full w-full object-cover" />
+                <img src={HomeCt} alt="Kandt House Museum" className="h-full w-full object-cover" />
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Stats Bar */}
-      <section className="bg-amber-600 dark:bg-amber-700">
-        <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {stats.map((stat, i) => {
-              const Icon = stat.icon;
-              return (
-                <div key={i} className="flex flex-col items-center gap-1">
-                  <Icon size={22} className="text-amber-200" />
-                  <span className="text-2xl font-extrabold text-white">{stat.value}</span>
-                  <span className="text-xs font-medium text-amber-100 uppercase tracking-wider">{stat.label || t(stat.labelKey)}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* QR + Web AR Banner */}
-      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        <div className="container mx-auto px-4 py-10">
-          <div className="grid gap-8 md:grid-cols-[1fr_auto] items-center max-w-4xl mx-auto">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[.25em] text-amber-600 dark:text-amber-400 mb-2">
-                {t('home.webAr')}
-              </p>
-              <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                {t('home.webArDesc')}
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <div className="rounded-2xl bg-slate-50 dark:bg-slate-800 p-4 text-center">
-                <QRCodeSVG value={window.location.origin + '/exhibitions'} size={120} />
-                <p className="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('home.scanQr')}</p>
-              </div>
+        {/* Stats bar — integrated at bottom of hero */}
+        <div className="relative bg-amber-600 dark:bg-amber-700">
+          <div className="container mx-auto px-4 py-5">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              {stats.map((stat, i) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={i} className="flex flex-col items-center gap-1">
+                    <Icon size={20} className="text-amber-200" />
+                    <span className="text-2xl font-extrabold text-white">{stat.value}</span>
+                    <span className="text-xs font-medium text-amber-100 uppercase tracking-wider">{stat.label || t(stat.labelKey)}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Explore the Museum — Grid */}
+      {/* ═══════════════════════════════════════════════════════════════
+          2. EXPLORE THE MUSEUM
+          Quick-link grid: Exhibitions, Artifacts, Trails, Search, Guides, Feedback
+          ═══════════════════════════════════════════════════════════════ */}
       <section className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
@@ -200,7 +207,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Trails */}
+      {/* ═══════════════════════════════════════════════════════════════
+          3. GUIDED JOURNEYS / TRAILS
+          Featured trail cards with slideshow, difficulty, stops, duration
+          ═══════════════════════════════════════════════════════════════ */}
       {trails.length > 0 && (
         <section className="bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-slate-900 dark:via-slate-800/30 dark:to-slate-900 border-b border-slate-200 dark:border-slate-800 py-16">
           <div className="container mx-auto px-4">
@@ -212,7 +222,7 @@ const Home = () => {
                 Explore Our Trails
               </h2>
               <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-lg mx-auto">
-                Follow curated paths through the museum's collections — each trail guides you through a themed journey of discovery.
+                Follow curated paths through the museum&apos;s collections — each trail guides you through a themed journey of discovery.
               </p>
             </div>
 
@@ -231,7 +241,13 @@ const Home = () => {
                     className="group rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-500"
                   >
                     <div className="relative h-44 overflow-hidden">
-                      {cover ? (
+                      {trail.stops?.some(s => s.artifact?.image || s.artifact?.coverImage) ? (
+                        <ArtifactSlideshowCard
+                          artifacts={trail.stops.map(s => s.artifact).filter(Boolean)}
+                          className="w-full h-full group-hover:scale-110 transition-transform duration-700"
+                          interval={3500 + Math.random() * 1500}
+                        />
+                      ) : cover ? (
                         <img src={cover} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       ) : (
                         <div className={`w-full h-full bg-gradient-to-br ${accent} flex items-center justify-center`}>
@@ -283,46 +299,10 @@ const Home = () => {
         </section>
       )}
 
-      {/* About the Museum */}
-      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
-              {t('home.aboutTitle')}
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-center mb-10">
-              {t('home.aboutText')}
-            </p>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                  {t('home.historyTitle')}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {t('home.historyText')}
-                </p>
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
-                  <MapPin size={18} className="text-amber-600" />
-                  {t('home.visitTitle')}
-                </h3>
-                <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                  <p>{t('home.visitAddress')}</p>
-                  <p className="flex items-start gap-2">
-                    <Clock size={15} className="text-slate-400 mt-0.5 flex-shrink-0" />
-                    {t('home.visitHours')}
-                  </p>
-                  <p>{t('home.visitAdmission')}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Museum History & Heritage */}
+      {/* ═══════════════════════════════════════════════════════════════
+          4. MUSEUM COLLECTIONS & HISTORICAL CONTENT
+          Six collection categories + Notable Artifacts banner
+          ═══════════════════════════════════════════════════════════════ */}
       <section className="bg-gradient-to-b from-amber-50 to-white dark:from-slate-900 dark:to-slate-950 border-b border-slate-200 dark:border-slate-800">
         <ImigongoBorder />
         <div className="container mx-auto px-4 py-14">
@@ -334,7 +314,7 @@ const Home = () => {
               History &amp; Heritage of Rwanda
             </h2>
             <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-2xl mx-auto text-sm leading-relaxed">
-              Originally the residence of Dr. Richard Kandt, the first German colonial governor, the museum now preserves Rwanda's cultural, political, colonial, and natural history across six major collections.
+              Explore six major collections spanning Rwanda&apos;s cultural, political, colonial, and natural history — all preserved within the walls of the former residence of Dr. Richard Kandt.
             </p>
             <ImigongoDivider className="mt-6 text-amber-500 max-w-xs mx-auto" />
           </div>
@@ -358,7 +338,7 @@ const Home = () => {
               },
               {
                 icon: Landmark,
-                title: 'German Colonial Era (1897–1916)',
+                title: 'German Colonial Era (1897\u20131916)',
                 desc: 'Dr. Richard Kandt\'s biography, German exploration of Rwanda, establishment of colonial administration, and relations with the Rwandan monarchy — told through maps, photos, and documents.',
                 gradient: 'from-sky-500 to-blue-600',
                 highlights: ['Dr. Richard Kandt', 'Colonial maps & photos', 'Rwandan monarchy relations'],
@@ -437,6 +417,75 @@ const Home = () => {
           </div>
         </div>
         <ImigongoBorder />
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          5. ABOUT THE MUSEUM
+          Overview · History of Kandt House · Living Heritage · Visit info
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="bg-white dark:bg-slate-900">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-5xl mx-auto">
+            {/* Section header */}
+            <div className="text-center mb-12">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-widest mb-3">
+                About
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100">
+                {t('home.aboutTitle')}
+              </h2>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed mt-3 max-w-2xl mx-auto">
+                {t('home.aboutText')}
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {/* History of the Kandt House */}
+              <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 mb-4">
+                  <Landmark size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                  {t('home.historyTitle')}
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {t('home.historyText')}
+                </p>
+              </div>
+
+              {/* Living Heritage */}
+              <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 mb-4">
+                  <Heart size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                  Living Heritage
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Beyond its physical collections, the museum serves as a space for cultural exchange, educational programs, and community engagement — keeping Rwanda&apos;s traditions alive for future generations.
+                </p>
+              </div>
+
+              {/* Visit Information */}
+              <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 md:col-span-2 lg:col-span-1">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 mb-4">
+                  <MapPin size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                  {t('home.visitTitle')}
+                </h3>
+                <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                  <p>{t('home.visitAddress')}</p>
+                  <p className="flex items-start gap-2">
+                    <Clock size={15} className="text-slate-400 mt-0.5 flex-shrink-0" />
+                    <span>{t('home.visitHours')}</span>
+                  </p>
+                  <p>{t('home.visitAdmission')}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   );

@@ -23,7 +23,7 @@ export const getTrails = asyncHandler(async (req, res) => {
       result.data.flatMap(t => (t.stops || []).map(s => s.artifactId?.toString()).filter(Boolean))
     )];
     const artifacts = await Artifact.find({ _id: { $in: allArtifactIds } })
-      .select('title coverImage images type')
+      .select('name image additionalImages')
       .lean();
     const artMap = Object.fromEntries(artifacts.map(a => [a._id.toString(), a]));
 
@@ -51,21 +51,23 @@ export const getFeaturedTrails = asyncHandler(async (req, res) => {
     .limit(limit)
     .lean();
 
-  // Populate first stop artifact for preview
+  // Populate all stop artifacts for slideshow preview
   const Artifact = (await import('../models/Artifact.js')).default;
-  const firstArtifactIds = trails
-    .map(t => t.stops?.[0]?.artifactId?.toString())
-    .filter(Boolean);
-  const artifacts = await Artifact.find({ _id: { $in: firstArtifactIds } })
-    .select('title coverImage')
+  const allArtifactIds = [...new Set(
+    trails.flatMap(t => (t.stops || []).map(s => s.artifactId?.toString()).filter(Boolean))
+  )];
+  const artifacts = await Artifact.find({ _id: { $in: allArtifactIds } })
+    .select('name image')
     .lean();
   const artMap = Object.fromEntries(artifacts.map(a => [a._id.toString(), a]));
 
   trails.forEach(t => {
     t.stopCount = t.stops?.length || 0;
-    if (t.stops?.[0]?.artifactId) {
-      t.firstArtifact = artMap[t.stops[0].artifactId.toString()] || null;
-    }
+    (t.stops || []).forEach(s => {
+      if (s.artifactId) {
+        s.artifact = artMap[s.artifactId.toString()] || null;
+      }
+    });
   });
 
   res.json(trails);

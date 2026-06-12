@@ -10,8 +10,8 @@ const publicRouter = express.Router();
 const adminRouter = express.Router();
 
 const artifactUpload = upload.fields([
-  { name: 'coverImage', maxCount: 1 },
-  { name: 'images', maxCount: 20 },
+  { name: 'image', maxCount: 1 },
+  { name: 'additionalImages', maxCount: 20 },
 ]);
 
 // Public

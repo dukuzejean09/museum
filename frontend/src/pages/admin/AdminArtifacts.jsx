@@ -7,34 +7,28 @@ import StatusBadge from '../../components/ui/StatusBadge';
 import Pagination from '../../components/ui/Pagination';
 import toast from 'react-hot-toast';
 
-const ARTIFACT_TYPES = [
-  { value: '', label: 'All Types' },
-  { value: 'object', label: 'Object' },
-  { value: 'image', label: 'Image' },
-  { value: 'document', label: 'Document' },
-  { value: 'location', label: 'Location' },
-  { value: 'specimen', label: 'Specimen' },
-];
+const imgUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  const base = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+  return `${base}${path}`;
+};
 
 const AdminArtifacts = () => {
   const { isAdmin } = useAuth();
   const [artifacts, setArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-
-  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
   const loadArtifacts = useCallback(async () => {
     try {
       setLoading(true);
       const params = { page, limit: 10 };
       if (search) params.search = search;
-      if (typeFilter) params.type = typeFilter;
       if (statusFilter) params.status = statusFilter;
 
       const { data } = await adminFetchArtifacts(params);
@@ -52,14 +46,14 @@ const AdminArtifacts = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, search, typeFilter, statusFilter]);
+  }, [page, search, statusFilter]);
 
   useEffect(() => {
     loadArtifacts();
   }, [loadArtifacts]);
 
-  const handleDelete = async (id, title) => {
-    if (!window.confirm(`Delete "${title}"? This action cannot be undone.`)) return;
+  const handleDelete = async (id, name) => {
+    if (!window.confirm(`Delete "${name}"? This action cannot be undone.`)) return;
     try {
       await adminDeleteArtifact(id);
       toast.success('Artifact deleted');
@@ -103,19 +97,10 @@ const AdminArtifacts = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by title..."
+            placeholder="Search by name..."
             className="pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none text-sm w-64"
           />
         </form>
-        <select
-          value={typeFilter}
-          onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }}
-          className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none text-sm"
-        >
-          {ARTIFACT_TYPES.map((t) => (
-            <option key={t.value} value={t.value}>{t.label}</option>
-          ))}
-        </select>
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
@@ -132,11 +117,10 @@ const AdminArtifacts = () => {
         <table className="w-full">
           <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
             <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Cover</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Title</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Type</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Image</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Name</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Category</th>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Status</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Year</th>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Views</th>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
             </tr>
@@ -145,10 +129,10 @@ const AdminArtifacts = () => {
             {artifacts.map((artifact) => (
               <tr key={artifact._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
                 <td className="px-6 py-4">
-                  {artifact.coverImage ? (
+                  {artifact.image ? (
                     <img
-                      src={`${baseUrl}${artifact.coverImage}`}
-                      alt={artifact.title?.en || 'Cover'}
+                      src={imgUrl(artifact.image)}
+                      alt={artifact.name?.en || 'Image'}
                       className="w-12 h-12 rounded-lg object-cover"
                     />
                   ) : (
@@ -158,16 +142,13 @@ const AdminArtifacts = () => {
                   )}
                 </td>
                 <td className="px-6 py-4 font-medium text-slate-800 dark:text-white">
-                  {artifact.title?.en || artifact.title || '-'}
+                  {artifact.name?.en || '-'}
                 </td>
-                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 capitalize">
-                  {artifact.type || '-'}
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                  {artifact.category || '-'}
                 </td>
                 <td className="px-6 py-4">
                   <StatusBadge status={artifact.status || 'draft'} />
-                </td>
-                <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
-                  {artifact.year || '-'}
                 </td>
                 <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                   {artifact.stats?.views ?? 0}
@@ -183,7 +164,7 @@ const AdminArtifacts = () => {
                     </Link>
                     {isAdmin && (
                       <button
-                        onClick={() => handleDelete(artifact._id, artifact.title?.en || artifact.title)}
+                        onClick={() => handleDelete(artifact._id, artifact.name?.en)}
                         className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
                         title="Delete"
                       >
@@ -196,7 +177,7 @@ const AdminArtifacts = () => {
             ))}
             {artifacts.length === 0 && (
               <tr>
-                <td colSpan="7" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
+                <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                   No artifacts found.
                 </td>
               </tr>

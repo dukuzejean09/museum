@@ -80,7 +80,7 @@ const AdminStories = () => {
           <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
             <tr>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Title</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Linked To</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Exhibition</th>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Status</th>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Created</th>
               <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
@@ -88,7 +88,7 @@ const AdminStories = () => {
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {filtered.map((story) => {
-              const linkedTo = story.exhibition?.title?.en || story.exhibit?.name || '-';
+              const linkedTo = story.exhibitionId?.title?.en || '-';
               return (
                 <tr key={story._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
                   <td className="px-6 py-4">

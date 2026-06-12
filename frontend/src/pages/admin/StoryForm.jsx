@@ -6,7 +6,7 @@ import {
   adminUpdateStory,
   adminFetchExhibitions,
 } from '../../api';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const LANGUAGES = ['en', 'fr', 'rw'];
@@ -26,13 +26,10 @@ const StoryForm = () => {
   const [fetching, setFetching] = useState(isEditing);
 
   const [exhibitions, setExhibitions] = useState([]);
-  const [coverPreview, setCoverPreview] = useState(null);
 
   const [form, setForm] = useState({
     title: { en: '', fr: '', rw: '' },
     content: { en: '', fr: '', rw: '' },
-    coverImage: null,
-    narrationAudio: null,
     exhibition: '',
     status: 'draft',
   });
@@ -59,15 +56,9 @@ const StoryForm = () => {
         setForm({
           title: { en: s.title?.en || '', fr: s.title?.fr || '', rw: s.title?.rw || '' },
           content: { en: s.content?.en || '', fr: s.content?.fr || '', rw: s.content?.rw || '' },
-          coverImage: null,
-          narrationAudio: null,
-          exhibition: s.exhibition?._id || s.exhibition || '',
+          exhibition: s.exhibitionId?._id || s.exhibitionId || '',
           status: s.status || 'draft',
         });
-        if (s.coverImage) {
-          const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-          setCoverPreview(`${base}${s.coverImage}`);
-        }
       } catch (err) {
         toast.error('Failed to load story');
         navigate('/admin/stories');
@@ -89,38 +80,31 @@ const StoryForm = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      handleChange('coverImage', file);
-      setCoverPreview(URL.createObjectURL(file));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.en.trim()) {
       toast.error('Title (English) is required');
       return;
     }
+    if (!form.exhibition) {
+      toast.error('Exhibition is required. Every story must belong to an exhibition.');
+      return;
+    }
     setLoading(true);
 
     try {
-      const fd = new FormData();
-      LANGUAGES.forEach((lang) => {
-        fd.append(`title[${lang}]`, form.title[lang]);
-        fd.append(`content[${lang}]`, form.content[lang]);
-      });
-      if (form.coverImage) fd.append('coverImage', form.coverImage);
-      if (form.narrationAudio) fd.append('narrationAudio', form.narrationAudio);
-      if (form.exhibition) fd.append('exhibitionId', form.exhibition);
-      fd.append('status', form.status);
+      const payload = {
+        title: form.title,
+        content: form.content,
+        exhibitionId: form.exhibition,
+        status: form.status,
+      };
 
       if (isEditing) {
-        await adminUpdateStory(id, fd);
+        await adminUpdateStory(id, payload);
         toast.success('Story updated');
       } else {
-        await adminCreateStory(fd);
+        await adminCreateStory(payload);
         toast.success('Story created');
       }
       navigate('/admin/stories');
@@ -204,56 +188,19 @@ const StoryForm = () => {
           ))}
         </div>
 
-        {/* Media */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Media</h2>
-
-          {/* Cover Image */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Cover Image</label>
-            <div className="flex items-center gap-4">
-              {coverPreview && (
-                <img src={coverPreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
-              )}
-              <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
-                <Upload size={18} />
-                <span>{coverPreview ? 'Change Image' : 'Upload Image'}</span>
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-              </label>
-            </div>
-          </div>
-
-          {/* Narration Audio */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Narration Audio</label>
-            <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
-              <Upload size={18} />
-              <span>Upload Audio</span>
-              <input
-                type="file"
-                accept="audio/*"
-                onChange={(e) => handleChange('narrationAudio', e.target.files[0] || null)}
-                className="hidden"
-              />
-            </label>
-            {form.narrationAudio && (
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{form.narrationAudio.name}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Linking & Status */}
+        {/* Exhibition & Status */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Settings</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Exhibition</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Exhibition <span className="text-red-500">*</span></label>
               <select
                 value={form.exhibition}
                 onChange={(e) => handleChange('exhibition', e.target.value)}
                 className={inputClass}
+                required
               >
-                <option value="">-- None --</option>
+                <option value="">-- Select Exhibition --</option>
                 {exhibitions.map((ex) => (
                   <option key={ex._id} value={ex._id}>
                     {ex.title?.en || ex.title || ex.name}

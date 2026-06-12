@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchArtifactById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
-import { ArrowLeft, Tag, Sparkles, X, ChevronLeft, ChevronRight, ExternalLink, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Sparkles, X, ChevronLeft, ChevronRight, ExternalLink, MapPin, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -57,14 +57,17 @@ const ArtifactDetail = () => {
     );
   }
 
-  const allImages = artifact.images?.length > 0 ? artifact.images : (artifact.coverImage ? [artifact.coverImage] : []);
+  const allImages = [
+    ...(artifact.image ? [artifact.image] : []),
+    ...(artifact.additionalImages || []),
+  ];
 
   return (
     <div>
       {/* Hero */}
       <div className="relative h-72 sm:h-96 overflow-hidden bg-slate-800">
         {allImages[0] ? (
-          <img src={imgUrl(allImages[0])} alt={getLocalizedText(artifact.title, lang)} className="w-full h-full object-cover" />
+          <img src={imgUrl(allImages[0])} alt={getLocalizedText(artifact.name, lang)} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-slate-500">
             <Sparkles size={60} />
@@ -77,13 +80,15 @@ const ArtifactDetail = () => {
               <ArrowLeft size={16} /> {t('common.back')}
             </Link>
             <div className="flex items-center gap-3 mb-2">
-              <span className="bg-amber-600 text-white px-2.5 py-0.5 rounded text-xs font-semibold uppercase">{artifact.type}</span>
-              {artifact.year && (
-                <span className="flex items-center gap-1 text-white/70 text-sm"><Calendar size={14} /> {artifact.year}</span>
+              {artifact.category && (
+                <span className="bg-amber-600 text-white px-2.5 py-0.5 rounded text-xs font-semibold uppercase">{artifact.category}</span>
+              )}
+              {artifact.dateCreated && (
+                <span className="flex items-center gap-1 text-white/70 text-sm"><Calendar size={14} /> {artifact.dateCreated}</span>
               )}
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
-              {getLocalizedText(artifact.title, lang)}
+              {getLocalizedText(artifact.name, lang)}
             </h1>
           </div>
         </div>
@@ -103,37 +108,38 @@ const ArtifactDetail = () => {
               </div>
             )}
 
-            {/* Historical Details */}
-            {getLocalizedText(artifact.historicalDetails, lang) && (
+            {/* Historical Story */}
+            {getLocalizedText(artifact.historicalStory, lang) && (
               <div>
-                <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext') || 'Historical Details'}</h2>
+                <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext') || 'Historical Story'}</h2>
                 <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                  {getLocalizedText(artifact.historicalDetails, lang)}
+                  {getLocalizedText(artifact.historicalStory, lang)}
                 </p>
               </div>
             )}
 
-            {/* Origin */}
-            {getLocalizedText(artifact.origin, lang) && (
-              <div className="flex items-start gap-2">
-                <MapPin size={18} className="text-amber-600 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold dark:text-white">Origin</h3>
-                  <p className="text-slate-600 dark:text-slate-400">{getLocalizedText(artifact.origin, lang)}</p>
+            {/* Details */}
+            <div className="space-y-3">
+              {artifact.dateDiscovered && (
+                <div className="flex items-start gap-2">
+                  <Calendar size={18} className="text-amber-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold dark:text-white">Date Discovered / Collected</h3>
+                    <p className="text-slate-600 dark:text-slate-400">{artifact.dateDiscovered}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Tags */}
-            {artifact.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {artifact.tags.map((tag, i) => (
-                  <span key={i} className="inline-flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-sm">
-                    <Tag size={12} /> {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+              {getLocalizedText(artifact.originLocation, lang) && (
+                <div className="flex items-start gap-2">
+                  <MapPin size={18} className="text-amber-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold dark:text-white">Origin / Location</h3>
+                    <p className="text-slate-600 dark:text-slate-400">{getLocalizedText(artifact.originLocation, lang)}</p>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Image Gallery */}
             {allImages.length > 1 && (

@@ -11,14 +11,6 @@ import toast from 'react-hot-toast';
 const LANGUAGES = ['en', 'fr', 'rw'];
 const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 
-const ARTIFACT_TYPES = [
-  { value: 'object', label: 'Object' },
-  { value: 'image', label: 'Image' },
-  { value: 'document', label: 'Document' },
-  { value: 'location', label: 'Location' },
-  { value: 'specimen', label: 'Specimen' },
-];
-
 const inputClass =
   'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
 
@@ -30,25 +22,23 @@ const ArtifactForm = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEditing);
 
-  // Language tab states for each multilingual group
-  const [titleLang, setTitleLang] = useState('en');
+  const [nameLang, setNameLang] = useState('en');
   const [descLang, setDescLang] = useState('en');
-  const [detailsLang, setDetailsLang] = useState('en');
+  const [storyLang, setStoryLang] = useState('en');
   const [originLang, setOriginLang] = useState('en');
 
-  // Cover preview
-  const [coverPreview, setCoverPreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [form, setForm] = useState({
-    title: { en: '', fr: '', rw: '' },
+    name: { en: '', fr: '', rw: '' },
     description: { en: '', fr: '', rw: '' },
-    historicalDetails: { en: '', fr: '', rw: '' },
-    origin: { en: '', fr: '', rw: '' },
-    type: 'object',
-    year: '',
-    tags: '',
-    coverImage: null,
-    images: null,
+    historicalStory: { en: '', fr: '', rw: '' },
+    originLocation: { en: '', fr: '', rw: '' },
+    dateCreated: '',
+    dateDiscovered: '',
+    category: '',
+    image: null,
+    additionalImages: null,
     status: 'draft',
   });
 
@@ -59,20 +49,19 @@ const ArtifactForm = () => {
         const { data } = await adminFetchArtifact(id);
         const a = data.artifact || data;
         setForm({
-          title: { en: a.title?.en || '', fr: a.title?.fr || '', rw: a.title?.rw || '' },
+          name: { en: a.name?.en || '', fr: a.name?.fr || '', rw: a.name?.rw || '' },
           description: { en: a.description?.en || '', fr: a.description?.fr || '', rw: a.description?.rw || '' },
-          historicalDetails: { en: a.historicalDetails?.en || '', fr: a.historicalDetails?.fr || '', rw: a.historicalDetails?.rw || '' },
-          origin: { en: a.origin?.en || '', fr: a.origin?.fr || '', rw: a.origin?.rw || '' },
-          type: a.type || 'object',
-          year: a.year || '',
-          tags: Array.isArray(a.tags) ? a.tags.join(', ') : a.tags || '',
-          coverImage: null,
-          images: null,
+          historicalStory: { en: a.historicalStory?.en || '', fr: a.historicalStory?.fr || '', rw: a.historicalStory?.rw || '' },
+          originLocation: { en: a.originLocation?.en || '', fr: a.originLocation?.fr || '', rw: a.originLocation?.rw || '' },
+          dateCreated: a.dateCreated || '',
+          dateDiscovered: a.dateDiscovered || '',
+          category: a.category || '',
+          image: null,
+          additionalImages: null,
           status: a.status || 'draft',
         });
-        if (a.coverImage) {
-          const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-          setCoverPreview(`${base}${a.coverImage}`);
+        if (a.image) {
+          setImagePreview(a.image.startsWith('http') ? a.image : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${a.image}`);
         }
       } catch (err) {
         toast.error('Failed to load artifact');
@@ -97,8 +86,8 @@ const ArtifactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title.en.trim()) {
-      toast.error('Title (English) is required');
+    if (!form.name.en.trim()) {
+      toast.error('Name (English) is required');
       return;
     }
     setLoading(true);
@@ -106,30 +95,21 @@ const ArtifactForm = () => {
     try {
       const fd = new FormData();
 
-      // Multilingual fields
-      ['title', 'description', 'historicalDetails', 'origin'].forEach((field) => {
+      ['name', 'description', 'historicalStory', 'originLocation'].forEach((field) => {
         LANGUAGES.forEach((lang) => {
           fd.append(`${field}[${lang}]`, form[field][lang]);
         });
       });
 
-      // Simple fields
-      fd.append('type', form.type);
-      fd.append('year', form.year);
+      fd.append('dateCreated', form.dateCreated);
+      fd.append('dateDiscovered', form.dateDiscovered);
+      fd.append('category', form.category);
       fd.append('status', form.status);
 
-      // Files
-      if (form.coverImage) fd.append('coverImage', form.coverImage);
-      if (form.images) {
-        Array.from(form.images).forEach((f) => fd.append('images', f));
+      if (form.image) fd.append('image', form.image);
+      if (form.additionalImages) {
+        Array.from(form.additionalImages).forEach((f) => fd.append('additionalImages', f));
       }
-
-      // Tags
-      const tagsArray = form.tags
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean);
-      tagsArray.forEach((tag) => fd.append('tags[]', tag));
 
       if (isEditing) {
         await adminUpdateArtifact(id, fd);
@@ -214,96 +194,103 @@ const ArtifactForm = () => {
       </h1>
 
       <form onSubmit={handleSubmit}>
-        {/* Basic Info */}
+        {/* Name & Description */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Title</label>
-            {renderMultiLangInput('title', titleLang, setTitleLang, 'input', 'Artifact title')}
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Artifact Name <span className="text-red-500">*</span>
+            </label>
+            {renderMultiLangInput('name', nameLang, setNameLang, 'input', 'Artifact name')}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
-            {renderMultiLangInput('description', descLang, setDescLang, 'textarea', 'Description')}
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Short Description <span className="text-red-500">*</span>
+            </label>
+            {renderMultiLangInput('description', descLang, setDescLang, 'textarea', 'Short description')}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Historical Details</label>
-            {renderMultiLangInput('historicalDetails', detailsLang, setDetailsLang, 'textarea', 'Historical details')}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Origin</label>
-            {renderMultiLangInput('origin', originLang, setOriginLang, 'input', 'Origin')}
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Historical Story <span className="text-red-500">*</span>
+            </label>
+            {renderMultiLangInput('historicalStory', storyLang, setStoryLang, 'textarea', 'Historical story')}
           </div>
         </div>
 
-        {/* Type, Year, Tags, Status */}
+        {/* Optional Fields */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6 mt-6">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Optional Details</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Type</label>
-              <select
-                value={form.type}
-                onChange={(e) => handleChange('type', e.target.value)}
-                className={inputClass}
-              >
-                {ARTIFACT_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Year</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date Created</label>
               <input
                 type="text"
-                value={form.year}
-                onChange={(e) => handleChange('year', e.target.value)}
+                value={form.dateCreated}
+                onChange={(e) => handleChange('dateCreated', e.target.value)}
                 className={inputClass}
-                placeholder="e.g. 1920"
+                placeholder="e.g. 1920, 18th century"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
-              <select
-                value={form.status}
-                onChange={(e) => handleChange('status', e.target.value)}
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date Discovered / Collected</label>
+              <input
+                type="text"
+                value={form.dateDiscovered}
+                onChange={(e) => handleChange('dateDiscovered', e.target.value)}
                 className={inputClass}
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
+                placeholder="e.g. 1994, Unknown"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
+              <input
+                type="text"
+                value={form.category}
+                onChange={(e) => handleChange('category', e.target.value)}
+                className={inputClass}
+                placeholder="e.g. Pottery, Weapon, Document"
+              />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tags (comma-separated)</label>
-            <input
-              type="text"
-              value={form.tags}
-              onChange={(e) => handleChange('tags', e.target.value)}
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Origin / Location</label>
+            {renderMultiLangInput('originLocation', originLang, setOriginLang, 'input', 'Origin or location')}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select
+              value={form.status}
+              onChange={(e) => handleChange('status', e.target.value)}
               className={inputClass}
-              placeholder="art, history, culture"
-            />
+            >
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
           </div>
         </div>
 
-        {/* Media */}
+        {/* Images */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6 mt-6">
-          {/* Cover Image */}
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Images</h2>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Cover Image</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Artifact Image <span className="text-red-500">*</span>
+            </label>
             <div className="flex items-center gap-4">
-              {coverPreview && (
-                <img src={coverPreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
+              {imagePreview && (
+                <img src={imagePreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
               )}
               <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
                 <Upload size={18} />
-                <span>{coverPreview ? 'Change' : 'Upload'}</span>
+                <span>{imagePreview ? 'Change' : 'Upload'}</span>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (file) {
-                      handleChange('coverImage', file);
-                      setCoverPreview(URL.createObjectURL(file));
+                      handleChange('image', file);
+                      setImagePreview(URL.createObjectURL(file));
                     }
                   }}
                   className="hidden"
@@ -312,7 +299,6 @@ const ArtifactForm = () => {
             </div>
           </div>
 
-          {/* Additional Images */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Additional Images</label>
             <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
@@ -322,13 +308,13 @@ const ArtifactForm = () => {
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => handleChange('images', e.target.files)}
+                onChange={(e) => handleChange('additionalImages', e.target.files)}
                 className="hidden"
               />
             </label>
-            {form.images && (
+            {form.additionalImages && (
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                {form.images.length} file(s) selected
+                {form.additionalImages.length} file(s) selected
               </p>
             )}
           </div>

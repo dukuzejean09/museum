@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { fetchTrailById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ArrowLeft, MapPin, Clock, ChevronRight, ChevronLeft, Check, Sparkles, ExternalLink } from 'lucide-react';
+import ArtifactSlideshow from '../components/ArtifactSlideshow';
 import toast from 'react-hot-toast';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -73,35 +74,59 @@ const TrailDetail = () => {
 
   return (
     <div>
-      {/* Header */}
-      <div className="relative h-64 sm:h-80 overflow-hidden bg-slate-800">
-        {(isIntro ? trail.coverImage : artifact?.coverImage || trail.coverImage) ? (
-          <img
-            src={imgUrl(isIntro ? trail.coverImage : artifact?.coverImage || trail.coverImage)}
-            alt={getLocalizedText(trail.title, lang)}
-            className="w-full h-full object-cover transition-all duration-500"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-500">
-            <Sparkles size={60} />
+      {/* Header — artifact slideshow on intro, single artifact image on stop */}
+      {isIntro ? (
+        <ArtifactSlideshow
+          artifacts={stops.map(s => s.artifact).filter(Boolean)}
+          className="h-64 sm:h-80 bg-slate-800"
+          interval={4000}
+          overlay="bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+        >
+          <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+            <div className="container mx-auto">
+              <Link to="/trails" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-2 transition">
+                <ArrowLeft size={16} /> {t('common.back') || 'Back'}
+              </Link>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+                {getLocalizedText(trail.title, lang)}
+              </h1>
+              <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
+                <span className="flex items-center gap-1"><MapPin size={14} /> {totalStops} stops</span>
+                <span className="flex items-center gap-1"><Clock size={14} /> {trail.estimatedMinutes || 30} min</span>
+              </div>
+            </div>
           </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="container mx-auto">
-            <Link to="/trails" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-2 transition">
-              <ArrowLeft size={16} /> {t('common.back') || 'Back'}
-            </Link>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-              {getLocalizedText(trail.title, lang)}
-            </h1>
-            <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
-              <span className="flex items-center gap-1"><MapPin size={14} /> {totalStops} stops</span>
-              <span className="flex items-center gap-1"><Clock size={14} /> {trail.estimatedMinutes || 30} min</span>
+        </ArtifactSlideshow>
+      ) : (
+        <div className="relative h-64 sm:h-80 overflow-hidden bg-slate-800">
+          {artifact?.image ? (
+            <img
+              src={imgUrl(artifact.image)}
+              alt={getLocalizedText(artifact.name, lang)}
+              className="w-full h-full object-cover transition-all duration-500"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-slate-500">
+              <Sparkles size={60} />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <div className="container mx-auto">
+              <Link to="/trails" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-2 transition">
+                <ArrowLeft size={16} /> {t('common.back') || 'Back'}
+              </Link>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+                {getLocalizedText(trail.title, lang)}
+              </h1>
+              <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
+                <span className="flex items-center gap-1"><MapPin size={14} /> {totalStops} stops</span>
+                <span className="flex items-center gap-1"><Clock size={14} /> {trail.estimatedMinutes || 30} min</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Progress Bar */}
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30">
@@ -196,17 +221,19 @@ const TrailDetail = () => {
             {/* Artifact Card */}
             {artifact && (
               <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                {artifact.coverImage && (
+                {artifact.image && (
                   <img
-                    src={imgUrl(artifact.coverImage)}
-                    alt={getLocalizedText(artifact.title, lang)}
+                    src={imgUrl(artifact.image)}
+                    alt={getLocalizedText(artifact.name, lang)}
                     className="w-full h-64 object-cover"
                   />
                 )}
                 <div className="p-6">
-                  <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.type}</span>
+                  {artifact.category && (
+                    <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
+                  )}
                   <h2 className="text-xl font-bold dark:text-white mt-1">
-                    {getLocalizedText(artifact.title, lang)}
+                    {getLocalizedText(artifact.name, lang)}
                   </h2>
                   <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed">
                     {getLocalizedText(artifact.description, lang)}

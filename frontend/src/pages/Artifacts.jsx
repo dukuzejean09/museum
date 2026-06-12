@@ -18,21 +18,12 @@ const getLocalizedText = (field, lang) => {
   return field[lang] || field.en || field.fr || field.rw || '';
 };
 
-const typeLabels = {
-  object: 'Object',
-  image: 'Image',
-  document: 'Document',
-  location: 'Location',
-  specimen: 'Specimen',
-};
-
 const Artifacts = () => {
   const { t, lang } = useLanguage();
   const [artifacts, setArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 12;
@@ -42,14 +33,13 @@ const Artifacts = () => {
     return () => clearTimeout(timer);
   }, [search]);
 
-  useEffect(() => { setPage(1); }, [debouncedSearch, typeFilter]);
+  useEffect(() => { setPage(1); }, [debouncedSearch]);
 
   const loadArtifacts = useCallback(async () => {
     setLoading(true);
     try {
       const params = { page, limit, status: 'published' };
       if (debouncedSearch) params.q = debouncedSearch;
-      if (typeFilter) params.type = typeFilter;
       const { data } = await fetchArtifacts(params);
       if (Array.isArray(data)) {
         setArtifacts(data);
@@ -64,7 +54,7 @@ const Artifacts = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, typeFilter]);
+  }, [page, debouncedSearch]);
 
   useEffect(() => { loadArtifacts(); }, [loadArtifacts]);
 
@@ -72,12 +62,12 @@ const Artifacts = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold dark:text-white">{t('artifact.title') || 'Artifacts'}</h1>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">{t('artifact.subtitle') || 'Individual historical objects, specimens, and documents'}</p>
+        <p className="text-slate-600 dark:text-slate-400 mt-1">{t('artifact.subtitle') || 'Discover historical objects and their stories'}</p>
       </div>
 
-      {/* Search + Filter */}
-      <div className="mb-8 flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1 max-w-md">
+      {/* Search */}
+      <div className="mb-8">
+        <div className="relative max-w-md">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
@@ -86,23 +76,6 @@ const Artifacts = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
           />
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => setTypeFilter('')}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition ${!typeFilter ? 'bg-amber-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'}`}
-          >
-            All
-          </button>
-          {Object.entries(typeLabels).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setTypeFilter(key)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${typeFilter === key ? 'bg-amber-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'}`}
-            >
-              {label}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -121,10 +94,10 @@ const Artifacts = () => {
                 className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
               >
                 <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                  {artifact.coverImage ? (
+                  {artifact.image ? (
                     <img
-                      src={imageUrl(artifact.coverImage)}
-                      alt={getLocalizedText(artifact.title, lang)}
+                      src={imageUrl(artifact.image)}
+                      alt={getLocalizedText(artifact.name, lang)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
@@ -132,26 +105,19 @@ const Artifacts = () => {
                       <Sparkles size={40} />
                     </div>
                   )}
-                  <span className="absolute top-3 left-3 bg-amber-600 text-white px-2 py-0.5 rounded text-xs font-semibold uppercase">
-                    {artifact.type}
-                  </span>
+                  {artifact.category && (
+                    <span className="absolute top-3 left-3 bg-amber-600 text-white px-2 py-0.5 rounded text-xs font-semibold uppercase">
+                      {artifact.category}
+                    </span>
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
-                    {getLocalizedText(artifact.title, lang)}
+                    {getLocalizedText(artifact.name, lang)}
                   </h3>
                   <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
                     {getLocalizedText(artifact.description, lang)}
                   </p>
-                  {artifact.tags?.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {artifact.tags.slice(0, 3).map((tag, i) => (
-                        <span key={i} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-xs">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </Link>
             ))}

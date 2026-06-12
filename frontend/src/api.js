@@ -158,10 +158,8 @@ export const adminDeleteExhibition = (id) => AdminAPI.delete(`/admin/exhibitions
 // Admin Stories
 export const adminFetchStories = (params) => AdminAPI.get('/admin/stories', { params });
 export const adminFetchStory = (id) => AdminAPI.get(`/admin/stories/${id}`);
-export const adminCreateStory = (formData) =>
-  AdminAPI.post('/admin/stories', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-export const adminUpdateStory = (id, formData) =>
-  AdminAPI.put(`/admin/stories/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+export const adminCreateStory = (data) => AdminAPI.post('/admin/stories', data);
+export const adminUpdateStory = (id, data) => AdminAPI.put(`/admin/stories/${id}`, data);
 export const adminDeleteStory = (id) => AdminAPI.delete(`/admin/stories/${id}`);
 
 // Visitor Auth

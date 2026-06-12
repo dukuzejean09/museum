@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchTrails } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Sparkles, Clock, MapPin, ChevronRight } from 'lucide-react';
+import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import toast from 'react-hot-toast';
 
 const imageUrl = (path) => {
@@ -67,9 +68,15 @@ const Trails = () => {
               to={`/trails/${trail._id}`}
               className="flex flex-col sm:flex-row bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
             >
-              {/* Image */}
+              {/* Image — slideshow of stop artifact images */}
               <div className="relative sm:w-72 h-48 sm:h-auto flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                {trail.coverImage ? (
+                {trail.stops?.some(s => s.artifact?.image || s.artifact?.coverImage) ? (
+                  <ArtifactSlideshowCard
+                    artifacts={trail.stops.map(s => s.artifact).filter(Boolean)}
+                    className="w-full h-full group-hover:scale-105 transition-transform duration-500"
+                    interval={3500 + Math.random() * 1500}
+                  />
+                ) : trail.coverImage ? (
                   <img
                     src={imageUrl(trail.coverImage)}
                     alt={getLocalizedText(trail.title, lang)}

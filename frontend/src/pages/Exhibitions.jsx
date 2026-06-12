@@ -4,6 +4,7 @@ import { fetchExhibitions } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { Search, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import toast from 'react-hot-toast';
 
 const imageUrl = (path) => {
@@ -99,9 +100,15 @@ const Exhibitions = () => {
                 className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
               >
                 <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                  {(ex.coverImage || ex.media?.images?.[0]) ? (
+                  {ex.artifacts?.length > 0 ? (
+                    <ArtifactSlideshowCard
+                      artifacts={ex.artifacts}
+                      className="w-full h-full group-hover:scale-105 transition-transform duration-500"
+                      interval={3500 + Math.random() * 1500}
+                    />
+                  ) : ex.coverImage ? (
                     <img
-                      src={imageUrl(ex.coverImage || ex.media?.images?.[0])}
+                      src={imageUrl(ex.coverImage)}
                       alt={getLocalizedText(ex.title, lang)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -110,9 +117,9 @@ const Exhibitions = () => {
                       <Sparkles size={48} />
                     </div>
                   )}
-                  {ex.stats?.artifactCount > 0 && (
+                  {ex.artifacts?.length > 0 && (
                     <span className="absolute top-3 right-3 bg-amber-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow">
-                      {ex.stats.artifactCount} {t('exhibition.artifacts')}
+                      {ex.artifacts.length} {t('exhibition.artifacts')}
                     </span>
                   )}
                   {ex.status && ex.status !== 'published' && isAdmin && (

@@ -14,10 +14,7 @@ export const getArtifacts = asyncHandler(async (req, res) => {
     filter.status = req.query.status;
   }
 
-  if (req.query.type) filter.type = req.query.type;
-  if (req.query.tags) {
-    filter.tags = { $in: req.query.tags.split(',').map(t => t.trim()) };
-  }
+  if (req.query.category) filter.category = req.query.category;
 
   const result = await paginateWithCount(Artifact, filter, req);
   res.json(result);
@@ -56,15 +53,15 @@ export const createArtifact = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.admin._id };
 
   if (req.files) {
-    if (req.files.coverImage?.[0]) {
-      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/artifacts' });
-      data.coverImage = result.url;
+    if (req.files.image?.[0]) {
+      const result = await uploadToCloudinary(req.files.image[0].buffer, { folder: 'museum/artifacts' });
+      data.image = result.url;
     }
-    if (req.files.images) {
+    if (req.files.additionalImages) {
       const uploads = await Promise.all(
-        req.files.images.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/artifacts' }))
+        req.files.additionalImages.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/artifacts' }))
       );
-      data.images = uploads.map(u => u.url);
+      data.additionalImages = uploads.map(u => u.url);
     }
   }
 
@@ -80,16 +77,16 @@ export const updateArtifact = asyncHandler(async (req, res) => {
 
   const data = { ...req.body };
   if (req.files) {
-    if (req.files.coverImage?.[0]) {
-      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/artifacts' });
-      data.coverImage = result.url;
+    if (req.files.image?.[0]) {
+      const result = await uploadToCloudinary(req.files.image[0].buffer, { folder: 'museum/artifacts' });
+      data.image = result.url;
     }
-    if (req.files.images) {
+    if (req.files.additionalImages) {
       const uploads = await Promise.all(
-        req.files.images.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/artifacts' }))
+        req.files.additionalImages.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/artifacts' }))
       );
-      data.images = [
-        ...(artifact.images || []),
+      data.additionalImages = [
+        ...(artifact.additionalImages || []),
         ...uploads.map(u => u.url),
       ];
     }

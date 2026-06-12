@@ -130,7 +130,7 @@ export const getFeaturedExhibitions = asyncHandler(async (req, res) => {
   const filter = { status: 'published' };
 
   const exhibitions = await Exhibition.find(filter)
-    .populate('artifacts', 'title coverImage images')
+    .populate('artifacts', 'name image additionalImages')
     .sort({ 'stats.views': -1, createdAt: -1 })
     .limit(limit)
     .lean();

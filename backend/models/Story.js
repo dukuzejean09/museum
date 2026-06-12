@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const storySchema = new mongoose.Schema({
-  exhibitionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Exhibition', default: null, index: true },
+  exhibitionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Exhibition', required: true, index: true },
   title: {
     en: { type: String, required: true },
     fr: { type: String, default: '' },
@@ -12,13 +12,6 @@ const storySchema = new mongoose.Schema({
     fr: { type: String, default: '' },
     rw: { type: String, default: '' },
   },
-  narration: {
-    en: String, // audio URL
-    fr: String,
-    rw: String,
-  },
-  coverImage: String,
-  media: [String],
   order: { type: Number, default: 0 },
   status: {
     type: String,

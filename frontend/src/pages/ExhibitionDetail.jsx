@@ -6,6 +6,7 @@ import {
   ArrowLeft, BookOpen, Image as ImageIcon, Clock, Tag, Share2,
   Volume2, Play, X, ChevronLeft, ChevronRight, ExternalLink, Sparkles
 } from 'lucide-react';
+import ArtifactSlideshow from '../components/ArtifactSlideshow';
 import toast from 'react-hot-toast';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -102,17 +103,14 @@ const ExhibitionDetail = () => {
 
   return (
     <div>
-      {/* Hero */}
-      <div className="relative h-72 sm:h-96 overflow-hidden bg-slate-800">
-        {allImages[0] ? (
-          <img src={imgUrl(allImages[0])} alt={getLocalizedText(exhibition.title, lang)} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-500">
-            <Sparkles size={60} />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+      {/* Hero — fading slideshow of linked artifact images */}
+      <ArtifactSlideshow
+        artifacts={exhibition.artifacts || []}
+        className="h-72 sm:h-96 bg-slate-800"
+        interval={5000}
+        overlay="bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+      >
+        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 z-10">
           <div className="container mx-auto">
             <Link to="/exhibitions" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-3 transition">
               <ArrowLeft size={16} /> {t('common.back')}
@@ -125,7 +123,7 @@ const ExhibitionDetail = () => {
             </p>
           </div>
         </div>
-      </div>
+      </ArtifactSlideshow>
 
       <div className="container mx-auto px-4 py-8">
         {/* Tab Navigation */}
@@ -212,16 +210,18 @@ const ExhibitionDetail = () => {
                         className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition group"
                       >
                         <div className="h-40 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                          {artifact.coverImage ? (
-                            <img src={imgUrl(artifact.coverImage)} alt={getLocalizedText(artifact.title, lang)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          {artifact.image ? (
+                            <img src={imgUrl(artifact.image)} alt={getLocalizedText(artifact.name, lang)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-slate-400"><Sparkles size={32} /></div>
                           )}
                         </div>
                         <div className="p-4">
-                          <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.type}</span>
+                          {artifact.category && (
+                            <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
+                          )}
                           <h3 className="font-bold dark:text-white mt-1 group-hover:text-amber-600 transition-colors">
-                            {getLocalizedText(artifact.title, lang)}
+                            {getLocalizedText(artifact.name, lang)}
                           </h3>
                           <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
                             {getLocalizedText(artifact.description, lang)}
@@ -246,24 +246,10 @@ const ExhibitionDetail = () => {
                   <div className="space-y-6">
                     {stories.map(story => (
                       <div key={story._id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-                        {story.coverImage && (
-                          <img src={imgUrl(story.coverImage)} alt={getLocalizedText(story.title, lang)} className="w-full h-48 object-cover rounded-xl mb-4" />
-                        )}
                         <h3 className="text-lg font-bold dark:text-white">{getLocalizedText(story.title, lang)}</h3>
                         <p className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">
                           {getLocalizedText(story.content, lang)}
                         </p>
-                        {(story.narrationAudio || story.narration) && (
-                          <div className="mt-4 bg-slate-50 dark:bg-slate-800 rounded-xl p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Volume2 size={16} className="text-amber-600" />
-                              <span className="text-sm font-medium dark:text-white">{t('exhibits.audioNarration')}</span>
-                            </div>
-                            <audio controls className="w-full" preload="metadata">
-                              <source src={audioUrl(getLocalizedText(story.narrationAudio || story.narration, lang))} />
-                            </audio>
-                          </div>
-                        )}
                       </div>
                     ))}
                   </div>
