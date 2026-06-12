@@ -1,6 +1,7 @@
 import Exhibition from '../models/Exhibition.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // @desc    Get exhibitions — paginated, filterable
 // @route   GET /api/exhibitions
@@ -22,7 +23,7 @@ export const getExhibitions = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-// @desc    Get exhibition by ID
+// @desc    Get exhibition by ID (populate artifacts for images)
 // @route   GET /api/exhibitions/:id
 export const getExhibitionById = asyncHandler(async (req, res) => {
   const exhibition = await Exhibition.findByIdAndUpdate(
@@ -37,23 +38,36 @@ export const getExhibitionById = asyncHandler(async (req, res) => {
 
 // @desc    Create exhibition (admin/guide)
 // @route   POST /api/admin/exhibitions
+// NOTE: No image uploads — exhibitions get images from linked artifacts.
+//       Only audio narration and video URLs are supported.
 export const createExhibition = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.admin._id };
 
-  // Handle file uploads
+  // Handle audio/video uploads to Cloudinary
   if (req.files) {
-    if (req.files.coverImage && req.files.coverImage[0]) {
-      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
-    }
-    if (req.files.images) {
-      data.media = data.media || {};
-      data.media.images = req.files.images.map(f => `/uploads/${f.filename}`);
-    }
-    if (req.files.narration) {
+    if (req.files.narrationFull?.[0]) {
+      const result = await uploadToCloudinary(req.files.narrationFull[0].buffer, {
+        folder: 'museum/narrations', resource_type: 'video',
+      });
       data.narration = data.narration || {};
-      const lang = req.body.narrationLanguage || 'en';
-      data.narration = { ...data.narration, [lang]: `/uploads/${req.files.narration[0].filename}` };
+      data.narration.full = data.narration.full || {};
+      const lang = req.body.narrationFullLang || 'en';
+      data.narration.full[lang] = result.url;
     }
+    if (req.files.narrationPreview?.[0]) {
+      const result = await uploadToCloudinary(req.files.narrationPreview[0].buffer, {
+        folder: 'museum/narrations', resource_type: 'video',
+      });
+      data.narration = data.narration || {};
+      data.narration.preview = data.narration.preview || {};
+      const lang = req.body.narrationPreviewLang || 'en';
+      data.narration.preview[lang] = result.url;
+    }
+  }
+
+  // Parse artifacts array if sent as JSON string
+  if (typeof data.artifacts === 'string') {
+    try { data.artifacts = JSON.parse(data.artifacts); } catch { /* keep as-is */ }
   }
 
   const exhibition = await Exhibition.create(data);
@@ -68,17 +82,31 @@ export const updateExhibition = asyncHandler(async (req, res) => {
 
   const data = { ...req.body };
 
+  // Handle audio/video uploads to Cloudinary
   if (req.files) {
-    if (req.files.coverImage && req.files.coverImage[0]) {
-      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+    if (req.files.narrationFull?.[0]) {
+      const result = await uploadToCloudinary(req.files.narrationFull[0].buffer, {
+        folder: 'museum/narrations', resource_type: 'video',
+      });
+      data.narration = data.narration || exhibition.narration?.toObject?.() || {};
+      data.narration.full = data.narration.full || {};
+      const lang = req.body.narrationFullLang || 'en';
+      data.narration.full[lang] = result.url;
     }
-    if (req.files.images) {
-      if (!data.media) data.media = exhibition.media?.toObject?.() || {};
-      data.media.images = [
-        ...(exhibition.media?.images || []),
-        ...req.files.images.map(f => `/uploads/${f.filename}`),
-      ];
+    if (req.files.narrationPreview?.[0]) {
+      const result = await uploadToCloudinary(req.files.narrationPreview[0].buffer, {
+        folder: 'museum/narrations', resource_type: 'video',
+      });
+      data.narration = data.narration || exhibition.narration?.toObject?.() || {};
+      data.narration.preview = data.narration.preview || {};
+      const lang = req.body.narrationPreviewLang || 'en';
+      data.narration.preview[lang] = result.url;
     }
+  }
+
+  // Parse artifacts array if sent as JSON string
+  if (typeof data.artifacts === 'string') {
+    try { data.artifacts = JSON.parse(data.artifacts); } catch { /* keep as-is */ }
   }
 
   Object.assign(exhibition, data);
@@ -102,6 +130,7 @@ export const getFeaturedExhibitions = asyncHandler(async (req, res) => {
   const filter = { status: 'published' };
 
   const exhibitions = await Exhibition.find(filter)
+    .populate('artifacts', 'title coverImage images')
     .sort({ 'stats.views': -1, createdAt: -1 })
     .limit(limit)
     .lean();

@@ -1,6 +1,7 @@
 import Story from '../models/Story.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // @desc    Get stories — paginated, filterable
 // @route   GET /api/stories
@@ -34,18 +35,24 @@ export const getStoryById = asyncHandler(async (req, res) => {
 export const createStory = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.admin._id };
 
-  // Handle file uploads
   if (req.files) {
-    if (req.files.coverImage && req.files.coverImage[0]) {
-      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/stories' });
+      data.coverImage = result.url;
     }
-    if (req.files.narration && req.files.narration[0]) {
+    if (req.files.narration?.[0]) {
+      const result = await uploadToCloudinary(req.files.narration[0].buffer, {
+        folder: 'museum/narrations', resource_type: 'video',
+      });
       data.narration = data.narration || {};
       const lang = req.body.narrationLanguage || 'en';
-      data.narration = { ...data.narration, [lang]: `/uploads/${req.files.narration[0].filename}` };
+      data.narration = { ...data.narration, [lang]: result.url };
     }
     if (req.files.media) {
-      data.media = req.files.media.map(f => `/uploads/${f.filename}`);
+      const uploads = await Promise.all(
+        req.files.media.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/stories', resource_type: 'auto' }))
+      );
+      data.media = uploads.map(u => u.url);
     }
   }
 
@@ -61,20 +68,26 @@ export const updateStory = asyncHandler(async (req, res) => {
 
   const data = { ...req.body };
 
-  // Handle file uploads
   if (req.files) {
-    if (req.files.coverImage && req.files.coverImage[0]) {
-      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/stories' });
+      data.coverImage = result.url;
     }
-    if (req.files.narration && req.files.narration[0]) {
+    if (req.files.narration?.[0]) {
       const existingNarration = story.narration?.toObject?.() || story.narration || {};
+      const result = await uploadToCloudinary(req.files.narration[0].buffer, {
+        folder: 'museum/narrations', resource_type: 'video',
+      });
       const lang = req.body.narrationLanguage || 'en';
-      data.narration = { ...existingNarration, [lang]: `/uploads/${req.files.narration[0].filename}` };
+      data.narration = { ...existingNarration, [lang]: result.url };
     }
     if (req.files.media) {
+      const uploads = await Promise.all(
+        req.files.media.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/stories', resource_type: 'auto' }))
+      );
       data.media = [
         ...(story.media || []),
-        ...req.files.media.map(f => `/uploads/${f.filename}`),
+        ...uploads.map(u => u.url),
       ];
     }
   }

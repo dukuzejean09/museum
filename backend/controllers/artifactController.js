@@ -1,6 +1,7 @@
 import Artifact from '../models/Artifact.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // @desc    Get artifacts — paginated, filterable
 // @route   GET /api/artifacts
@@ -56,10 +57,14 @@ export const createArtifact = asyncHandler(async (req, res) => {
 
   if (req.files) {
     if (req.files.coverImage?.[0]) {
-      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/artifacts' });
+      data.coverImage = result.url;
     }
     if (req.files.images) {
-      data.images = req.files.images.map(f => `/uploads/${f.filename}`);
+      const uploads = await Promise.all(
+        req.files.images.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/artifacts' }))
+      );
+      data.images = uploads.map(u => u.url);
     }
   }
 
@@ -76,12 +81,16 @@ export const updateArtifact = asyncHandler(async (req, res) => {
   const data = { ...req.body };
   if (req.files) {
     if (req.files.coverImage?.[0]) {
-      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/artifacts' });
+      data.coverImage = result.url;
     }
     if (req.files.images) {
+      const uploads = await Promise.all(
+        req.files.images.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/artifacts' }))
+      );
       data.images = [
         ...(artifact.images || []),
-        ...req.files.images.map(f => `/uploads/${f.filename}`),
+        ...uploads.map(u => u.url),
       ];
     }
   }

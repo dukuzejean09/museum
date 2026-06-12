@@ -1,6 +1,7 @@
 import Guide from '../models/Guide.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // @desc    Get all guides — paginated, filterable
 // @route   GET /api/guides
@@ -33,7 +34,8 @@ export const getGuideById = asyncHandler(async (req, res) => {
 export const createGuide = asyncHandler(async (req, res) => {
   const data = { ...req.body };
   if (req.file) {
-    data.imageUrl = `/uploads/${req.file.filename}`;
+    const result = await uploadToCloudinary(req.file.buffer, { folder: 'museum/guides' });
+    data.imageUrl = result.url;
   }
   if (typeof data.languages === 'string') {
     data.languages = data.languages.split(',').map((l) => l.trim());
@@ -53,7 +55,8 @@ export const createGuide = asyncHandler(async (req, res) => {
 export const updateGuide = asyncHandler(async (req, res) => {
   const data = { ...req.body };
   if (req.file) {
-    data.imageUrl = `/uploads/${req.file.filename}`;
+    const result = await uploadToCloudinary(req.file.buffer, { folder: 'museum/guides' });
+    data.imageUrl = result.url;
   }
   if (typeof data.languages === 'string') {
     data.languages = data.languages.split(',').map((l) => l.trim());
@@ -93,7 +96,8 @@ export const updateMyProfile = asyncHandler(async (req, res) => {
 
   const data = { ...req.body };
   if (req.file) {
-    data.imageUrl = `/uploads/${req.file.filename}`;
+    const result = await uploadToCloudinary(req.file.buffer, { folder: 'museum/guides' });
+    data.imageUrl = result.url;
   }
   if (typeof data.languages === 'string') {
     data.languages = data.languages.split(',').map((l) => l.trim());

@@ -128,13 +128,9 @@ const normaliseTrailBody = (body) => {
 
 // @desc    Create trail
 // @route   POST /api/admin/trails
+// NOTE: No image uploads — trails get images from linked artifact stops.
 export const createTrail = asyncHandler(async (req, res) => {
   const data = { ...normaliseTrailBody(req.body), createdBy: req.admin._id };
-
-  if (req.file) {
-    data.coverImage = `/uploads/${req.file.filename}`;
-  }
-
   const trail = await Trail.create(data);
   res.status(201).json(trail);
 });
@@ -146,10 +142,6 @@ export const updateTrail = asyncHandler(async (req, res) => {
   if (!trail) throw new NotFoundError('Trail');
 
   const data = normaliseTrailBody(req.body);
-  if (req.file) {
-    data.coverImage = `/uploads/${req.file.filename}`;
-  }
-
   Object.assign(trail, data);
   await trail.save();
   res.json(trail);
