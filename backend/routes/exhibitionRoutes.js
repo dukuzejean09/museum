@@ -1,7 +1,7 @@
 import express from 'express';
 import protect from '../middleware/authMiddleware.js';
 import requireRole from '../middleware/roleMiddleware.js';
-import upload from '../middleware/upload.js';
+import upload, { validateUpload } from '../middleware/upload.js';
 import {
   getExhibitions, getExhibitionById, createExhibition, updateExhibition,
   deleteExhibition, getFeaturedExhibitions,
@@ -26,8 +26,8 @@ publicRouter.get('/:id', getExhibitionById);
 // Admin + Guide
 adminRouter.get('/', protect, requireRole('admin', 'guide'), getExhibitions);
 adminRouter.get('/:id', protect, requireRole('admin', 'guide'), getExhibitionById);
-adminRouter.post('/', protect, requireRole('admin', 'guide'), exhibitionUpload, createExhibition);
-adminRouter.put('/:id', protect, requireRole('admin', 'guide'), exhibitionUpload, updateExhibition);
+adminRouter.post('/', protect, requireRole('admin', 'guide'), exhibitionUpload, validateUpload, createExhibition);
+adminRouter.put('/:id', protect, requireRole('admin', 'guide'), exhibitionUpload, validateUpload, updateExhibition);
 
 // Admin only
 adminRouter.delete('/:id', protect, requireRole('admin'), deleteExhibition);

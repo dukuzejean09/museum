@@ -1,6 +1,7 @@
 import Trail from '../models/Trail.js';
 import { asyncHandler, NotFoundError, ValidationError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // @desc    Get trails — paginated, filterable
 // @route   GET /api/trails
@@ -130,9 +131,24 @@ const normaliseTrailBody = (body) => {
 
 // @desc    Create trail
 // @route   POST /api/admin/trails
-// NOTE: No image uploads — trails get images from linked artifact stops.
 export const createTrail = asyncHandler(async (req, res) => {
   const data = { ...normaliseTrailBody(req.body), createdBy: req.admin._id };
+
+  if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/trails' });
+      data.coverImage = result.url;
+    }
+    if (req.files.audio?.[0]) {
+      const result = await uploadToCloudinary(req.files.audio[0].buffer, { folder: 'museum/audio', resource_type: 'video' });
+      data.audio = result.url;
+    }
+    if (req.files.video?.[0]) {
+      const result = await uploadToCloudinary(req.files.video[0].buffer, { folder: 'museum/video', resource_type: 'video' });
+      data.video = result.url;
+    }
+  }
+
   const trail = await Trail.create(data);
   res.status(201).json(trail);
 });
@@ -144,6 +160,22 @@ export const updateTrail = asyncHandler(async (req, res) => {
   if (!trail) throw new NotFoundError('Trail');
 
   const data = normaliseTrailBody(req.body);
+
+  if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/trails' });
+      data.coverImage = result.url;
+    }
+    if (req.files.audio?.[0]) {
+      const result = await uploadToCloudinary(req.files.audio[0].buffer, { folder: 'museum/audio', resource_type: 'video' });
+      data.audio = result.url;
+    }
+    if (req.files.video?.[0]) {
+      const result = await uploadToCloudinary(req.files.video[0].buffer, { folder: 'museum/video', resource_type: 'video' });
+      data.video = result.url;
+    }
+  }
+
   Object.assign(trail, data);
   await trail.save();
   res.json(trail);

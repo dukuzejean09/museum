@@ -3,6 +3,7 @@ import { adminFetchSurveys, adminFetchSurveyStats, adminDeleteSurvey } from '../
 import { Star, Trash2, TrendingUp, ThumbsUp, Clock, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
 const AdminSurveys = () => {
   const [surveys, setSurveys] = useState([]);
   const [stats, setStats] = useState(null);
@@ -38,11 +39,7 @@ const AdminSurveys = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   const renderStars = (rating) => (

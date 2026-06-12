@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { UserPlus, Trash2, Shield, UserCheck, UserX, Users, UserCog } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
 const AdminUsers = () => {
   const { admin } = useAuth();
   const [users, setUsers] = useState([]);
@@ -75,11 +76,7 @@ const AdminUsers = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   return (

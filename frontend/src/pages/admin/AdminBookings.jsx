@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { adminFetchBookings, adminUpdateBooking, adminGenerateBookingAccess, adminDeleteBooking } from '../../api';
+import { useAuth } from '../../context/AuthContext';
 import { CheckCircle, XCircle, Trash2, Clock, Key, Copy, Download, X, Globe, MapPin, QrCode } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
 const statusStyles = {
   pending: 'bg-yellow-100 text-yellow-700',
   confirmed: 'bg-green-100 text-green-700',
@@ -17,6 +19,7 @@ const typeStyles = {
 };
 
 const AdminBookings = () => {
+  const { isAdmin } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, physical, online
@@ -94,11 +97,7 @@ const AdminBookings = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   return (
@@ -214,13 +213,15 @@ const AdminBookings = () => {
                               <QrCode size={18} />
                             </button>
                           )}
-                          <button
-                            onClick={() => handleDelete(b._id)}
-                            className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-red-600"
-                            title="Delete"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleDelete(b._id)}
+                              className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-red-600"
+                              title="Delete"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

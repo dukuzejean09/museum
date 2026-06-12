@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { fetchAnalytics } from '../../api';
-import { Presentation, MapPin, Users, MessageSquare, CalendarDays, ClipboardList } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { Presentation, Gem, MapPin, Users, MessageSquare, CalendarDays, ClipboardList, BookOpen } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
+import { DashboardSkeleton } from '../../components/ui/LoadingSkeleton';
 
 const Dashboard = () => {
+  const { isAdmin } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,22 +26,29 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (!stats) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+      <div className="text-center py-16 text-slate-500">
+        <p>Failed to load dashboard data. Please try again.</p>
       </div>
     );
   }
 
-  const cards = [
-    { label: 'Exhibitions', count: stats?.exhibitionCount || 0, icon: Presentation, color: 'bg-blue-500' },
-    { label: 'Trails', count: stats?.trailCount || 0, icon: MapPin, color: 'bg-green-500' },
-    { label: 'Guides', count: stats?.guideCount || 0, icon: Users, color: 'bg-purple-500' },
-    { label: 'Bookings', count: stats?.bookingCount || 0, icon: CalendarDays, color: 'bg-orange-500' },
-    { label: 'Surveys', count: stats?.surveyCount || 0, icon: ClipboardList, color: 'bg-cyan-500' },
-    { label: 'Messages', count: stats?.messageCount || 0, icon: MessageSquare, color: 'bg-amber-500' },
+  const allCards = [
+    { label: 'Exhibitions', count: stats?.exhibitionCount || 0, icon: Presentation, color: 'bg-blue-500', roles: ['admin', 'guide'] },
+    { label: 'Artifacts', count: stats?.artifactCount || 0, icon: Gem, color: 'bg-indigo-500', roles: ['admin', 'guide'] },
+    { label: 'Trails', count: stats?.trailCount || 0, icon: MapPin, color: 'bg-green-500', roles: ['admin', 'guide'] },
+    { label: 'Stories', count: stats?.storyCount || 0, icon: BookOpen, color: 'bg-pink-500', roles: ['admin', 'guide'] },
+    { label: 'Guides', count: stats?.guideCount || 0, icon: Users, color: 'bg-purple-500', roles: ['admin'] },
+    { label: 'Bookings', count: stats?.bookingCount || 0, icon: CalendarDays, color: 'bg-orange-500', roles: ['admin', 'guide'] },
+    { label: 'Surveys', count: stats?.surveyCount || 0, icon: ClipboardList, color: 'bg-cyan-500', roles: ['admin'] },
+    { label: 'Messages', count: stats?.messageCount || 0, icon: MessageSquare, color: 'bg-amber-500', roles: ['admin', 'guide'] },
   ];
 
+  const cards = allCards.filter(c => c.roles.includes(isAdmin ? 'admin' : 'guide'));
   const chartData = cards.map(({ label, count }) => ({ name: label, count }));
 
   return (

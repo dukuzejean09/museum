@@ -1,9 +1,11 @@
 import Exhibition from '../models/Exhibition.js';
+import Artifact from '../models/Artifact.js';
 import Trail from '../models/Trail.js';
 import Guide from '../models/Guide.js';
 import Message from '../models/Message.js';
 import Booking from '../models/Booking.js';
 import Survey from '../models/Survey.js';
+import Story from '../models/Story.js';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import { asyncHandler } from '../utils/errors.js';
 
@@ -20,21 +22,25 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
 
   const [
     exhibitionCount,
+    artifactCount,
     trailCount,
     guideCount,
     messageCount,
     bookingCount,
     surveyCount,
+    storyCount,
     recentMessages,
     recentBookings,
     surveyStats,
   ] = await Promise.all([
     Exhibition.countDocuments(countFilter),
+    Artifact.countDocuments(countFilter),
     Trail.countDocuments(countFilter),
     Guide.countDocuments(countFilter),
     Message.countDocuments(countFilter),
     Booking.countDocuments(countFilter),
     Survey.countDocuments(countFilter),
+    Story.countDocuments(countFilter),
     Message.find().sort({ createdAt: -1 }).limit(5).lean(),
     Booking.find().sort({ createdAt: -1 }).limit(5).populate('guideId', 'name').lean(),
     Survey.aggregate([
@@ -68,11 +74,13 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
   res.json({
     counts: {
       exhibitions: exhibitionCount,
+      artifacts: artifactCount,
       trails: trailCount,
       guides: guideCount,
       messages: messageCount,
       bookings: bookingCount,
       surveys: surveyCount,
+      stories: storyCount,
     },
     recent: {
       messages: recentMessages,
@@ -89,11 +97,13 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     },
     // Flat fields for dashboard cards
     exhibitionCount,
+    artifactCount,
     trailCount,
     guideCount,
     messageCount,
     bookingCount,
     surveyCount,
+    storyCount,
     recentMessages,
     recentBookings,
   });

@@ -22,6 +22,9 @@ const ArtifactDetail = React.lazy(() => import('./pages/ArtifactDetail'));
 const Trails = React.lazy(() => import('./pages/Trails'));
 const TrailDetail = React.lazy(() => import('./pages/TrailDetail'));
 const BookVisit = React.lazy(() => import('./pages/BookVisit'));
+const Stories = React.lazy(() => import('./pages/Stories'));
+const StoryDetail = React.lazy(() => import('./pages/StoryDetail'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Lazy-loaded admin pages
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
@@ -41,6 +44,8 @@ const ArtifactForm = React.lazy(() => import('./pages/admin/ArtifactForm'));
 const AdminStories = React.lazy(() => import('./pages/admin/AdminStories'));
 const StoryForm = React.lazy(() => import('./pages/admin/StoryForm'));
 const AdminUsers = React.lazy(() => import('./pages/admin/AdminUsers'));
+const AdminGuides = React.lazy(() => import('./pages/admin/AdminGuides'));
+const GuideForm = React.lazy(() => import('./pages/admin/GuideForm'));
 
 // Loading fallback
 const PageLoader = () => (
@@ -92,7 +97,7 @@ function App() {
                     {/* Gateway — always accessible */}
                     <Route path="/enter" element={<Gateway />} />
 
-                    {/* Public content routes (visitor auth disabled for testing) */}
+                    {/* Public content routes */}
                     <Route element={<Layout />}>
                       <Route path="/" element={<Home />} />
                       <Route path="/trail" element={<Navigate to="/trails" replace />} />
@@ -106,6 +111,8 @@ function App() {
                       <Route path="/artifacts/:id" element={<ArtifactDetail />} />
                       <Route path="/trails" element={<Trails />} />
                       <Route path="/trails/:id" element={<TrailDetail />} />
+                      <Route path="/stories" element={<Stories />} />
+                      <Route path="/stories/:id" element={<StoryDetail />} />
                       <Route path="/search" element={<SearchPage />} />
                       <Route path="/book" element={<BookVisit />} />
                       {/* Redirects for old routes */}
@@ -139,19 +146,27 @@ function App() {
                         <Route path="stories/new" element={<StoryForm />} />
                         <Route path="stories/edit/:id" element={<StoryForm />} />
                         <Route path="guide-profile" element={<GuideProfile />} />
+                        <Route path="trails" element={<AdminTrails />} />
+                        <Route path="trails/new" element={<TrailForm />} />
+                        <Route path="trails/edit/:id" element={<TrailForm />} />
                         <Route path="messages" element={<AdminMessages />} />
                         <Route path="bookings" element={<AdminBookings />} />
                         <Route path="access-codes" element={<AdminAccessCodes />} />
 
                         {/* Admin-only routes */}
                         <Route element={<AdminOnlyRoute />}>
-                          <Route path="trails" element={<AdminTrails />} />
-                          <Route path="trails/new" element={<TrailForm />} />
-                          <Route path="trails/edit/:id" element={<TrailForm />} />
+                          <Route path="guides" element={<AdminGuides />} />
+                          <Route path="guides/new" element={<GuideForm />} />
+                          <Route path="guides/edit/:id" element={<GuideForm />} />
                           <Route path="surveys" element={<AdminSurveys />} />
                           <Route path="users" element={<AdminUsers />} />
                         </Route>
                       </Route>
+                    </Route>
+
+                    {/* 404 catch-all */}
+                    <Route path="*" element={<Layout />}>
+                      <Route path="*" element={<NotFound />} />
                     </Route>
                   </Routes>
                 </Suspense>

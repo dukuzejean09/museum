@@ -26,8 +26,6 @@ const artifactSchema = new mongoose.Schema({
   },
   category: { type: String, default: '' },
   additionalImages: [String],
-  audio: String,
-  video: String,
   status: {
     type: String,
     enum: ['draft', 'published', 'archived'],

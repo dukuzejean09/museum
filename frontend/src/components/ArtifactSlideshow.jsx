@@ -110,7 +110,7 @@ export const ArtifactSlideshowCard = ({ artifacts = [], className = '', interval
   }, [images.length, interval]);
 
   if (images.length === 0) {
-    return <div className={`bg-slate-100 dark:bg-slate-800 ${className}`} />;
+    return <div className={`bg-slate-100 ${className}`} />;
   }
 
   return (

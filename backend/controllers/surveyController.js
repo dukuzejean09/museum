@@ -97,7 +97,7 @@ export const getSurveyStats = asyncHandler(async (req, res) => {
     });
   }
 
-  const recommendRate = Math.round((stats.recommendCount / stats.total) * 100);
+  const recommendRate = stats.total > 0 ? Math.round((stats.recommendCount / stats.total) * 100) : 0;
 
   // Duration breakdown
   const durationPipeline = [

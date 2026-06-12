@@ -131,13 +131,18 @@ export const updateExhibition = asyncHandler(async (req, res) => {
   res.json(exhibition);
 });
 
-// @desc    Delete exhibition (admin only)
+// @desc    Delete exhibition (admin only) — cascades to stories
 // @route   DELETE /api/admin/exhibitions/:id
 export const deleteExhibition = asyncHandler(async (req, res) => {
   const exhibition = await Exhibition.findById(req.params.id);
   if (!exhibition) throw new NotFoundError('Exhibition');
+
+  // Cascade: remove all stories linked to this exhibition
+  const Story = (await import('../models/Story.js')).default;
+  await Story.deleteMany({ exhibitionId: exhibition._id });
+
   await Exhibition.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Exhibition removed' });
+  res.json({ message: 'Exhibition and related stories removed' });
 });
 
 // @desc    Get featured exhibitions (for homepage)

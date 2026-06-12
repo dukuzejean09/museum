@@ -1,32 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useVisitor } from '../context/VisitorContext';
-import { Menu, X, Sun, Moon, Clock } from 'lucide-react';
+import { Menu, X, Clock } from 'lucide-react';
 
 const navBg = 'bg-slate-900';
 const border = 'border-slate-800';
 const linkBase = 'px-3 py-2 rounded-lg transition-colors font-medium text-amber-400 hover:bg-amber-400/10 hover:text-amber-300';
 const linkActive = 'px-3 py-2 rounded-lg transition-colors font-medium bg-amber-400/15 text-amber-200';
-
-const DarkModeToggle = () => {
-  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark');
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark);
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
-  }, [dark]);
-
-  return (
-    <button
-      onClick={() => setDark(!dark)}
-      className="p-2 rounded-full text-amber-400/70 hover:text-amber-300 hover:bg-amber-400/10 transition-colors"
-    >
-      {dark ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
-  );
-};
 
 const AccessTimer = () => {
   const { remainingTime } = useVisitor();
@@ -58,6 +40,7 @@ const Navbar = () => {
     { to: '/exhibitions', label: t('nav.exhibitions') },
     { to: '/artifacts', label: t('nav.artifacts') || 'Artifacts' },
     { to: '/trails', label: t('nav.trails') || 'Trails' },
+    { to: '/stories', label: t('nav.stories') || 'Stories' },
     { to: '/guides', label: t('nav.guides') },
     { to: '/feedback', label: t('nav.feedback') },
     { to: '/search', label: t('nav.search') },
@@ -84,7 +67,6 @@ const Navbar = () => {
           ))}
           <AccessTimer />
           <LanguageSelector />
-          <DarkModeToggle />
         </div>
 
         {/* Mobile toggle */}
@@ -111,7 +93,6 @@ const Navbar = () => {
           <div className={`flex items-center gap-3 mt-3 pt-3 border-t ${border}`}>
             <AccessTimer />
             <LanguageSelector />
-            <DarkModeToggle />
           </div>
         </div>
       )}

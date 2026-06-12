@@ -27,6 +27,8 @@ const trailSchema = new mongoose.Schema({
     rw: { type: String, default: '' },
   },
   coverImage: String,
+  audio: String,
+  video: String,
 
   // Ordered stops — each stop references an artifact
   stops: [stopSchema],

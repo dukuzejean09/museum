@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -80,6 +81,33 @@ app.use('/api/ai', aiLimiter);
 
 app.use(express.json({ limit: '10mb' }));
 
+// Sanitize request data — prevent NoSQL injection and XSS
+app.use(mongoSanitize());
+
+// Strip HTML tags from string inputs to prevent XSS
+const stripHtmlTags = (obj) => {
+  if (typeof obj === 'string') {
+    return obj.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+              .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+  }
+  if (Array.isArray(obj)) return obj.map(stripHtmlTags);
+  if (obj && typeof obj === 'object') {
+    const clean = {};
+    for (const [key, val] of Object.entries(obj)) {
+      clean[key] = stripHtmlTags(val);
+    }
+    return clean;
+  }
+  return obj;
+};
+
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    req.body = stripHtmlTags(req.body);
+  }
+  next();
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -99,7 +127,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/messages', messagePublic);
 
 // ──────────────────────────────────────────────
-// Public API routes (visitor auth disabled for testing)
+// Public API routes (read-only, no auth required)
 app.use('/api/exhibitions', exhibitionPublic);
 app.use('/api/artifacts', artifactPublic);
 app.use('/api/stories', storyPublic);

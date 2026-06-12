@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import ErrorBoundary from '../../components/ErrorBoundary';
 import {
   LayoutDashboard, MapPin, MessageSquare, LogOut,
   CalendarDays, ClipboardList, Menu, X, QrCode,
-  Presentation, BookOpen, UserCog, Gem, UserCircle
+  Presentation, BookOpen, UserCog, Gem, UserCircle, Users
 } from 'lucide-react';
 
 const allSidebarLinks = [
@@ -13,8 +14,9 @@ const allSidebarLinks = [
   { to: '/admin/exhibitions', label: 'Exhibitions', icon: Presentation, roles: ['admin', 'guide'] },
   { to: '/admin/artifacts', label: 'Artifacts', icon: Gem, roles: ['admin', 'guide'] },
   { to: '/admin/stories', label: 'Stories', icon: BookOpen, roles: ['admin', 'guide'] },
-  { to: '/admin/trails', label: 'Trails', icon: MapPin, roles: ['admin'] },
+  { to: '/admin/trails', label: 'Trails', icon: MapPin, roles: ['admin', 'guide'] },
   { to: '/admin/bookings', label: 'Bookings', icon: CalendarDays, roles: ['admin', 'guide'] },
+  { to: '/admin/guides', label: 'Guides', icon: Users, roles: ['admin'] },
   { to: '/admin/surveys', label: 'Surveys', icon: ClipboardList, roles: ['admin'] },
   { to: '/admin/messages', label: 'Messages', icon: MessageSquare, roles: ['admin', 'guide'] },
   { to: '/admin/access-codes', label: 'Access Codes', icon: QrCode, roles: ['admin', 'guide'] },
@@ -26,6 +28,7 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const location = useLocation();
   const role = admin?.role || 'admin';
   const sidebarLinks = allSidebarLinks.filter((link) => link.roles.includes(role));
 
@@ -100,7 +103,9 @@ const AdminLayout = () => {
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-8">
-        <Outlet />
+        <ErrorBoundary key={location.pathname}>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );

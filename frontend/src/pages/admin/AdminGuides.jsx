@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { adminFetchGuides, adminDeleteGuide } from '../../api';
+import { useAuth } from '../../context/AuthContext';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
 const AdminGuides = () => {
+  const { isAdmin } = useAuth();
   const [guides, setGuides] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,11 +36,7 @@ const AdminGuides = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   return (
@@ -99,13 +98,15 @@ const AdminGuides = () => {
                     >
                       <Edit size={18} />
                     </Link>
-                    <button
-                      onClick={() => handleDelete(guide._id, guide.name)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(guide._id, guide.name)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                        title="Delete"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
