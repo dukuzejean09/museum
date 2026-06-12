@@ -38,16 +38,16 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // CORS — restrict to frontend origin
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
+  process.env.FRONTEND_URL,
   'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost',
-].filter((v, i, a) => a.indexOf(v) === i); // deduplicate
+].filter(Boolean).map(u => u.replace(/\/+$/, '')); // remove trailing slashes
 
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
+    return cb(null, false);
   },
   credentials: true,
 }));
