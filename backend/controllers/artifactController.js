@@ -1,0 +1,101 @@
+import Artifact from '../models/Artifact.js';
+import { asyncHandler, NotFoundError } from '../utils/errors.js';
+import { paginateWithCount } from '../utils/pagination.js';
+
+// @desc    Get artifacts — paginated, filterable
+// @route   GET /api/artifacts
+export const getArtifacts = asyncHandler(async (req, res) => {
+  const filter = {};
+
+  if (!req.admin) {
+    filter.status = 'published';
+  } else if (req.query.status) {
+    filter.status = req.query.status;
+  }
+
+  if (req.query.type) filter.type = req.query.type;
+  if (req.query.tags) {
+    filter.tags = { $in: req.query.tags.split(',').map(t => t.trim()) };
+  }
+
+  const result = await paginateWithCount(Artifact, filter, req);
+  res.json(result);
+});
+
+// @desc    Get artifact by ID
+// @route   GET /api/artifacts/:id
+export const getArtifactById = asyncHandler(async (req, res) => {
+  const artifact = await Artifact.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { 'stats.views': 1 } },
+    { new: true }
+  ).lean();
+
+  if (!artifact) throw new NotFoundError('Artifact');
+
+  // Find related exhibitions and trails
+  const Exhibition = (await import('../models/Exhibition.js')).default;
+  const Trail = (await import('../models/Trail.js')).default;
+
+  const [exhibitions, trails] = await Promise.all([
+    Exhibition.find({ artifacts: artifact._id, status: 'published' })
+      .select('title coverImage shortDescription')
+      .lean(),
+    Trail.find({ 'stops.artifactId': artifact._id, isActive: true })
+      .select('title coverImage description')
+      .lean(),
+  ]);
+
+  res.json({ ...artifact, exhibitions, trails });
+});
+
+// @desc    Create artifact
+// @route   POST /api/admin/artifacts
+export const createArtifact = asyncHandler(async (req, res) => {
+  const data = { ...req.body, createdBy: req.admin._id };
+
+  if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+    }
+    if (req.files.images) {
+      data.images = req.files.images.map(f => `/uploads/${f.filename}`);
+    }
+  }
+
+  const artifact = await Artifact.create(data);
+  res.status(201).json(artifact);
+});
+
+// @desc    Update artifact
+// @route   PUT /api/admin/artifacts/:id
+export const updateArtifact = asyncHandler(async (req, res) => {
+  const artifact = await Artifact.findById(req.params.id);
+  if (!artifact) throw new NotFoundError('Artifact');
+
+  const data = { ...req.body };
+  if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      data.coverImage = `/uploads/${req.files.coverImage[0].filename}`;
+    }
+    if (req.files.images) {
+      data.images = [
+        ...(artifact.images || []),
+        ...req.files.images.map(f => `/uploads/${f.filename}`),
+      ];
+    }
+  }
+
+  Object.assign(artifact, data);
+  await artifact.save();
+  res.json(artifact);
+});
+
+// @desc    Delete artifact
+// @route   DELETE /api/admin/artifacts/:id
+export const deleteArtifact = asyncHandler(async (req, res) => {
+  const artifact = await Artifact.findById(req.params.id);
+  if (!artifact) throw new NotFoundError('Artifact');
+  await Artifact.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Artifact removed' });
+});
