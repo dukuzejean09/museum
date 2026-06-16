@@ -104,8 +104,7 @@ const TrailForm = () => {
  isActive: t.isActive ?? true,
  });
  if (t.coverImage) {
- const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
- setCoverPreview(`${base}${t.coverImage}`);
+ setCoverPreview(t.coverImage.startsWith('http') ? t.coverImage : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${t.coverImage}`);
  }
  } catch {
  toast.error('Failed to load trail');

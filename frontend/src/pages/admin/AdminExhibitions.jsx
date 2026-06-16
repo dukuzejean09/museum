@@ -23,6 +23,10 @@ const AdminExhibitions = () => {
  const [bulkQrOpen, setBulkQrOpen] = useState(false);
 
  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+ const imgUrl = (path) => {
+ if (!path) return null;
+ return path.startsWith('http') ? path : `${baseUrl}${path}`;
+ };
 
  const loadExhibitions = useCallback(async () => {
  try {
@@ -135,7 +139,7 @@ const AdminExhibitions = () => {
  <td className="px-6 py-4">
  {ex.coverImage ? (
  <img
- src={`${baseUrl}${ex.coverImage}`}
+ src={imgUrl(ex.coverImage)}
  alt={ex.title?.en || 'Cover'}
  className="w-12 h-12 rounded-lg object-cover"
  />

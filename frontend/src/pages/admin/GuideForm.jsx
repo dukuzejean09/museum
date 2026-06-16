@@ -54,7 +54,7 @@ const GuideForm = () => {
  email: data.email || '',
  });
  if (data.imageUrl) {
- setPreview(`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${data.imageUrl}`);
+ setPreview(data.imageUrl.startsWith('http') ? data.imageUrl : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${data.imageUrl}`);
  }
  // Load availability
  if (data.availability && data.availability.length > 0) {

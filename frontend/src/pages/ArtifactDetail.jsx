@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchArtifactById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
-import { ArrowLeft, Sparkles, X, ChevronLeft, ChevronRight, ExternalLink, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Sparkles, X, ChevronLeft, ChevronRight, ExternalLink, MapPin, Calendar, Volume2 } from 'lucide-react';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
 import toast from 'react-hot-toast';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
 const imgUrl = (path) => {
+ if (!path) return null;
+ return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
+};
+const mediaUrl = (path) => {
  if (!path) return null;
  return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
 };
@@ -161,6 +165,19 @@ const ArtifactDetail = () => {
 
  {/* Sidebar */}
  <div className="space-y-6">
+ {/* Audio Narration */}
+ {artifact.narrationAudioUrl && (
+ <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <div className="flex items-center gap-2 mb-3">
+ <Volume2 size={18} className="text-amber-600" />
+ <h3 className="font-semibold dark:text-white">{t('exhibits.audioNarration') || 'Audio Narration'}</h3>
+ </div>
+ <audio controls className="w-full" preload="metadata">
+ <source src={mediaUrl(artifact.narrationAudioUrl)} />
+ </audio>
+ </div>
+ )}
+
  {/* Related Exhibitions */}
  {artifact.exhibitions?.length > 0 && (
  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">

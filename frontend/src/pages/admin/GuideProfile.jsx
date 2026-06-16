@@ -54,8 +54,7 @@ const GuideProfile = () => {
  });
 
  if (data.imageUrl) {
- const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
- setPreview(`${base}${data.imageUrl}`);
+ setPreview(data.imageUrl.startsWith('http') ? data.imageUrl : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${data.imageUrl}`);
  }
 
  // Merge existing availability with defaults

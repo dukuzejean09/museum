@@ -68,7 +68,7 @@ const AdminGuides = () => {
                 <td className="px-6 py-4">
                   {guide.imageUrl ? (
                     <img
-                      src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${guide.imageUrl}`}
+                      src={guide.imageUrl?.startsWith('http') ? guide.imageUrl : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${guide.imageUrl}`}
                       alt={guide.name}
                       className="w-12 h-12 rounded-full object-cover"
                     />

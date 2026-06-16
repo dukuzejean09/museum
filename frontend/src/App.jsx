@@ -100,38 +100,42 @@ function App() {
                     {/* Gateway — always accessible */}
                     <Route path="/enter" element={<Gateway />} />
 
-                    {/* AR Scanner — full-screen, no layout */}
-                    <Route path="/ar" element={<ARScanner />} />
+                    {/* AR Scanner — full-screen, no layout, visitor-protected */}
+                    <Route element={<VisitorProtectedRoute />}>
+                      <Route path="/ar" element={<ARScanner />} />
+                    </Route>
 
-                    {/* Public content routes */}
+                    {/* Visitor-protected content routes — requires QR code authentication */}
                     <Route element={<Layout />}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/trail" element={<Navigate to="/trails" replace />} />
-                      <Route path="/guides" element={<Guides />} />
-                      <Route path="/feedback" element={<Feedback />} />
-                      <Route path="/map" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/scanner" element={<Navigate to="/ar" replace />} />
-                      <Route path="/exhibitions" element={<Exhibitions />} />
-                      <Route path="/exhibitions/:id" element={<ExhibitionDetail />} />
-                      <Route path="/artifacts" element={<Artifacts />} />
-                      <Route path="/artifacts/:id" element={<ArtifactDetail />} />
-                      <Route path="/trails" element={<Trails />} />
-                      <Route path="/trails/:id" element={<TrailDetail />} />
-                      <Route path="/stories" element={<Stories />} />
-                      <Route path="/stories/:id" element={<StoryDetail />} />
-                      <Route path="/search" element={<SearchPage />} />
-                      <Route path="/book" element={<BookVisit />} />
-                      {/* Redirects for old routes */}
-                      <Route path="/exhibits" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/exhibits/:id" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/museums" element={<Navigate to="/" replace />} />
-                      <Route path="/museums/:slug" element={<Navigate to="/" replace />} />
-                      <Route path="/collections/:id" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/ai-scanner" element={<Navigate to="/ar" replace />} />
-                      <Route path="/scan" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/book-tour" element={<Navigate to="/book" replace />} />
-                      <Route path="/survey" element={<Navigate to="/feedback" replace />} />
-                      <Route path="/chat" element={<Navigate to="/feedback" replace />} />
+                      <Route element={<VisitorProtectedRoute />}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/trail" element={<Navigate to="/trails" replace />} />
+                        <Route path="/guides" element={<Guides />} />
+                        <Route path="/feedback" element={<Feedback />} />
+                        <Route path="/map" element={<Navigate to="/exhibitions" replace />} />
+                        <Route path="/scanner" element={<Navigate to="/ar" replace />} />
+                        <Route path="/exhibitions" element={<Exhibitions />} />
+                        <Route path="/exhibitions/:id" element={<ExhibitionDetail />} />
+                        <Route path="/artifacts" element={<Artifacts />} />
+                        <Route path="/artifacts/:id" element={<ArtifactDetail />} />
+                        <Route path="/trails" element={<Trails />} />
+                        <Route path="/trails/:id" element={<TrailDetail />} />
+                        <Route path="/stories" element={<Stories />} />
+                        <Route path="/stories/:id" element={<StoryDetail />} />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/book" element={<BookVisit />} />
+                        {/* Redirects for old routes */}
+                        <Route path="/exhibits" element={<Navigate to="/exhibitions" replace />} />
+                        <Route path="/exhibits/:id" element={<Navigate to="/exhibitions" replace />} />
+                        <Route path="/museums" element={<Navigate to="/" replace />} />
+                        <Route path="/museums/:slug" element={<Navigate to="/" replace />} />
+                        <Route path="/collections/:id" element={<Navigate to="/exhibitions" replace />} />
+                        <Route path="/ai-scanner" element={<Navigate to="/ar" replace />} />
+                        <Route path="/scan" element={<Navigate to="/exhibitions" replace />} />
+                        <Route path="/book-tour" element={<Navigate to="/book" replace />} />
+                        <Route path="/survey" element={<Navigate to="/feedback" replace />} />
+                        <Route path="/chat" element={<Navigate to="/feedback" replace />} />
+                      </Route>
                     </Route>
 
                     {/* Staff login (public) */}

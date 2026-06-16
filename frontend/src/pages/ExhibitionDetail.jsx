@@ -95,7 +95,7 @@ const ExhibitionDetail = () => {
  ...(exhibition.media?.images || []),
  ];
  const narrationSrc = audioUrl(
- getLocalizedText(exhibition.narration?.full, lang) || exhibition.narration?.full?.en
+ getLocalizedText(exhibition.narration?.full, lang) || exhibition.narration?.full?.en || exhibition.narrationAudioUrl
  );
  const shareUrl = window.location.href;
  const shareText = `Check out "${getLocalizedText(exhibition.title, lang)}" exhibition!`;

@@ -36,6 +36,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Trust proxy (required behind reverse proxy / Docker / Render / etc.)
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 

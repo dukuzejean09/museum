@@ -74,6 +74,10 @@ const AdminTrails = () => {
  };
 
  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+ const imgUrl = (path) => {
+ if (!path) return null;
+ return path.startsWith('http') ? path : `${baseUrl}${path}`;
+ };
 
  if (loading) {
  return <TableSkeleton />;
@@ -146,7 +150,7 @@ const AdminTrails = () => {
  <td className="px-4 py-3">
  {trail.coverImage ? (
  <img
- src={`${baseUrl}${trail.coverImage}`}
+ src={imgUrl(trail.coverImage)}
  alt=""
  className="w-12 h-12 rounded-lg object-cover"
  />

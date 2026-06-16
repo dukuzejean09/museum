@@ -5,6 +5,7 @@ import OpenAI from 'openai';
 import Exhibition from '../models/Exhibition.js';
 import Artifact from '../models/Artifact.js';
 import { asyncHandler } from '../utils/errors.js';
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -196,13 +197,16 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
       response_format: 'mp3',
     });
 
-    const audioFileName = `narration-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.mp3`;
-    const audioPath = path.join(__dirname, '..', 'uploads', audioFileName);
     const buffer = Buffer.from(await mp3Response.arrayBuffer());
-    await fs.writeFile(audioPath, buffer);
+    const { url: audioUrl } = await uploadToCloudinary(buffer, {
+      folder: 'museum/narrations',
+      resource_type: 'video',
+      public_id: `narration-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      format: 'mp3',
+    });
 
     res.json({
-      audioUrl: `/uploads/${audioFileName}`,
+      audioUrl,
       text: narrationText,
     });
   } catch (error) {

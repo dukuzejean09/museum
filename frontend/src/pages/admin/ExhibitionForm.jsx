@@ -81,8 +81,7 @@ const ExhibitionForm = () => {
  artifacts: ex.artifacts?.map((a) => (typeof a === 'string' ? a : a._id)) || [],
  });
  if (ex.coverImage) {
- const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
- setCoverPreview(`${base}${ex.coverImage}`);
+ setCoverPreview(ex.coverImage.startsWith('http') ? ex.coverImage : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${ex.coverImage}`);
  }
  } catch (err) {
  toast.error('Failed to load exhibition');
@@ -359,8 +358,7 @@ const ExhibitionForm = () => {
  .map((artifact) => {
  const isSelected = form.artifacts.includes(artifact._id);
  const title = typeof artifact.name === 'object' ? (artifact.name.en || artifact.name.fr || artifact.name.rw || 'Untitled') : (artifact.name || artifact.title?.en || 'Untitled');
- const base = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
- const thumb = artifact.image ? `${base}${artifact.image}` : null;
+ const thumb = artifact.image ? (artifact.image.startsWith('http') ? artifact.image : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${artifact.image}`) : null;
  return (
  <div
  key={artifact._id}
