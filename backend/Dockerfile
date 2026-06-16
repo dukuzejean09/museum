@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────
-# Combined Backend + YOLO Service
+# Combined Backend + YOLO Service (Optimized for HF Spaces)
 # Deploy root: backend/
 # ─────────────────────────────────────────────────────
 
@@ -15,11 +15,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # ── YOLO Python service setup ──
 COPY yolo-service/requirements.txt /app/yolo-service/requirements.txt
-RUN python3 -m venv /app/yolo-venv && \
-    /app/yolo-venv/bin/pip install --no-cache-dir -r /app/yolo-service/requirements.txt
 
-# Pre-download YOLOv8 nano model into the image
-RUN /app/yolo-venv/bin/python3 -c "from ultralytics import YOLO; YOLO('yolov8n.pt')"
+# Install CPU-only PyTorch (pinned) then remaining deps
+RUN python3 -m venv /app/yolo-venv && \
+    /app/yolo-venv/bin/pip install --no-cache-dir \
+      torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu && \
+    /app/yolo-venv/bin/pip install --no-cache-dir -r /app/yolo-service/requirements.txt
 
 COPY yolo-service/ /app/yolo-service/
 RUN mkdir -p /app/yolo-service/models /app/yolo-service/datasets
@@ -33,7 +34,7 @@ COPY . .
 # Create required directories
 RUN mkdir -p /app/uploads /app/uploads/descriptors
 
-# ── Startup script ──
+# ── Startup script (YOLO model auto-downloads on first request) ──
 RUN printf '#!/bin/bash\nset -e\n\necho "Starting YOLO service on port 8001..."\ncd /app/yolo-service\n/app/yolo-venv/bin/uvicorn main:app --host 127.0.0.1 --port 8001 &\nYOLO_PID=$!\n\nsleep 3\n\necho "Starting Node.js backend on port ${PORT:-7860}..."\ncd /app\nnode server.js &\nNODE_PID=$!\n\necho "Both services running (YOLO: $YOLO_PID, Node: $NODE_PID)"\n\ntrap "kill $YOLO_PID $NODE_PID 2>/dev/null; exit 0" SIGTERM SIGINT\n\nwait -n $YOLO_PID $NODE_PID\nkill $YOLO_PID $NODE_PID 2>/dev/null\nexit $?\n' > /app/start.sh && chmod +x /app/start.sh
 
 EXPOSE 7860
