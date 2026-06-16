@@ -1,8 +1,8 @@
 ---
 title: Museum AR Smart Tourism
 emoji: 🏛️
-colorFrom: amber
-colorTo: yellow
+colorFrom: yellow
+colorTo: red
 sdk: docker
 pinned: false
 ---
