@@ -81,6 +81,30 @@ services:
     networks:
       - museum_network
 
+  # YOLO Microservice - Object detection for AR
+  yolo-service:
+    image: museum-yolo
+    build:
+      context: ./yolo-service
+      dockerfile: Dockerfile
+    container_name: museum_yolo
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      CONFIDENCE_THRESHOLD: 0.5
+      MODEL_DIR: /app/models
+      CORS_ORIGINS: '["http://localhost","http://localhost:80"]'
+    volumes:
+      - yolo_models:/app/models
+    networks:
+      - museum_network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Seed service - runs once to populate the database
   seed:
     image: museum-seed
@@ -102,6 +126,7 @@ services:
 volumes:
   mongodb_data:
   backend_uploads:
+  yolo_models:
 
 networks:
   museum_network:

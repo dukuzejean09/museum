@@ -307,5 +307,32 @@
   "common.status": "Status",
   "common.name": "Name",
   "common.title": "Title",
-  "common.description": "Description"
+  "common.description": "Description",
+
+  "nav.ar": "AR Experience",
+
+  "home.linkAR": "Point your camera at exhibits for instant AR information",
+
+  "ar.pointCamera": "Point camera at an exhibit or QR code",
+  "ar.scanning": "Scanning...",
+  "ar.loading": "Loading info...",
+  "ar.identifying": "Identifying...",
+  "ar.ready": "Ready to scan",
+  "ar.identify": "Identify",
+  "ar.scanAgain": "Scan Again",
+  "ar.dismiss": "Close",
+  "ar.back": "Back",
+  "ar.viewDetails": "View Full Details",
+  "ar.exhibition": "Exhibition",
+  "ar.artifact": "Artifact",
+  "ar.methodQR": "QR Detected",
+  "ar.methodOpenCV": "Image Matched",
+  "ar.methodYOLO": "Object Detected",
+  "ar.methodAI": "AI Identified",
+  "ar.levelFull": "Full Pipeline",
+  "ar.levelNoYOLO": "QR + Vision",
+  "ar.levelQROnly": "QR Only",
+  "ar.levelManual": "Manual Mode",
+  "ar.cameraError": "Cannot access camera. Please check permissions.",
+  "ar.noMatch": "Could not identify this object. Try moving closer or scanning a QR code."
 }

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useVisitor } from '../context/VisitorContext';
-import { Menu, X, Clock } from 'lucide-react';
+import { Menu, X, Clock, ScanLine } from 'lucide-react';
 
 const navBg = 'bg-slate-900';
 const border = 'border-slate-800';
@@ -44,6 +44,7 @@ const Navbar = () => {
     { to: '/guides', label: t('nav.guides') },
     { to: '/feedback', label: t('nav.feedback') },
     { to: '/search', label: t('nav.search') },
+    { to: '/ar', label: t('nav.ar') || 'AR', icon: ScanLine },
   ];
 
   const isActive = (path) =>

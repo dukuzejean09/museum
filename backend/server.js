@@ -24,6 +24,8 @@ import authRoutes from './routes/authRoutes.js';
 import qrRoutes from './routes/qrRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import visitorAuthRoutes from './routes/visitorAuthRoutes.js';
+import { publicRouter as arPublic, adminRouter as arAdmin } from './routes/arRoutes.js';
+import yoloProxyRoutes from './routes/yoloProxyRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -73,10 +75,20 @@ const aiLimiter = rateLimit({
   message: { message: 'AI request limit reached, please try again later' },
 });
 
+const arLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,
+  message: { message: 'AR scan limit reached, please try again later' },
+});
+
 app.use('/api', apiLimiter);
 app.use('/api/auth', authLimiter);
 app.use('/api/visitor/validate', authLimiter);
 app.use('/api/ai', aiLimiter);
+app.use('/api/ai/identify-visitor', arLimiter);
+
+// YOLO proxy must be mounted BEFORE body parsers so raw multipart is forwarded intact
+app.use('/api/yolo', yoloProxyRoutes);
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -135,6 +147,7 @@ app.use('/api/bookings', bookingPublic);
 app.use('/api/surveys', surveyPublic);
 app.use('/api/search', searchPublic);
 app.use('/api/analytics', analyticsPublic);
+app.use('/api/ar', arPublic);
 
 // ──────────────────────────────────────────────
 // Admin API routes (protected by auth middleware in each route file)
@@ -150,6 +163,7 @@ app.use('/api/admin/surveys', surveyAdmin);
 app.use('/api/admin/analytics', analyticsAdmin);
 app.use('/api/qr', qrRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/admin/ar', arAdmin);
 
 // ──────────────────────────────────────────────
 // Global error handler

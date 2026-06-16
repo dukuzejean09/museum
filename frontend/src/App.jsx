@@ -25,6 +25,7 @@ const BookVisit = React.lazy(() => import('./pages/BookVisit'));
 const Stories = React.lazy(() => import('./pages/Stories'));
 const StoryDetail = React.lazy(() => import('./pages/StoryDetail'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
+const ARScanner = React.lazy(() => import('./pages/ARScanner'));
 
 // Lazy-loaded admin pages
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
@@ -97,6 +98,9 @@ function App() {
                     {/* Gateway — always accessible */}
                     <Route path="/enter" element={<Gateway />} />
 
+                    {/* AR Scanner — full-screen, no layout */}
+                    <Route path="/ar" element={<ARScanner />} />
+
                     {/* Public content routes */}
                     <Route element={<Layout />}>
                       <Route path="/" element={<Home />} />
@@ -104,7 +108,7 @@ function App() {
                       <Route path="/guides" element={<Guides />} />
                       <Route path="/feedback" element={<Feedback />} />
                       <Route path="/map" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/scanner" element={<Navigate to="/search" replace />} />
+                      <Route path="/scanner" element={<Navigate to="/ar" replace />} />
                       <Route path="/exhibitions" element={<Exhibitions />} />
                       <Route path="/exhibitions/:id" element={<ExhibitionDetail />} />
                       <Route path="/artifacts" element={<Artifacts />} />
@@ -121,7 +125,7 @@ function App() {
                       <Route path="/museums" element={<Navigate to="/" replace />} />
                       <Route path="/museums/:slug" element={<Navigate to="/" replace />} />
                       <Route path="/collections/:id" element={<Navigate to="/exhibitions" replace />} />
-                      <Route path="/ai-scanner" element={<Navigate to="/search" replace />} />
+                      <Route path="/ai-scanner" element={<Navigate to="/ar" replace />} />
                       <Route path="/scan" element={<Navigate to="/exhibitions" replace />} />
                       <Route path="/book-tour" element={<Navigate to="/book" replace />} />
                       <Route path="/survey" element={<Navigate to="/feedback" replace />} />

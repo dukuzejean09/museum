@@ -162,6 +162,15 @@ export const adminCreateStory = (data) => AdminAPI.post('/admin/stories', data);
 export const adminUpdateStory = (id, data) => AdminAPI.put(`/admin/stories/${id}`, data);
 export const adminDeleteStory = (id) => AdminAPI.delete(`/admin/stories/${id}`);
 
+// AR Features
+export const aiIdentifyVisitor = (formData) =>
+  API.post('/ai/identify-visitor', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+export const fetchARDescriptors = (type) => API.get('/ar/descriptors', { params: { type } });
+export const generateArtifactQR = (artifactId) => AdminAPI.get(`/qr/artifact/${artifactId}`);
+export const adminRebuildDescriptors = () => AdminAPI.post('/admin/ar/descriptors/rebuild');
+export const adminValidateDescriptors = () => AdminAPI.post('/admin/ar/descriptors/validate');
+export const adminUploadDescriptor = (data) => AdminAPI.post('/admin/ar/descriptors/upload', data);
+
 // Visitor Auth
 export const validateVisitorCode = (code) => axios.post(`${API_BASE}/visitor/validate`, { code });
 export const adminGenerateAccessCode = (data) => AdminAPI.post('/visitor/codes', data);

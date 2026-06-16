@@ -304,5 +304,32 @@
   "common.status": "Imiterere",
   "common.name": "Izina",
   "common.title": "Umutwe",
-  "common.description": "Ibisobanuro"
+  "common.description": "Ibisobanuro",
+
+  "nav.ar": "Uburambe bwa AR",
+
+  "home.linkAR": "Ereka kamera yawe ibikoresho byo mu nzu ndangamurage kugira ngo ubone amakuru ya AR",
+
+  "ar.pointCamera": "Ereka kamera ibikoresho cyangwa kode ya QR",
+  "ar.scanning": "Gusikana...",
+  "ar.loading": "Gutegura amakuru...",
+  "ar.identifying": "Kumenya...",
+  "ar.ready": "Iteguye gusikana",
+  "ar.identify": "Menya",
+  "ar.scanAgain": "Ongera Usikane",
+  "ar.dismiss": "Funga",
+  "ar.back": "Subira Inyuma",
+  "ar.viewDetails": "Reba Amakuru Yose",
+  "ar.exhibition": "Ikusanyirizo",
+  "ar.artifact": "Igikoresho",
+  "ar.methodQR": "QR yabonetse",
+  "ar.methodOpenCV": "Ishusho imenyekanye",
+  "ar.methodYOLO": "Igikoresho cyabonetse",
+  "ar.methodAI": "Kimenyekanijwe na AI",
+  "ar.levelFull": "Pipeline yuzuye",
+  "ar.levelNoYOLO": "QR + Vision",
+  "ar.levelQROnly": "QR gusa",
+  "ar.levelManual": "Uburyo bw'ibanze",
+  "ar.cameraError": "Ntibishoboka kwinjira muri kamera. Reba uruhushya.",
+  "ar.noMatch": "Ntibishoboye kumenya iki gikoresho. Gerageza kwegera cyangwa usikane kode ya QR."
 }

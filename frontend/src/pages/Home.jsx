@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
-import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints, Sparkles, Heart } from 'lucide-react';
+import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints, Sparkles, Heart, ScanLine } from 'lucide-react';
 import HomeCt from '../assets/HomeCt.jpeg';
 import { useLanguage } from '../i18n/LanguageContext';
 import { fetchFeaturedTrails, fetchExhibitions, fetchGuides, fetchArtifacts } from '../api';
@@ -12,7 +12,8 @@ const quickLinks = [
  { to: '/exhibitions', icon: BookOpen, labelKey: 'nav.exhibitions', descKey: 'home.linkExhibitions', color: 'from-amber-500 to-orange-500' },
  { to: '/artifacts', icon: Gem, labelKey: 'nav.artifacts', descKey: 'home.linkArtifacts', color: 'from-emerald-500 to-teal-500' },
  { to: '/trails', icon: Compass, labelKey: 'nav.trails', descKey: 'home.linkTrails', color: 'from-sky-500 to-blue-500' },
- { to: '/search', icon: Search, labelKey: 'nav.search', descKey: 'home.linkScanner', color: 'from-violet-500 to-purple-500' },
+ { to: '/ar', icon: ScanLine, labelKey: 'nav.ar', descKey: 'home.linkAR', color: 'from-violet-500 to-purple-500' },
+ { to: '/search', icon: Search, labelKey: 'nav.search', descKey: 'home.linkScanner', color: 'from-cyan-500 to-sky-500' },
  { to: '/guides', icon: Users, labelKey: 'nav.guides', descKey: 'home.linkGuides', color: 'from-rose-500 to-pink-500' },
  { to: '/feedback', icon: MessageSquare, labelKey: 'nav.feedback', descKey: 'home.linkFeedback', color: 'from-amber-600 to-yellow-500' },
 ];

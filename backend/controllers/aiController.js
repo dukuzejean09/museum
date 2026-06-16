@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import OpenAI from 'openai';
 import Exhibition from '../models/Exhibition.js';
+import Artifact from '../models/Artifact.js';
 import { asyncHandler } from '../utils/errors.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,9 +22,26 @@ const getLocalizedText = (field, lang = 'en') => {
   return field[lang] || field.en || field.fr || field.rw || '';
 };
 
-// @desc    Upload image, identify exhibition via GPT-4o vision
-// @route   POST /api/ai/identify
-export const identifyExhibit = asyncHandler(async (req, res) => {
+// Build context string with both exhibitions and artifacts
+const buildMuseumContext = async () => {
+  const [exhibitions, artifacts] = await Promise.all([
+    Exhibition.find({ status: 'published' }, 'title shortDescription tags').lean(),
+    Artifact.find({ status: 'published' }, 'name description category').lean(),
+  ]);
+
+  const exhibitionList = exhibitions.map(e =>
+    `[EXHIBITION] ID: ${e._id} | Title: ${getLocalizedText(e.title)} | Description: ${getLocalizedText(e.shortDescription)} | Tags: ${(e.tags || []).join(', ')}`
+  ).join('\n');
+
+  const artifactList = artifacts.map(a =>
+    `[ARTIFACT] ID: ${a._id} | Name: ${getLocalizedText(a.name)} | Description: ${getLocalizedText(a.description)} | Category: ${a.category || 'uncategorized'}`
+  ).join('\n');
+
+  return { exhibitionList, artifactList };
+};
+
+// Shared identification logic used by both admin and visitor endpoints
+const runIdentification = async (req, res) => {
   let imagePath = null;
   try {
     if (!req.file) {
@@ -36,11 +54,7 @@ export const identifyExhibit = asyncHandler(async (req, res) => {
     const base64Image = imageBuffer.toString('base64');
     const mimeType = req.file.mimetype;
 
-    // Fetch all exhibitions for context
-    const exhibitions = await Exhibition.find({ status: 'published' }, 'title shortDescription tags').lean();
-    const exhibitionList = exhibitions.map(e =>
-      `ID: ${e._id} | Title: ${getLocalizedText(e.title)} | Description: ${getLocalizedText(e.shortDescription)} | Tags: ${(e.tags || []).join(', ')}`
-    ).join('\n');
+    const { exhibitionList, artifactList } = await buildMuseumContext();
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -49,21 +63,26 @@ export const identifyExhibit = asyncHandler(async (req, res) => {
           role: 'system',
           content: `You are an AI museum guide for the Kandt House Museum in Kigali, Rwanda. The museum focuses on natural history, taxonomy, and the history of Richard Kandt.
 
-When shown an image, identify which museum exhibition it matches from the list below. If you find a match, respond in this exact JSON format:
-{"matched": true, "exhibitionId": "<the exhibition's ID>", "confidence": "high|medium|low", "description": "<a rich 2-3 sentence narration about this exhibition suitable for audio playback, written as if you are a friendly female museum guide speaking to a visitor>"}
+When shown an image, identify which museum exhibition OR artifact it matches from the lists below. Check BOTH exhibitions and artifacts.
+
+If you find a match, respond in this exact JSON format:
+{"matched": true, "entityType": "exhibition" or "artifact", "entityId": "<the item's ID>", "confidence": "high|medium|low", "description": "<a rich 2-3 sentence narration about this item suitable for audio playback, written as if you are a friendly female museum guide speaking to a visitor>"}
 
 If no match is found, still try to identify what's in the image and provide helpful information:
-{"matched": false, "exhibitionId": null, "confidence": "none", "description": "<a 2-3 sentence description of what you see in the image and any relevant museum context, spoken as a friendly female museum guide>"}
+{"matched": false, "entityType": null, "entityId": null, "confidence": "none", "description": "<a 2-3 sentence description of what you see in the image and any relevant museum context, spoken as a friendly female museum guide>"}
 
 IMPORTANT: Respond ONLY with valid JSON, no markdown or extra text.
 
 Museum exhibitions:
-${exhibitionList}`
+${exhibitionList}
+
+Museum artifacts:
+${artifactList}`
         },
         {
           role: 'user',
           content: [
-            { type: 'text', text: 'Please identify this museum artifact or specimen:' },
+            { type: 'text', text: 'Please identify this museum artifact, specimen, or exhibition:' },
             { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } }
           ]
         }
@@ -78,24 +97,39 @@ ${exhibitionList}`
       const cleaned = aiText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       result = JSON.parse(cleaned);
     } catch {
-      result = { matched: false, exhibitionId: null, confidence: 'none', description: aiText };
+      result = { matched: false, entityType: null, entityId: null, confidence: 'none', description: aiText };
     }
 
-    // If matched, fetch full exhibition data
-    let exhibition = null;
-    if (result.matched && result.exhibitionId) {
-      exhibition = await Exhibition.findById(result.exhibitionId).lean();
+    // Backward compat: if old-format response has exhibitionId but no entityType
+    if (result.exhibitionId && !result.entityType) {
+      result.entityType = 'exhibition';
+      result.entityId = result.exhibitionId;
     }
 
-    // Clean up uploaded file
+    // Fetch full entity data
+    let entity = null;
+    if (result.matched && result.entityId) {
+      if (result.entityType === 'artifact') {
+        entity = await Artifact.findById(result.entityId).lean();
+      } else {
+        entity = await Exhibition.findById(result.entityId).lean();
+      }
+    }
+
     await fs.unlink(imagePath).catch(() => {});
 
     res.json({
-      ...result,
-      exhibition: exhibition || null,
+      matched: result.matched,
+      entityType: result.entityType || null,
+      entityId: result.entityId || null,
+      confidence: result.confidence,
+      description: result.description,
+      entity: entity || null,
+      // Backward compat fields
+      exhibitionId: result.entityType === 'exhibition' ? result.entityId : null,
+      exhibition: result.entityType === 'exhibition' ? entity : null,
     });
   } catch (error) {
-    // Clean up on error too
     if (imagePath) await fs.unlink(imagePath).catch(() => {});
 
     if (error.message === 'OPENAI_API_KEY is not configured') {
@@ -103,13 +137,25 @@ ${exhibitionList}`
     }
     throw error;
   }
+};
+
+// @desc    Upload image, identify exhibition/artifact via GPT-4o vision (admin/guide)
+// @route   POST /api/ai/identify
+export const identifyExhibit = asyncHandler(async (req, res) => {
+  return runIdentification(req, res);
 });
 
-// @desc    Generate TTS audio for exhibition description
+// @desc    Upload image, identify exhibition/artifact via GPT-4o vision (visitor-accessible)
+// @route   POST /api/ai/identify-visitor
+export const identifyVisitor = asyncHandler(async (req, res) => {
+  return runIdentification(req, res);
+});
+
+// @desc    Generate TTS audio for exhibition or artifact description
 // @route   POST /api/ai/narrate
 export const narrateExhibit = asyncHandler(async (req, res) => {
   try {
-    const { text, exhibitionId } = req.body;
+    const { text, exhibitionId, artifactId } = req.body;
     const openai = getOpenAI();
 
     let narrationText = text;
@@ -125,8 +171,22 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
       if (significance) narrationText += significance;
     }
 
+    if (artifactId && !text && !exhibitionId) {
+      const artifact = await Artifact.findById(artifactId).lean();
+      if (!artifact) return res.status(404).json({ message: 'Artifact not found' });
+
+      narrationText = `Welcome! You're looking at ${getLocalizedText(artifact.name)}. `;
+      const desc = getLocalizedText(artifact.description);
+      if (desc) narrationText += desc + ' ';
+      const story = getLocalizedText(artifact.historicalStory);
+      if (story) narrationText += story + ' ';
+      const origin = getLocalizedText(artifact.originLocation);
+      if (origin) narrationText += `This artifact originates from ${origin}. `;
+      if (artifact.dateCreated) narrationText += `It dates back to ${artifact.dateCreated}.`;
+    }
+
     if (!narrationText) {
-      return res.status(400).json({ message: 'No text or exhibitionId provided' });
+      return res.status(400).json({ message: 'No text, exhibitionId, or artifactId provided' });
     }
 
     const mp3Response = await openai.audio.speech.create({
