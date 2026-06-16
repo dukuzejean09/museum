@@ -10,7 +10,7 @@ const RecognitionStatus = ({ scanning, loading, identifying, opencvReady, perfor
   const levelLabels = {
     3: t('ar.levelFull'),
     2: t('ar.levelNoYOLO'),
-    1: t('ar.levelQROnly'),
+    1: t('ar.levelOpenCVOnly'),
     0: t('ar.levelManual'),
   };
 

@@ -2,6 +2,7 @@ import Exhibition from '../models/Exhibition.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
+import { generateAudioForEntity } from '../jobs/audioGeneration.js';
 
 // @desc    Get exhibitions — paginated, filterable
 // @route   GET /api/exhibitions
@@ -78,6 +79,13 @@ export const createExhibition = asyncHandler(async (req, res) => {
   }
 
   const exhibition = await Exhibition.create(data);
+
+  // Auto-generate narration audio only if admin didn't upload narration
+  const hasUploadedNarration = req.files?.narrationFull?.[0];
+  if (!hasUploadedNarration) {
+    generateAudioForEntity('exhibition', exhibition._id).catch(() => {});
+  }
+
   res.status(201).json(exhibition);
 });
 
@@ -128,6 +136,13 @@ export const updateExhibition = asyncHandler(async (req, res) => {
 
   Object.assign(exhibition, data);
   await exhibition.save();
+
+  // Re-generate narration audio only if admin didn't upload narration in this update
+  const hasUploadedNarration = req.files?.narrationFull?.[0];
+  if (!hasUploadedNarration) {
+    generateAudioForEntity('exhibition', exhibition._id).catch(() => {});
+  }
+
   res.json(exhibition);
 });
 

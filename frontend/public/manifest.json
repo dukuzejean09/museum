@@ -1,0 +1,19 @@
+{
+  "name": "Kandt House Museum",
+  "short_name": "Kandt Museum",
+  "description": "QR-Enabled AR Smart Tourism System for Kandt House Museum, Kigali",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#d97706",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "tourism"]
+}

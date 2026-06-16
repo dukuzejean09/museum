@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { adminFetchExhibitions, adminDeleteExhibition } from '../../api';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Route, Image as ImageIcon, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Route, Image as ImageIcon, Search, QrCode, Layers } from 'lucide-react';
 import StatusBadge from '../../components/ui/StatusBadge';
 import Pagination from '../../components/ui/Pagination';
+import QRPreviewModal from '../../components/admin/QRPreviewModal';
+import QRBulkManager from '../../components/admin/QRBulkManager';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
@@ -17,6 +19,8 @@ const AdminExhibitions = () => {
  const [page, setPage] = useState(1);
  const [totalPages, setTotalPages] = useState(1);
  const [total, setTotal] = useState(0);
+ const [qrExhibition, setQrExhibition] = useState(null);
+ const [bulkQrOpen, setBulkQrOpen] = useState(false);
 
  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
@@ -71,14 +75,22 @@ const AdminExhibitions = () => {
 
  return (
  <div>
- <div className="flex justify-between items-center mb-6">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
  <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Exhibitions</h1>
+ <div className="flex items-center gap-2">
+ <button
+ onClick={() => setBulkQrOpen(true)}
+ className="flex items-center gap-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-2 rounded-xl transition font-medium text-sm"
+ >
+ <Layers size={16} /> Bulk QR
+ </button>
  <Link
  to="/admin/exhibitions/new"
- className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition font-medium"
+ className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition font-medium text-sm"
  >
  <Plus size={20} /> Create Exhibition
  </Link>
+ </div>
  </div>
 
  {/* Filters */}
@@ -106,8 +118,8 @@ const AdminExhibitions = () => {
  </select>
  </div>
 
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
- <table className="w-full">
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden overflow-x-auto">
+ <table className="w-full min-w-[600px]">
  <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
  <tr>
  <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Cover</th>
@@ -144,6 +156,13 @@ const AdminExhibitions = () => {
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
+ <button
+ onClick={() => setQrExhibition(ex)}
+ className="p-2 text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition"
+ title="QR Code"
+ >
+ <QrCode size={18} />
+ </button>
  <Link
  to={`/admin/exhibitions/edit/${ex._id}`}
  className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
@@ -183,6 +202,20 @@ const AdminExhibitions = () => {
  </div>
 
  <Pagination page={page} pages={totalPages} total={total} onPageChange={setPage} />
+
+ <QRPreviewModal
+ isOpen={!!qrExhibition}
+ onClose={() => setQrExhibition(null)}
+ entityType="exhibition"
+ entity={qrExhibition}
+ frontendUrl={window.location.origin}
+ />
+ <QRBulkManager
+ isOpen={bulkQrOpen}
+ onClose={() => setBulkQrOpen(false)}
+ items={exhibitions}
+ entityType="exhibition"
+ />
  </div>
  );
 };

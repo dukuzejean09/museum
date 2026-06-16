@@ -310,7 +310,7 @@
 
   "home.linkAR": "Ereka kamera yawe ibikoresho byo mu nzu ndangamurage kugira ngo ubone amakuru ya AR",
 
-  "ar.pointCamera": "Ereka kamera ibikoresho cyangwa kode ya QR",
+  "ar.pointCamera": "Ereka kamera ku bikoresho kugira ngo ubimenyekanishe",
   "ar.scanning": "Gusikana...",
   "ar.loading": "Gutegura amakuru...",
   "ar.identifying": "Kumenya...",
@@ -327,9 +327,9 @@
   "ar.methodYOLO": "Igikoresho cyabonetse",
   "ar.methodAI": "Kimenyekanijwe na AI",
   "ar.levelFull": "Pipeline yuzuye",
-  "ar.levelNoYOLO": "QR + Vision",
-  "ar.levelQROnly": "QR gusa",
+  "ar.levelNoYOLO": "OpenCV + AI",
+  "ar.levelOpenCVOnly": "OpenCV gusa",
   "ar.levelManual": "Uburyo bw'ibanze",
   "ar.cameraError": "Ntibishoboka kwinjira muri kamera. Reba uruhushya.",
-  "ar.noMatch": "Ntibishoboye kumenya iki gikoresho. Gerageza kwegera cyangwa usikane kode ya QR."
+  "ar.noMatch": "Ntibishoboye kumenya iki gikoresho. Gerageza kwegera cyangwa ukande Menya."
 }

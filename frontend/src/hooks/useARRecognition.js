@@ -1,34 +1,34 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { fetchExhibitionById, fetchArtifactById, fetchARDescriptors, aiIdentifyVisitor, aiNarrate, trackEvent } from '../api';
-import useQRScanner from './useQRScanner';
 import useOpenCV from './useOpenCV';
 import useYOLO from './useYOLO';
 
 const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 /**
- * Master AR recognition hook — orchestrates the full pipeline:
- * QR -> OpenCV -> YOLO -> GPT-4o
+ * Master AR recognition hook — orchestrates the recognition pipeline:
+ * OpenCV -> YOLO -> GPT-4o
  *
+ * QR codes are used only for museum entry authentication, not for artifact recognition.
  * Implements graceful degradation for low-end devices.
  */
 export default function useARRecognition({ videoRef, canvasRef, enabled = true }) {
   const [entity, setEntity] = useState(null);         // Resolved entity data
   const [entityType, setEntityType] = useState(null);  // 'exhibition' | 'artifact'
-  const [method, setMethod] = useState(null);          // 'qr' | 'opencv' | 'yolo' | 'gpt4o'
+  const [method, setMethod] = useState(null);          // 'opencv' | 'yolo' | 'gpt4o'
   const [loading, setLoading] = useState(false);
   const [identifying, setIdentifying] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const [error, setError] = useState(null);
-  const [performanceLevel, setPerformanceLevel] = useState(3); // 3=full, 2=no yolo, 1=qr only, 0=manual
+  const [scanning, setScanning] = useState(false);
+  const [performanceLevel, setPerformanceLevel] = useState(3); // 3=full, 2=no yolo, 1=opencv only, 0=manual
 
   const fpsRef = useRef([]);
   const lastEntityIdRef = useRef(null);
 
-  // Sub-hooks
-  const qr = useQRScanner({ videoRef, canvasRef, enabled, scanInterval: 250 });
-  const opencv = useOpenCV({ enabled: enabled && performanceLevel >= 2 });
-  const yolo = useYOLO({ enabled: enabled && performanceLevel >= 3 });
+  // Sub-hooks (no QR — QR is auth-only)
+  const opencv = useOpenCV({ enabled: enabled && performanceLevel >= 1 });
+  const yolo = useYOLO({ enabled: enabled && performanceLevel >= 2 });
 
   // Load descriptors on mount
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
 
   // Check YOLO availability on mount
   useEffect(() => {
-    if (enabled && performanceLevel >= 3) {
+    if (enabled && performanceLevel >= 2) {
       yolo.checkAvailability();
     }
   }, [enabled, performanceLevel]);
@@ -107,9 +107,30 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
     }
   }, []);
 
-  // Auto-generate narration
+  // Auto-generate narration — priority: uploaded audio > pre-generated > on-demand TTS
   const autoNarrate = useCallback(async (type, id, entityData) => {
     try {
+      // 1. Check for admin-uploaded narration audio first (exhibitions have narration.full)
+      const lang = navigator.language?.startsWith('fr') ? 'fr' : navigator.language?.startsWith('rw') ? 'rw' : 'en';
+      const uploadedAudio = entityData?.narration?.full?.[lang] || entityData?.narration?.full?.en;
+      if (uploadedAudio) {
+        const url = uploadedAudio.startsWith('http')
+          ? uploadedAudio
+          : `${API_BASE}${uploadedAudio}`;
+        setAudioUrl(url);
+        return;
+      }
+
+      // 2. Check for pre-generated (TTS) audio
+      if (entityData?.narrationAudioUrl) {
+        const url = entityData.narrationAudioUrl.startsWith('http')
+          ? entityData.narrationAudioUrl
+          : `${API_BASE}${entityData.narrationAudioUrl}`;
+        setAudioUrl(url);
+        return;
+      }
+
+      // Fall back to on-demand TTS generation
       const payload = type === 'artifact' ? { artifactId: id } : { exhibitionId: id };
       const { data } = await aiNarrate(payload);
       const url = data.audioUrl?.startsWith('http') ? data.audioUrl : `${API_BASE}${data.audioUrl}`;
@@ -119,20 +140,9 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
     }
   }, []);
 
-  // React to QR scan results
-  useEffect(() => {
-    if (qr.lastResult?.parsed && !loading) {
-      const { type, id } = qr.lastResult.parsed;
-      if (type && id) {
-        resolveEntity(type, id, 'qr');
-        qr.clearResult();
-      }
-    }
-  }, [qr.lastResult, loading, resolveEntity]);
-
   // Periodic OpenCV matching (runs every ~500ms when no entity is shown)
   useEffect(() => {
-    if (!enabled || entity || !opencv.isReady || opencv.descriptorCount === 0 || performanceLevel < 2) return;
+    if (!enabled || !scanning || entity || !opencv.isReady || opencv.descriptorCount === 0 || performanceLevel < 1) return;
 
     const interval = setInterval(() => {
       const video = videoRef.current;
@@ -152,7 +162,7 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
     }, 500);
 
     return () => clearInterval(interval);
-  }, [enabled, entity, opencv.isReady, opencv.descriptorCount, performanceLevel, videoRef, canvasRef]);
+  }, [enabled, entity, scanning, opencv.isReady, opencv.descriptorCount, performanceLevel, videoRef, canvasRef]);
 
   // React to OpenCV match results
   useEffect(() => {
@@ -183,7 +193,7 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
     setError(null);
 
     // Try YOLO first if available
-    if (performanceLevel >= 3 && yolo.available) {
+    if (performanceLevel >= 2 && yolo.available) {
       const detection = await yolo.detect(blob);
       if (detection && detection.confidence >= 0.5) {
         // YOLO matched — try to resolve
@@ -251,14 +261,14 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
     lastEntityIdRef.current = null;
   }, [entity, entityType, method]);
 
-  // Start/stop scanning
+  // Start/stop scanning (OpenCV runs automatically via interval, so start just sets flag)
   const start = useCallback(() => {
-    qr.startScanning();
-  }, [qr]);
+    setScanning(true);
+  }, []);
 
   const stop = useCallback(() => {
-    qr.stopScanning();
-  }, [qr]);
+    setScanning(false);
+  }, []);
 
   return {
     entity,
@@ -269,7 +279,7 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
     audioUrl,
     error,
     performanceLevel,
-    scanning: qr.scanning,
+    scanning,
     opencvReady: opencv.isReady,
     start,
     stop,

@@ -313,7 +313,7 @@
 
   "home.linkAR": "Point your camera at exhibits for instant AR information",
 
-  "ar.pointCamera": "Point camera at an exhibit or QR code",
+  "ar.pointCamera": "Point camera at an exhibit to identify it",
   "ar.scanning": "Scanning...",
   "ar.loading": "Loading info...",
   "ar.identifying": "Identifying...",
@@ -330,9 +330,9 @@
   "ar.methodYOLO": "Object Detected",
   "ar.methodAI": "AI Identified",
   "ar.levelFull": "Full Pipeline",
-  "ar.levelNoYOLO": "QR + Vision",
-  "ar.levelQROnly": "QR Only",
+  "ar.levelNoYOLO": "OpenCV + AI",
+  "ar.levelOpenCVOnly": "OpenCV Only",
   "ar.levelManual": "Manual Mode",
   "ar.cameraError": "Cannot access camera. Please check permissions.",
-  "ar.noMatch": "Could not identify this object. Try moving closer or scanning a QR code."
+  "ar.noMatch": "Could not identify this object. Try moving closer or tap Identify."
 }

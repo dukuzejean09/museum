@@ -2,6 +2,7 @@ import Artifact from '../models/Artifact.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
+import { generateAudioForEntity } from '../jobs/audioGeneration.js';
 
 // @desc    Get artifacts — paginated, filterable
 // @route   GET /api/artifacts
@@ -66,6 +67,10 @@ export const createArtifact = asyncHandler(async (req, res) => {
   }
 
   const artifact = await Artifact.create(data);
+
+  // Auto-generate narration audio in the background
+  generateAudioForEntity('artifact', artifact._id).catch(() => {});
+
   res.status(201).json(artifact);
 });
 
@@ -94,6 +99,10 @@ export const updateArtifact = asyncHandler(async (req, res) => {
 
   Object.assign(artifact, data);
   await artifact.save();
+
+  // Re-generate narration audio in the background
+  generateAudioForEntity('artifact', artifact._id).catch(() => {});
+
   res.json(artifact);
 });
 

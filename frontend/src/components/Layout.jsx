@@ -90,8 +90,12 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+      {/* Skip to content link for keyboard users */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-amber-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+        Skip to main content
+      </a>
       <Navbar />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" role="main">
         <ErrorBoundary key={location.pathname}>
           <Outlet />
         </ErrorBoundary>

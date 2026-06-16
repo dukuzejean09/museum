@@ -310,7 +310,7 @@
 
   "home.linkAR": "Pointez votre camera vers les expositions pour des informations AR instantanees",
 
-  "ar.pointCamera": "Pointez la camera vers une exposition ou un code QR",
+  "ar.pointCamera": "Pointez la caméra vers un objet pour l'identifier",
   "ar.scanning": "Scan en cours...",
   "ar.loading": "Chargement...",
   "ar.identifying": "Identification...",
@@ -327,9 +327,9 @@
   "ar.methodYOLO": "Objet detecte",
   "ar.methodAI": "Identifie par IA",
   "ar.levelFull": "Pipeline complet",
-  "ar.levelNoYOLO": "QR + Vision",
-  "ar.levelQROnly": "QR uniquement",
+  "ar.levelNoYOLO": "OpenCV + IA",
+  "ar.levelOpenCVOnly": "OpenCV uniquement",
   "ar.levelManual": "Mode manuel",
   "ar.cameraError": "Impossible d'acceder a la camera. Verifiez les autorisations.",
-  "ar.noMatch": "Impossible d'identifier cet objet. Essayez de vous rapprocher ou scannez un code QR."
+  "ar.noMatch": "Impossible d'identifier cet objet. Essayez de vous rapprocher ou appuyez sur Identifier."
 }

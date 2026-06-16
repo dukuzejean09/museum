@@ -60,6 +60,7 @@ const exhibitionSchema = new mongoose.Schema({
     shares: { type: Number, default: 0 },
   },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+  narrationAudioUrl: { type: String, default: null },
 }, { timestamps: true });
 
 exhibitionSchema.index({ status: 1 });

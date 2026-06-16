@@ -35,6 +35,7 @@ const artifactSchema = new mongoose.Schema({
     views: { type: Number, default: 0 },
   },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+  narrationAudioUrl: { type: String, default: null },
 }, { timestamps: true });
 
 artifactSchema.index({ status: 1 });

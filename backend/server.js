@@ -25,6 +25,7 @@ import qrRoutes from './routes/qrRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import visitorAuthRoutes from './routes/visitorAuthRoutes.js';
 import { publicRouter as arPublic, adminRouter as arAdmin } from './routes/arRoutes.js';
+import { publicRouter as evaluationPublic, adminRouter as evaluationAdmin } from './routes/evaluationRoutes.js';
 import yoloProxyRoutes from './routes/yoloProxyRoutes.js';
 
 dotenv.config();
@@ -148,6 +149,7 @@ app.use('/api/surveys', surveyPublic);
 app.use('/api/search', searchPublic);
 app.use('/api/analytics', analyticsPublic);
 app.use('/api/ar', arPublic);
+app.use('/api/evaluations', evaluationPublic);
 
 // ──────────────────────────────────────────────
 // Admin API routes (protected by auth middleware in each route file)
@@ -164,6 +166,7 @@ app.use('/api/admin/analytics', analyticsAdmin);
 app.use('/api/qr', qrRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin/ar', arAdmin);
+app.use('/api/admin/evaluations', evaluationAdmin);
 
 // ──────────────────────────────────────────────
 // Global error handler

@@ -47,6 +47,8 @@ const StoryForm = React.lazy(() => import('./pages/admin/StoryForm'));
 const AdminUsers = React.lazy(() => import('./pages/admin/AdminUsers'));
 const AdminGuides = React.lazy(() => import('./pages/admin/AdminGuides'));
 const GuideForm = React.lazy(() => import('./pages/admin/GuideForm'));
+const EvaluationDashboard = React.lazy(() => import('./pages/admin/EvaluationDashboard'));
+const AnalyticsInsights = React.lazy(() => import('./pages/admin/AnalyticsInsights'));
 
 // Loading fallback
 const PageLoader = () => (
@@ -164,6 +166,8 @@ function App() {
                           <Route path="guides/edit/:id" element={<GuideForm />} />
                           <Route path="surveys" element={<AdminSurveys />} />
                           <Route path="users" element={<AdminUsers />} />
+                          <Route path="evaluation" element={<EvaluationDashboard />} />
+                          <Route path="analytics-insights" element={<AnalyticsInsights />} />
                         </Route>
                       </Route>
                     </Route>

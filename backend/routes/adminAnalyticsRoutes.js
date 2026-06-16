@@ -1,6 +1,6 @@
 import express from 'express';
 import protect from '../middleware/authMiddleware.js';
-import { getDashboardStats, trackEvent, getContentAnalytics, getVisitorAnalytics } from '../controllers/analyticsController.js';
+import { getDashboardStats, trackEvent, getContentAnalytics, getVisitorAnalytics, getAnalyticsInsights, getHeatmapData } from '../controllers/analyticsController.js';
 
 const adminRouter = express.Router();
 const publicRouter = express.Router();
@@ -9,6 +9,8 @@ const publicRouter = express.Router();
 adminRouter.get('/', protect, getDashboardStats);
 adminRouter.get('/content', protect, getContentAnalytics);
 adminRouter.get('/visitors', protect, getVisitorAnalytics);
+adminRouter.get('/insights', protect, getAnalyticsInsights);
+adminRouter.get('/heatmap', protect, getHeatmapData);
 
 // Public event tracking (uses visitor token via visitorProtect in server.js)
 publicRouter.post('/track', trackEvent);

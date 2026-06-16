@@ -171,6 +171,17 @@ export const adminRebuildDescriptors = () => AdminAPI.post('/admin/ar/descriptor
 export const adminValidateDescriptors = () => AdminAPI.post('/admin/ar/descriptors/validate');
 export const adminUploadDescriptor = (data) => AdminAPI.post('/admin/ar/descriptors/upload', data);
 
+// Evaluations
+export const createEvaluation = (data) => API.post('/evaluations', data);
+export const adminFetchEvaluations = (params) => AdminAPI.get('/admin/evaluations', { params });
+export const adminFetchEvaluationStats = () => AdminAPI.get('/admin/evaluations/stats');
+export const adminExportEvaluations = () => AdminAPI.get('/admin/evaluations/export');
+export const adminDeleteEvaluation = (id) => AdminAPI.delete(`/admin/evaluations/${id}`);
+
+// Advanced Analytics
+export const fetchAnalyticsInsights = (params) => AdminAPI.get('/admin/analytics/insights', { params });
+export const fetchHeatmapData = (params) => AdminAPI.get('/admin/analytics/heatmap', { params });
+
 // Visitor Auth
 export const validateVisitorCode = (code) => axios.post(`${API_BASE}/visitor/validate`, { code });
 export const adminGenerateAccessCode = (data) => AdminAPI.post('/visitor/codes', data);

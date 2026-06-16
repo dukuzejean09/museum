@@ -5,7 +5,8 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import {
   LayoutDashboard, MapPin, MessageSquare, LogOut,
   CalendarDays, ClipboardList, Menu, X, QrCode,
-  Presentation, BookOpen, UserCog, Gem, UserCircle, Users
+  Presentation, BookOpen, UserCog, Gem, UserCircle, Users,
+  BarChart3, FileCheck
 } from 'lucide-react';
 
 const allSidebarLinks = [
@@ -20,6 +21,8 @@ const allSidebarLinks = [
   { to: '/admin/surveys', label: 'Surveys', icon: ClipboardList, roles: ['admin'] },
   { to: '/admin/messages', label: 'Messages', icon: MessageSquare, roles: ['admin', 'guide'] },
   { to: '/admin/access-codes', label: 'Access Codes', icon: QrCode, roles: ['admin', 'guide'] },
+  { to: '/admin/evaluation', label: 'Evaluation', icon: FileCheck, roles: ['admin'] },
+  { to: '/admin/analytics-insights', label: 'Analytics', icon: BarChart3, roles: ['admin'] },
   { to: '/admin/users', label: 'Users', icon: UserCog, roles: ['admin'] },
 ];
 
@@ -102,7 +105,7 @@ const AdminLayout = () => {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 p-8">
+      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8">
         <ErrorBoundary key={location.pathname}>
           <Outlet />
         </ErrorBoundary>
