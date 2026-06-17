@@ -144,7 +144,7 @@ export const identifyVisitor = asyncHandler(async (req, res) => {
 // @route   POST /api/ai/narrate
 export const narrateExhibit = asyncHandler(async (req, res) => {
   try {
-    const { text, exhibitionId, artifactId } = req.body;
+    const { text, exhibitionId, artifactId, lang = 'en' } = req.body;
     const openai = getOpenAI();
 
     let narrationText = text;
@@ -153,10 +153,10 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
       const exhibition = await Exhibition.findById(exhibitionId).lean();
       if (!exhibition) return res.status(404).json({ message: 'Exhibition not found' });
 
-      narrationText = `Welcome! You're looking at ${getLocalizedText(exhibition.title)}. `;
-      const desc = getLocalizedText(exhibition.fullDescription || exhibition.description);
+      narrationText = `Welcome! You're looking at ${getLocalizedText(exhibition.title, lang)}. `;
+      const desc = getLocalizedText(exhibition.fullDescription || exhibition.description, lang);
       if (desc) narrationText += desc + ' ';
-      const significance = getLocalizedText(exhibition.historicalSignificance);
+      const significance = getLocalizedText(exhibition.historicalSignificance, lang);
       if (significance) narrationText += significance;
     }
 
@@ -164,12 +164,12 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
       const artifact = await Artifact.findById(artifactId).lean();
       if (!artifact) return res.status(404).json({ message: 'Artifact not found' });
 
-      narrationText = `Welcome! You're looking at ${getLocalizedText(artifact.name)}. `;
-      const desc = getLocalizedText(artifact.description);
+      narrationText = `Welcome! You're looking at ${getLocalizedText(artifact.name, lang)}. `;
+      const desc = getLocalizedText(artifact.description, lang);
       if (desc) narrationText += desc + ' ';
-      const story = getLocalizedText(artifact.historicalStory);
+      const story = getLocalizedText(artifact.historicalStory, lang);
       if (story) narrationText += story + ' ';
-      const origin = getLocalizedText(artifact.originLocation);
+      const origin = getLocalizedText(artifact.originLocation, lang);
       if (origin) narrationText += `This artifact originates from ${origin}. `;
       if (artifact.dateCreated) narrationText += `It dates back to ${artifact.dateCreated}.`;
     }
@@ -178,9 +178,13 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
       return res.status(400).json({ message: 'No text, exhibitionId, or artifactId provided' });
     }
 
+    // Select voice based on language — 'nova' for English, 'alloy' for French/Kinyarwanda
+    // 'alloy' has a more neutral accent that works better for non-English content
+    const voice = (lang === 'fr' || lang === 'rw') ? 'alloy' : 'nova';
+
     const mp3Response = await openai.audio.speech.create({
       model: 'tts-1-hd',
-      voice: 'nova',
+      voice,
       input: narrationText,
       response_format: 'mp3',
     });

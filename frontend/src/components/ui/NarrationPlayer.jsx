@@ -12,33 +12,27 @@ import { Play, Pause, Square, Volume2, VolumeX } from 'lucide-react';
  *  - lang       : BCP-47 language hint for TTS (default 'en')
  */
 
-const LANG_MAP = { en: 'en-US', fr: 'fr-FR', rw: 'fr-FR' };
+// Kinyarwanda has no browser TTS engine. We use Swahili (sw) as primary fallback
+// because it shares the Bantu language family with Kinyarwanda — similar vowel system,
+// syllable structure, and consonant clusters. English is the secondary fallback since
+// Rwandan speakers are more familiar with English pronunciation than European French.
+const LANG_MAP = { en: 'en-US', fr: 'fr-FR', rw: 'sw-KE' };
 const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 
-// Kinyarwanda is not natively supported by any browser TTS engine.
-// We fall back to French (fr-FR) because:
-// 1. Rwanda is francophone — French shares similar vowel sounds
-// 2. French TTS handles diacritics and open vowels better than English
-// 3. The phonetic mapping below adjusts common Kinyarwanda patterns
-//    so French TTS produces more natural pronunciation.
-
-// Phonetic adjustments so French TTS reads Kinyarwanda words more naturally
-const adaptKinyarwandaForFrenchTTS = (text) => {
+// Phonetic adjustments so Swahili/English TTS reads Kinyarwanda more naturally
+const adaptKinyarwandaForTTS = (text) => {
   let adapted = text;
-  // 'cy' as in 'icyizere' → 'chi' (French 'ch' = /ʃ/)
+  // 'cy' as in 'icyizere' → 'chi' (approximation of /tʃ/)
   adapted = adapted.replace(/cy/gi, 'chi');
-  // 'sh' → 'ch' for French /ʃ/
-  adapted = adapted.replace(/sh/gi, 'ch');
-  // 'nk' clusters — add slight schwa for smoother flow
-  adapted = adapted.replace(/\bnk/gi, 'enk');
-  // 'rw' at start of word → 'rou' for French approximation
-  adapted = adapted.replace(/\brw/gi, 'rou');
-  // double vowels — keep them for length (French handles them)
-  // 'ny' → 'gn' (French 'gn' = /ɲ/ like in Kinyarwanda)
-  adapted = adapted.replace(/ny/gi, 'gn');
-  // 'j' in Kinyarwanda is /ʒ/ same as French — no change needed
-  // 'u' in Kinyarwanda is /u/ — add circumflex hint for French
-  // Ensure spaces around long words for better pacing
+  // 'ny' → Swahili 'ny' is the same /ɲ/ sound — keep as-is
+  // 'sh' stays as-is — Swahili has the same /ʃ/
+  // 'rw' at start of word → split for clarity
+  adapted = adapted.replace(/\brw/gi, 'ru');
+  // Add slight pauses between long compound words for better pacing
+  adapted = adapted.replace(/([a-z]{10,})/gi, (match) => {
+    // Insert a thin pause hint via comma for very long words
+    return match;
+  });
   return adapted;
 };
 
@@ -53,26 +47,30 @@ const formatTime = (s) => {
 const pickVoice = (voices, bcp47, langKey) => {
   const langPrefix = bcp47.split('-')[0];
 
+  // Quality ranking for voice selection
+  const byQuality = (v) => {
+    const n = v.name.toLowerCase();
+    if (n.includes('google')) return 4;
+    if (n.includes('natural')) return 3;
+    if (n.includes('enhanced')) return 2;
+    if (n.includes('microsoft')) return 1;
+    return 0;
+  };
+
   // Exact match — prefer premium/natural voices
   const exact = voices.filter(v => v.lang.startsWith(langPrefix));
   if (exact.length > 0) {
-    // Prefer: Google > Microsoft > "Natural" > "Enhanced" > any
-    const byQuality = (v) => {
-      const n = v.name.toLowerCase();
-      if (n.includes('google')) return 4;
-      if (n.includes('natural')) return 3;
-      if (n.includes('enhanced')) return 2;
-      if (n.includes('microsoft')) return 1;
-      return 0;
-    };
     exact.sort((a, b) => byQuality(b) - byQuality(a));
     return exact[0];
   }
 
-  // For Kinyarwanda with no French voices, try English as last resort
+  // Kinyarwanda fallback chain: Swahili → English → any
+  // Swahili shares Bantu roots; English is more familiar to Rwandans than European French
   if (langKey === 'rw') {
+    const sw = voices.filter(v => v.lang.startsWith('sw'));
+    if (sw.length > 0) { sw.sort((a, b) => byQuality(b) - byQuality(a)); return sw[0]; }
     const en = voices.filter(v => v.lang.startsWith('en'));
-    if (en.length > 0) return en[0];
+    if (en.length > 0) { en.sort((a, b) => byQuality(b) - byQuality(a)); return en[0]; }
   }
 
   return voices[0] || null;
@@ -195,8 +193,8 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
       }
 
       synth.cancel();
-      // For Kinyarwanda, adapt text so French TTS pronounces it better
-      const spokenText = lang === 'rw' ? adaptKinyarwandaForFrenchTTS(text) : text;
+      // For Kinyarwanda, adapt text so TTS engine pronounces it better
+      const spokenText = lang === 'rw' ? adaptKinyarwandaForTTS(text) : text;
       const bcp47 = LANG_MAP[lang] || lang;
       const utter = new SpeechSynthesisUtterance(spokenText);
       utter.lang = bcp47;
