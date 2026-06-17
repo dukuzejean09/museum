@@ -41,9 +41,9 @@ const AdminExhibitions = () => {
  setTotal(data.length);
  setTotalPages(1);
  } else {
- setExhibitions(data.exhibitions || data.docs || []);
- setTotal(data.total || data.totalDocs || 0);
- setTotalPages(data.pages || data.totalPages || 1);
+ setExhibitions(data.data || data.exhibitions || data.docs || []);
+ setTotal(data.pagination?.total || data.total || data.totalDocs || 0);
+ setTotalPages(data.pagination?.pages || data.pages || data.totalPages || 1);
  }
  } catch (err) {
  toast.error('Failed to load exhibitions');

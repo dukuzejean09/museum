@@ -42,9 +42,9 @@ const AdminArtifacts = () => {
  setTotal(data.length);
  setTotalPages(1);
  } else {
- setArtifacts(data.artifacts || data.docs || []);
- setTotal(data.total || data.totalDocs || 0);
- setTotalPages(data.pages || data.totalPages || 1);
+ setArtifacts(data.data || data.artifacts || data.docs || []);
+ setTotal(data.pagination?.total || data.total || data.totalDocs || 0);
+ setTotalPages(data.pagination?.pages || data.pages || data.totalPages || 1);
  }
  } catch (err) {
  toast.error('Failed to load artifacts');

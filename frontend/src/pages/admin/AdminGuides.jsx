@@ -14,7 +14,7 @@ const AdminGuides = () => {
   const loadGuides = async () => {
     try {
       const { data } = await adminFetchGuides();
-      setGuides(data);
+      setGuides(Array.isArray(data) ? data : data.data || []);
     } catch (err) {
       toast.error('Failed to load guides');
     } finally {

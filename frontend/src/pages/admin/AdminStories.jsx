@@ -16,7 +16,7 @@ const AdminStories = () => {
  const loadStories = async () => {
  try {
  const { data } = await adminFetchStories();
- setStories(Array.isArray(data) ? data : data.stories || []);
+ setStories(Array.isArray(data) ? data : data.data || data.stories || []);
  } catch (err) {
  toast.error('Failed to load stories');
  } finally {

@@ -98,7 +98,7 @@ const ExhibitionForm = () => {
  const loadArtifacts = async () => {
  try {
  const { data } = await adminFetchArtifacts();
- setAvailableArtifacts(data.artifacts || data || []);
+ setAvailableArtifacts(data.data || data.artifacts || []);
  } catch (err) {
  console.error('Failed to load artifacts', err);
  }

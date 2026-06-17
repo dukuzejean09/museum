@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "Bash(xargs wc:*)",
-      "Read(//d/final year project/delice/museum/**)"
+      "Read(//d/final year project/delice/museum/**)",
+      "WebFetch(domain:eum-nu-blond.vercel.app)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://eum-nu-blond.vercel.app/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://museum-nu-blond.vercel.app/)",
+      "Bash(curl -s -I -X OPTIONS -H \"Origin: https://museum-nu-blond.vercel.app\" -H \"Access-Control-Request-Method: GET\" -H \"Access-Control-Request-Headers: Authorization\" https://dukj-museum.hf.space/api/admin/exhibitions)",
+      "WebFetch(domain:museum-nu-blond.vercel.app)",
+      "Bash(curl -s https://museum-nu-blond.vercel.app/)",
+      "Bash(curl -s https://museum-nu-blond.vercel.app/assets/index-C36lg5qy.js)",
+      "Bash(curl -s -X POST -H \"Content-Type: application/json\" -H \"Origin: https://museum-nu-blond.vercel.app\" -d '{\"email\":\"admin@museum.rw\",\"password\":\"Admin@2026!\"}' https://dukj-museum.hf.space/api/auth/login)",
+      "Bash(curl -s -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMmJkNjVmYTk4NjhiYTM1YTJmNDQ2NCIsImlhdCI6MTc4MTY3NDgwNywiZXhwIjoxNzgyMjc5NjA3fQ.fgROA0AKl7KRwUPxHd86GwHMqbQbE64GY8xNufRoxZY' -H 'Origin: https://museum-nu-blond.vercel.app' https://dukj-museum.hf.space/api/admin/exhibitions)",
+      "Bash(curl -s \"https://dukj-museum.hf.space/api/exhibitions/6a2bd661a9868ba35a2f4475\")",
+      "Bash(node -e ':*)",
+      "Bash(curl -s \"https://dukj-museum.hf.space/api/stories?exhibitionId=6a2bd661a9868ba35a2f4475\")",
+      "Bash(curl -s -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMmJkNjVmYTk4NjhiYTM1YTJmNDQ2NCIsImlhdCI6MTc4MTY3NDgwNywiZXhwIjoxNzgyMjc5NjA3fQ.fgROA0AKl7KRwUPxHd86GwHMqbQbE64GY8xNufRoxZY' https://dukj-museum.hf.space/api/admin/guides)"
     ]
   }
 }

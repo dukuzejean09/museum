@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Public API (with visitor token interceptor)
-const API = axios.create({ baseURL: API_BASE });
+const API = axios.create({ baseURL: API_BASE, timeout: 30000 });
 
 API.interceptors.request.use((config) => {
   const visitorToken = localStorage.getItem('visitorToken');
@@ -34,7 +34,7 @@ export const fetchGuides = () => API.get('/guides');
 export const sendMessage = (data) => API.post('/messages', data);
 
 // Admin API (with JWT interceptor)
-const AdminAPI = axios.create({ baseURL: API_BASE });
+const AdminAPI = axios.create({ baseURL: API_BASE, timeout: 30000 });
 
 AdminAPI.interceptors.request.use((config) => {
   const token = localStorage.getItem('adminToken');
@@ -43,6 +43,18 @@ AdminAPI.interceptors.request.use((config) => {
   }
   return config;
 });
+
+AdminAPI.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminInfo');
+      window.location.href = '/admin/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Auth
 export const loginAdmin = (data) => AdminAPI.post('/auth/login', data);

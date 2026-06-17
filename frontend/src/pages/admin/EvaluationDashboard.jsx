@@ -63,9 +63,9 @@ const EvaluationDashboard = () => {
   const loadEvaluations = async () => {
     try {
       const { data } = await adminFetchEvaluations({ page, limit: 10 });
-      setEvaluations(data.evaluations || []);
-      setTotalPages(data.pages || 1);
-      setTotal(data.total || 0);
+      setEvaluations(data.data || data.evaluations || []);
+      setTotalPages(data.pagination?.pages || data.pages || 1);
+      setTotal(data.pagination?.total || data.total || 0);
     } catch {
       toast.error('Failed to load evaluations');
     }

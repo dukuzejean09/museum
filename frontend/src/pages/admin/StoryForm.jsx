@@ -40,7 +40,7 @@ const StoryForm = () => {
  const loadOptions = async () => {
  try {
  const { data } = await adminFetchExhibitions();
- setExhibitions(Array.isArray(data) ? data : data.exhibitions || data.docs || []);
+ setExhibitions(Array.isArray(data) ? data : data.data || data.exhibitions || data.docs || []);
  } catch {
  // silent
  }
