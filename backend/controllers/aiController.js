@@ -1,14 +1,8 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import OpenAI from 'openai';
 import Exhibition from '../models/Exhibition.js';
 import Artifact from '../models/Artifact.js';
 import { asyncHandler } from '../utils/errors.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const getOpenAI = () => {
   if (!process.env.OPENAI_API_KEY) {
@@ -43,16 +37,14 @@ const buildMuseumContext = async () => {
 
 // Shared identification logic used by both admin and visitor endpoints
 const runIdentification = async (req, res) => {
-  let imagePath = null;
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No image uploaded' });
     }
 
     const openai = getOpenAI();
-    imagePath = path.join(__dirname, '..', 'uploads', req.file.filename);
-    const imageBuffer = await fs.readFile(imagePath);
-    const base64Image = imageBuffer.toString('base64');
+    // multer uses memory storage — image is in req.file.buffer, not on disk
+    const base64Image = req.file.buffer.toString('base64');
     const mimeType = req.file.mimetype;
 
     const { exhibitionList, artifactList } = await buildMuseumContext();
@@ -117,8 +109,6 @@ ${artifactList}`
       }
     }
 
-    await fs.unlink(imagePath).catch(() => {});
-
     res.json({
       matched: result.matched,
       entityType: result.entityType || null,
@@ -131,8 +121,6 @@ ${artifactList}`
       exhibition: result.entityType === 'exhibition' ? entity : null,
     });
   } catch (error) {
-    if (imagePath) await fs.unlink(imagePath).catch(() => {});
-
     if (error.message === 'OPENAI_API_KEY is not configured') {
       return res.status(503).json({ message: 'AI service is not configured. Please contact the administrator.' });
     }

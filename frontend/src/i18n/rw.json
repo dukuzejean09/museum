@@ -330,6 +330,7 @@
   "ar.levelNoYOLO": "OpenCV + AI",
   "ar.levelOpenCVOnly": "OpenCV gusa",
   "ar.levelManual": "Uburyo bw'ibanze",
+  "ar.analyzingObject": "Gusesengura igikoresho...",
   "ar.cameraError": "Ntibishoboka kwinjira muri kamera. Reba uruhushya.",
   "ar.noMatch": "Ntibishoboye kumenya iki gikoresho. Gerageza kwegera cyangwa ukande Menya."
 }

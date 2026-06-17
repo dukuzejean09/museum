@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { globalSearch, aiIdentify, aiNarrate } from '../api';
+import { globalSearch, aiIdentifyVisitor, aiNarrateVisitor } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import {
  Search as SearchIcon, Sparkles, Compass, X, Clock, ArrowRight,
@@ -175,16 +175,21 @@ const SearchPage = () => {
  try {
  const formData = new FormData();
  formData.append('image', file);
- const { data } = await aiIdentify(formData);
+ const { data } = await aiIdentifyVisitor(formData);
  setScanResult(data);
 
  if (data.description) {
  setNarrating(true);
  try {
- const payload = data.matched && data.exhibitionId
- ? { exhibitionId: data.exhibitionId }
- : { text: data.description };
- const { data: audioData } = await aiNarrate(payload);
+ let payload;
+ if (data.matched && data.entityId) {
+  payload = data.entityType === 'artifact'
+   ? { artifactId: data.entityId }
+   : { exhibitionId: data.entityId };
+ } else {
+  payload = { text: data.description };
+ }
+ const { data: audioData } = await aiNarrateVisitor(payload);
  setAudioUrl(audioData.audioUrl);
  } catch {
  // Narration failed silently
@@ -544,30 +549,40 @@ const SearchPage = () => {
  )}
  </div>
 
- {/* Matched exhibition card */}
- {scanResult.exhibition && (
+ {/* Matched entity card (exhibition or artifact) */}
+ {scanResult.entity && (
  <Link
- to={`/exhibitions/${scanResult.exhibition._id}`}
+ to={`/${scanResult.entityType === 'artifact' ? 'artifacts' : 'exhibitions'}/${scanResult.entity._id}`}
  className="block bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition group"
  >
  <div className="flex gap-4 p-4">
- {scanResult.exhibition.coverImage && (
+ {(scanResult.entity.coverImage || scanResult.entity.images?.[0]) && (
  <img
- src={scanResult.exhibition.coverImage.startsWith('http') ? scanResult.exhibition.coverImage : `${API_BASE}${scanResult.exhibition.coverImage}`}
- alt={scanResult.exhibition.title?.en || 'Exhibition'}
+ src={(() => {
+  const img = scanResult.entity.coverImage || scanResult.entity.images?.[0]?.url || scanResult.entity.images?.[0];
+  return img?.startsWith?.('http') ? img : `${API_BASE}${img}`;
+ })()}
+ alt={getLocalizedText(scanResult.entity.title || scanResult.entity.name, lang)}
  className="w-24 h-24 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition-transform"
  />
  )}
  <div className="flex-1 min-w-0">
+ <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium mb-1 ${
+  scanResult.entityType === 'artifact'
+   ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
+   : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
+ }`}>
+  {scanResult.entityType}
+ </span>
  <h4 className="font-bold dark:text-white group-hover:text-amber-600 transition">
- {getLocalizedText(scanResult.exhibition.title, lang)}
+ {getLocalizedText(scanResult.entity.title || scanResult.entity.name, lang)}
  </h4>
  <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
- {getLocalizedText(scanResult.exhibition.shortDescription, lang)}
+ {getLocalizedText(scanResult.entity.shortDescription || scanResult.entity.description, lang)}
  </p>
- {scanResult.exhibition.tags?.length > 0 && (
+ {scanResult.entity.tags?.length > 0 && (
  <div className="flex flex-wrap gap-1 mt-2">
- {scanResult.exhibition.tags.slice(0, 3).map((tag, i) => (
+ {scanResult.entity.tags.slice(0, 3).map((tag, i) => (
  <span key={i} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-xs">
  {tag}
  </span>

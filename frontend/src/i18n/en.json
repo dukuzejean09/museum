@@ -333,6 +333,7 @@
   "ar.levelNoYOLO": "OpenCV + AI",
   "ar.levelOpenCVOnly": "OpenCV Only",
   "ar.levelManual": "Manual Mode",
+  "ar.analyzingObject": "Analyzing object...",
   "ar.cameraError": "Cannot access camera. Please check permissions.",
   "ar.noMatch": "Could not identify this object. Try moving closer or tap Identify."
 }

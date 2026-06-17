@@ -13,5 +13,6 @@ router.post('/narrate', protect, requireRole('admin', 'guide'), narrateExhibit);
 
 // Visitor-accessible — requires visitor token OR admin token
 router.post('/identify-visitor', visitorProtect, upload.single('image'), validateUpload, identifyVisitor);
+router.post('/narrate-visitor', visitorProtect, narrateExhibit);
 
 export default router;

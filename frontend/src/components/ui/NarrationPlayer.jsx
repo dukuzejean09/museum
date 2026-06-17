@@ -12,13 +12,70 @@ import { Play, Pause, Square, Volume2, VolumeX } from 'lucide-react';
  *  - lang       : BCP-47 language hint for TTS (default 'en')
  */
 
-const LANG_MAP = { en: 'en-US', fr: 'fr-FR', rw: 'rw-RW' };
+const LANG_MAP = { en: 'en-US', fr: 'fr-FR', rw: 'fr-FR' };
+const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
+
+// Kinyarwanda is not natively supported by any browser TTS engine.
+// We fall back to French (fr-FR) because:
+// 1. Rwanda is francophone — French shares similar vowel sounds
+// 2. French TTS handles diacritics and open vowels better than English
+// 3. The phonetic mapping below adjusts common Kinyarwanda patterns
+//    so French TTS produces more natural pronunciation.
+
+// Phonetic adjustments so French TTS reads Kinyarwanda words more naturally
+const adaptKinyarwandaForFrenchTTS = (text) => {
+  let adapted = text;
+  // 'cy' as in 'icyizere' → 'chi' (French 'ch' = /ʃ/)
+  adapted = adapted.replace(/cy/gi, 'chi');
+  // 'sh' → 'ch' for French /ʃ/
+  adapted = adapted.replace(/sh/gi, 'ch');
+  // 'nk' clusters — add slight schwa for smoother flow
+  adapted = adapted.replace(/\bnk/gi, 'enk');
+  // 'rw' at start of word → 'rou' for French approximation
+  adapted = adapted.replace(/\brw/gi, 'rou');
+  // double vowels — keep them for length (French handles them)
+  // 'ny' → 'gn' (French 'gn' = /ɲ/ like in Kinyarwanda)
+  adapted = adapted.replace(/ny/gi, 'gn');
+  // 'j' in Kinyarwanda is /ʒ/ same as French — no change needed
+  // 'u' in Kinyarwanda is /u/ — add circumflex hint for French
+  // Ensure spaces around long words for better pacing
+  return adapted;
+};
 
 const formatTime = (s) => {
   if (!s || isNaN(s)) return '0:00';
   const m = Math.floor(s / 60);
   const sec = Math.floor(s % 60);
   return `${m}:${sec.toString().padStart(2, '0')}`;
+};
+
+// Pick the best available voice for a given BCP-47 language tag
+const pickVoice = (voices, bcp47, langKey) => {
+  const langPrefix = bcp47.split('-')[0];
+
+  // Exact match — prefer premium/natural voices
+  const exact = voices.filter(v => v.lang.startsWith(langPrefix));
+  if (exact.length > 0) {
+    // Prefer: Google > Microsoft > "Natural" > "Enhanced" > any
+    const byQuality = (v) => {
+      const n = v.name.toLowerCase();
+      if (n.includes('google')) return 4;
+      if (n.includes('natural')) return 3;
+      if (n.includes('enhanced')) return 2;
+      if (n.includes('microsoft')) return 1;
+      return 0;
+    };
+    exact.sort((a, b) => byQuality(b) - byQuality(a));
+    return exact[0];
+  }
+
+  // For Kinyarwanda with no French voices, try English as last resort
+  if (langKey === 'rw') {
+    const en = voices.filter(v => v.lang.startsWith('en'));
+    if (en.length > 0) return en[0];
+  }
+
+  return voices[0] || null;
 };
 
 const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
@@ -38,11 +95,25 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
   const ttsTimerRef = useRef(null);
   const ttsStartRef = useRef(0);
   const ttsPausedAtRef = useRef(0);
+  const [voicesReady, setVoicesReady] = useState(false);
 
   // Switch mode if audioSrc changes
   useEffect(() => {
     setMode(audioSrc ? 'audio' : 'tts');
   }, [audioSrc]);
+
+  // Pre-load voices (they load asynchronously in most browsers)
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    const loadVoices = () => {
+      const v = synth.getVoices();
+      if (v.length > 0) setVoicesReady(true);
+    };
+    loadVoices();
+    synth.addEventListener?.('voiceschanged', loadVoices);
+    return () => synth.removeEventListener?.('voiceschanged', loadVoices);
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -124,17 +195,18 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
       }
 
       synth.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = LANG_MAP[lang] || lang;
-      utter.rate = 0.95;
+      // For Kinyarwanda, adapt text so French TTS pronounces it better
+      const spokenText = lang === 'rw' ? adaptKinyarwandaForFrenchTTS(text) : text;
+      const bcp47 = LANG_MAP[lang] || lang;
+      const utter = new SpeechSynthesisUtterance(spokenText);
+      utter.lang = bcp47;
+      // Slower rate for Kinyarwanda and French for clearer pronunciation
+      utter.rate = lang === 'rw' ? 0.85 : lang === 'fr' ? 0.9 : 0.95;
       utter.pitch = 1;
 
-      // Try to pick a good voice
+      // Pick the best available voice for this language
       const voices = synth.getVoices();
-      const langPrefix = (LANG_MAP[lang] || lang).split('-')[0];
-      const preferred = voices.find(v => v.lang.startsWith(langPrefix) && v.name.toLowerCase().includes('female'))
-        || voices.find(v => v.lang.startsWith(langPrefix))
-        || voices[0];
+      const preferred = pickVoice(voices, bcp47, lang);
       if (preferred) utter.voice = preferred;
 
       utter.onend = () => {
@@ -208,9 +280,14 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
           {title || 'Audio Narration'}
         </span>
         {mode === 'tts' && (
-          <span className="ml-auto text-[10px] bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full font-medium">
-            Text-to-Speech
-          </span>
+          <div className="ml-auto flex items-center gap-1.5">
+            <span className="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">
+              {LANG_LABELS[lang] || lang}
+            </span>
+            <span className="text-[10px] bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full font-medium">
+              TTS
+            </span>
+          </div>
         )}
       </div>
 

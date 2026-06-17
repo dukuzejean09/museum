@@ -177,6 +177,7 @@ export const adminDeleteStory = (id) => AdminAPI.delete(`/admin/stories/${id}`);
 // AR Features
 export const aiIdentifyVisitor = (formData) =>
   API.post('/ai/identify-visitor', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+export const aiNarrateVisitor = (data) => API.post('/ai/narrate-visitor', data);
 export const fetchARDescriptors = (type) => API.get('/ar/descriptors', { params: { type } });
 export const generateArtifactQR = (artifactId) => AdminAPI.get(`/qr/artifact/${artifactId}`);
 export const adminRebuildDescriptors = () => AdminAPI.post('/admin/ar/descriptors/rebuild');

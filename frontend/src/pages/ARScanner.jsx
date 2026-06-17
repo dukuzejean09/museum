@@ -1,9 +1,10 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search, X, ArrowLeft, Scan } from 'lucide-react';
+import { Search, ArrowLeft, Scan } from 'lucide-react';
 import ARCamera from '../components/ar/ARCamera';
 import AROverlay from '../components/ar/AROverlay';
 import RecognitionStatus from '../components/ar/RecognitionStatus';
+import DetectionBox from '../components/ar/DetectionBox';
 import useARRecognition from '../hooks/useARRecognition';
 import { useLanguage } from '../i18n/LanguageContext';
 import { fetchExhibitionById, fetchArtifactById } from '../api';
@@ -11,27 +12,41 @@ import { fetchExhibitionById, fetchArtifactById } from '../api';
 /**
  * AR Scanner Page — /ar
  *
- * Full-screen camera view with:
- * - Continuous QR scanning
- * - OpenCV feature matching
- * - YOLO object detection
- * - GPT-4o fallback via "Identify" button
+ * Full-screen camera view with real-time detection:
+ * - OpenCV feature matching (every 500ms)
+ * - YOLO object detection with bounding boxes (every 3s)
+ * - GPT-4o Vision auto-triggered by YOLO or manual "Identify" button
  * - Floating content overlay on recognition
  * - Audio narration
- *
- * Supports deep-linking: /ar?type=exhibition&id=xxx
  */
 const ARScanner = () => {
   const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+  const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
 
   const ar = useARRecognition({
     videoRef,
     canvasRef,
     enabled: true,
   });
+
+  // Track container size for scaling YOLO bounding boxes
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        setContainerSize({
+          w: containerRef.current.clientWidth,
+          h: containerRef.current.clientHeight,
+        });
+      }
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   // Handle deep-link from QR code scanned outside the app
   useEffect(() => {
@@ -52,30 +67,23 @@ const ARScanner = () => {
         const res = await fetchExhibitionById(id);
         data = res.data?.data || res.data;
       }
-      // Manually trigger the overlay by calling internal state
-      // We do this through the dismiss + re-trigger pattern
-      if (data) {
-        ar.dismiss();
-        // Small delay to allow state cleanup
-        setTimeout(() => {
-          // We need to use the hook's resolveEntity, but it's internal
-          // Instead, we'll use the URL params to trigger QR-like resolution
-          // by posting to the QR worker result
-        }, 100);
-      }
     } catch {
       // Entity not found — continue scanning
     }
-  }, [ar]);
+  }, []);
 
-  // Camera ready handler — start scanning
   const handleCameraReady = useCallback(() => {
     ar.start();
+    // Update container size once camera starts
+    if (containerRef.current) {
+      setContainerSize({
+        w: containerRef.current.clientWidth,
+        h: containerRef.current.clientHeight,
+      });
+    }
   }, [ar]);
 
-  const handleCameraError = useCallback((msg) => {
-    // Camera error is shown via RecognitionStatus
-  }, []);
+  const handleCameraError = useCallback(() => {}, []);
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
@@ -83,7 +91,7 @@ const ARScanner = () => {
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Camera feed + overlays */}
-      <div className="flex-1 relative overflow-hidden">
+      <div ref={containerRef} className="flex-1 relative overflow-hidden">
         <ARCamera
           videoRef={videoRef}
           onReady={handleCameraReady}
@@ -98,6 +106,19 @@ const ARScanner = () => {
             performanceLevel={ar.performanceLevel}
             error={ar.error}
           />
+
+          {/* YOLO detection bounding box */}
+          {ar.yoloDetection && !ar.entity && (
+            <DetectionBox
+              bbox={ar.yoloDetection.bbox}
+              label={ar.yoloDetection.class_name}
+              confidence={ar.yoloDetection.confidence}
+              videoWidth={videoRef.current?.videoWidth || 1280}
+              videoHeight={videoRef.current?.videoHeight || 720}
+              containerWidth={containerSize.w}
+              containerHeight={containerSize.h}
+            />
+          )}
 
           {/* Scanning viewfinder (shown when no entity detected) */}
           {!ar.entity && !ar.loading && !ar.identifying && (
@@ -117,7 +138,9 @@ const ARScanner = () => {
                 {/* Center text */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <p className="text-white/40 text-sm text-center px-4">
-                    {t('ar.pointCamera')}
+                    {ar.identifying
+                      ? t('ar.analyzingObject')
+                      : t('ar.pointCamera')}
                   </p>
                 </div>
               </div>
@@ -147,7 +170,7 @@ const ARScanner = () => {
             <ArrowLeft size={22} />
           </Link>
 
-          {/* Identify button (GPT-4o fallback) */}
+          {/* Identify button (manual GPT-4o trigger) */}
           {!ar.entity && (
             <button
               onClick={ar.identifyWithAI}

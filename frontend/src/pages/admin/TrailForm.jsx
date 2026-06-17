@@ -22,7 +22,7 @@ import {
 
 const LANGUAGES = ['en', 'fr', 'rw'];
 const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
-const TABS = ['Basic Info', 'Stops', 'Settings'];
+const TABS = ['Basic Info', 'Stops', 'Media', 'Settings'];
 
 const inputClass =
  'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
@@ -55,6 +55,8 @@ const TrailForm = () => {
  introduction: emptyMultilang(),
  description: emptyMultilang(),
  coverImage: null,
+ audio: null,
+ video: null,
  stops: [],
  tags: '',
  estimatedMinutes: 30,
@@ -194,7 +196,11 @@ const TrailForm = () => {
  });
 
  // Cover image
- if (form.coverImage) fd.append('image', form.coverImage);
+ if (form.coverImage) fd.append('coverImage', form.coverImage);
+
+ // Audio & Video
+ if (form.audio) fd.append('audio', form.audio);
+ if (form.video) fd.append('video', form.video);
 
  // Stops as JSON
  fd.append('stops', JSON.stringify(form.stops));
@@ -425,8 +431,57 @@ const TrailForm = () => {
  </div>
  )}
 
- {/* TAB 2: Settings */}
+ {/* TAB 2: Media */}
  {activeTab === 2 && (
+ <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div>
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ Narration Audio
+ </label>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+ Upload an audio file to narrate this trail (MP3, WAV, OGG — max 25MB)
+ </p>
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
+ <Upload size={18} />
+ <span>{form.audio ? 'Change Audio' : 'Upload Audio'}</span>
+ <input
+ type="file"
+ accept="audio/*"
+ onChange={(e) => handleChange('audio', e.target.files[0] || null)}
+ className="hidden"
+ />
+ </label>
+ {form.audio && (
+ <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{form.audio.name}</p>
+ )}
+ </div>
+
+ <div>
+ <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ Video
+ </label>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+ Upload a video for this trail (MP4, WebM — max 50MB)
+ </p>
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
+ <Upload size={18} />
+ <span>{form.video ? 'Change Video' : 'Upload Video'}</span>
+ <input
+ type="file"
+ accept="video/*"
+ onChange={(e) => handleChange('video', e.target.files[0] || null)}
+ className="hidden"
+ />
+ </label>
+ {form.video && (
+ <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{form.video.name}</p>
+ )}
+ </div>
+ </div>
+ )}
+
+ {/* TAB 3: Settings */}
+ {activeTab === 3 && (
  <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
  <div className="grid md:grid-cols-3 gap-4">
  <div>

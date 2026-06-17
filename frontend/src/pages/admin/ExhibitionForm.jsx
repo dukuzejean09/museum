@@ -183,8 +183,8 @@ const ExhibitionForm = () => {
  if (form.galleryImages) {
  Array.from(form.galleryImages).forEach((f) => fd.append('galleryImages', f));
  }
- if (form.narrationAudio) fd.append('narrationAudio', form.narrationAudio);
- if (form.previewAudio) fd.append('previewAudio', form.previewAudio);
+ if (form.narrationAudio) fd.append('narrationFull', form.narrationAudio);
+ if (form.previewAudio) fd.append('narrationPreview', form.previewAudio);
 
  // Video URLs
  const filteredUrls = form.videoUrls.filter((u) => u.trim());

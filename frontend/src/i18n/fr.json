@@ -330,6 +330,7 @@
   "ar.levelNoYOLO": "OpenCV + IA",
   "ar.levelOpenCVOnly": "OpenCV uniquement",
   "ar.levelManual": "Mode manuel",
+  "ar.analyzingObject": "Analyse de l'objet...",
   "ar.cameraError": "Impossible d'acceder a la camera. Verifiez les autorisations.",
   "ar.noMatch": "Impossible d'identifier cet objet. Essayez de vous rapprocher ou appuyez sur Identifier."
 }
