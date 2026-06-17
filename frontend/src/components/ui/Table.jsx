@@ -3,7 +3,7 @@ import { TableRowSkeleton } from './LoadingSkeleton';
 
 const Table = ({ columns, data, loading, emptyMessage = 'No data found' }) => {
  return (
- <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+ <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
  <table className="w-full text-sm">
  <thead>
  <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">

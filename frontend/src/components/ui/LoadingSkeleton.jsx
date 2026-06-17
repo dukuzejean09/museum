@@ -1,7 +1,7 @@
 const pulse = 'animate-pulse bg-slate-200 dark:bg-slate-700 rounded';
 
 export const CardSkeleton = () => (
-  <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div className="card-flush">
     <div className={`${pulse} h-48 w-full`} />
     <div className="p-4 space-y-3">
       <div className={`${pulse} h-5 w-3/4`} />

@@ -12,7 +12,7 @@ const DAY_LABELS = {
 };
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
+ 'form-input';
 
 const defaultAvailability = DAYS.map((day) => ({
  day,
@@ -143,14 +143,14 @@ const GuideForm = () => {
  <ArrowLeft size={20} /> Back to Guides
  </button>
 
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
  {isEdit ? 'Edit' : 'New'} Guide
  </h1>
 
  <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
  {/* Basic Info */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Basic Information</h2>
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title">Basic Information</h2>
 
  {/* Image */}
  <div className="flex items-center gap-6 mb-6">
@@ -172,37 +172,37 @@ const GuideForm = () => {
 
  <div className="grid md:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name *</label>
+ <label className="form-label">Name *</label>
  <input name="name" value={form.name} onChange={handleChange} required className={inputClass} placeholder="Guide name" />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+ <label className="form-label">Email</label>
  <input name="email" type="email" value={form.email} onChange={handleChange} className={inputClass} placeholder="guide@museum.rw" />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone</label>
+ <label className="form-label">Phone</label>
  <input name="phone" value={form.phone} onChange={handleChange} className={inputClass} placeholder="+250 7XX XXX XXX" />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Languages (comma-separated)</label>
+ <label className="form-label">Languages (comma-separated)</label>
  <input name="languages" value={form.languages} onChange={handleChange} className={inputClass} placeholder="English, French, Kinyarwanda" />
  </div>
  </div>
 
  <div className="mt-4">
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Specializations (comma-separated)</label>
+ <label className="form-label">Specializations (comma-separated)</label>
  <input name="specializations" value={form.specializations} onChange={handleChange} className={inputClass} placeholder="Art History, Colonial Architecture" />
  </div>
 
  <div className="mt-4">
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bio</label>
+ <label className="form-label">Bio</label>
  <textarea name="bio" value={form.bio} onChange={handleChange} rows="4" className={inputClass} placeholder="Guide biography..." />
  </div>
  </div>
 
  {/* Availability Schedule */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title flex items-center gap-2">
  <Clock size={20} />
  Weekly Availability
  </h2>

@@ -62,10 +62,10 @@ const Guides = () => {
  finally { setSubmitting(false); }
  };
 
- const inputClass = "w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition";
+ const inputClass = "form-input";
 
  return (
- <div className="container mx-auto px-4 py-8">
+ <div className="page-container">
  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
  <div>
  <h1 className="text-3xl font-bold dark:text-white">{t('guides.title')}</h1>
@@ -147,28 +147,28 @@ const Guides = () => {
  <form onSubmit={handleSubmit} className="p-6 space-y-4">
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.name')} *</label>
+ <label className="form-label">{t('booking.name')} *</label>
  <input type="text" name="visitorName" value={form.visitorName} onChange={handleChange} required className={inputClass} />
  </div>
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.email')} *</label>
+ <label className="form-label">{t('booking.email')} *</label>
  <input type="email" name="visitorEmail" value={form.visitorEmail} onChange={handleChange} required className={inputClass} />
  </div>
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.phone')}</label>
+ <label className="form-label">{t('booking.phone')}</label>
  <input type="tel" name="visitorPhone" value={form.visitorPhone} onChange={handleChange} className={inputClass} />
  </div>
 
  <div className="grid sm:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.date')} *</label>
+ <label className="form-label">{t('booking.date')} *</label>
  <input type="date" name="date" value={form.date} onChange={handleChange} required
  min={new Date().toISOString().split('T')[0]} className={inputClass} />
  </div>
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.time')} *</label>
+ <label className="form-label">{t('booking.time')} *</label>
  <select name="time" value={form.time} onChange={handleChange} required className={inputClass}>
  <option value="">{t('booking.select')}</option>
  {['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'].map(t => (
@@ -177,7 +177,7 @@ const Guides = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.groupSize')} *</label>
+ <label className="form-label">{t('booking.groupSize')} *</label>
  <div className="flex items-center gap-2">
  <Users size={18} className="text-slate-400" />
  <input type="number" name="groupSize" value={form.groupSize} onChange={handleChange} min="1" max="50" required className={inputClass} />
@@ -186,7 +186,7 @@ const Guides = () => {
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('booking.specialRequests')}</label>
+ <label className="form-label">{t('booking.specialRequests')}</label>
  <textarea name="message" value={form.message} onChange={handleChange} rows="2" placeholder={t('booking.specialRequestsPlaceholder')}
  className={inputClass} />
  </div>

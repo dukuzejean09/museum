@@ -47,7 +47,7 @@ const Trail = () => {
 
  if (error) {
  return (
- <div className="container mx-auto px-4 py-8 max-w-5xl text-center">
+ <div className="page-container max-w-5xl text-center">
  <Compass size={48} className="mx-auto mb-4 text-slate-400" />
  <p className="text-slate-500 dark:text-slate-400">Failed to load trails. Please try again later.</p>
  </div>
@@ -55,7 +55,7 @@ const Trail = () => {
  }
 
  return (
- <div className="container mx-auto px-4 py-8 max-w-5xl">
+ <div className="page-container max-w-5xl">
  {/* Header */}
  <div className="text-center mb-12">
  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-4">

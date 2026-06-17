@@ -98,7 +98,7 @@ const ArtifactDetail = () => {
  </div>
  </div>
 
- <div className="container mx-auto px-4 py-8">
+ <div className="page-container">
  <div className="grid lg:grid-cols-[1fr_320px] gap-8">
  {/* Main */}
  <div className="space-y-8">

@@ -86,7 +86,7 @@ const AdminTrails = () => {
  return (
  <div>
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Trails</h1>
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Trails</h1>
  <div className="flex items-center gap-3 w-full sm:w-auto">
  {/* Search */}
  <div className="relative flex-1 sm:w-64">
@@ -108,7 +108,7 @@ const AdminTrails = () => {
  </div>
  </div>
 
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full">
  <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">

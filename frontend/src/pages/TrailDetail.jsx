@@ -180,7 +180,7 @@ const TrailDetail = () => {
  </div>
  </div>
 
- <div className="container mx-auto px-4 py-8">
+ <div className="page-container">
  {/* Introduction */}
  {isIntro && (
  <div className="max-w-2xl mx-auto space-y-6">

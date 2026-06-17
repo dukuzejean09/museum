@@ -148,7 +148,7 @@ const EvaluationDashboard = () => {
       {/* Satisfaction Ratings */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Visitor Satisfaction Ratings</h2>
+          <h2 className="section-title">Visitor Satisfaction Ratings</h2>
           <div className="space-y-3">
             <RatingBar label="Overall" value={satisfaction.avgOverall} />
             <RatingBar label="Ease of Use" value={satisfaction.avgEaseOfUse} />
@@ -160,7 +160,7 @@ const EvaluationDashboard = () => {
         </div>
 
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Learning Impact</h2>
+          <h2 className="section-title">Learning Impact</h2>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={learningData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" />
@@ -176,7 +176,7 @@ const EvaluationDashboard = () => {
       {/* AR Analytics + Trends */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">AR Recognition Methods</h2>
+          <h2 className="section-title">AR Recognition Methods</h2>
           {methodData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -206,7 +206,7 @@ const EvaluationDashboard = () => {
         </div>
 
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Monthly Evaluation Trends</h2>
+          <h2 className="section-title">Monthly Evaluation Trends</h2>
           {monthlyTrends.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={monthlyTrends}>

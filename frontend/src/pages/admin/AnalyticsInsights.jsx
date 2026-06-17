@@ -117,7 +117,7 @@ const AnalyticsInsights = () => {
 
       {/* Daily Visitors Chart */}
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-6">
-        <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Daily Visitor Activity</h2>
+        <h2 className="section-title">Daily Visitor Activity</h2>
         {insights.dailyVisitors?.length > 0 ? (
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={insights.dailyVisitors}>
@@ -137,7 +137,7 @@ const AnalyticsInsights = () => {
       {/* AR Methods + Engagement by Day */}
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">AR Recognition Methods</h2>
+          <h2 className="section-title">AR Recognition Methods</h2>
           {arMethodData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -154,7 +154,7 @@ const AnalyticsInsights = () => {
         </div>
 
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Engagement by Day</h2>
+          <h2 className="section-title">Engagement by Day</h2>
           {insights.engagementByDay?.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={insights.engagementByDay}>
@@ -192,7 +192,7 @@ const AnalyticsInsights = () => {
       {/* Top entities tables */}
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Top Scanned Artifacts</h2>
+          <h2 className="section-title">Top Scanned Artifacts</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead><tr><th className="text-left px-3 py-2 text-slate-500">Name</th><th className="text-right px-3 py-2 text-slate-500">Views</th><th className="text-right px-3 py-2 text-slate-500">Scans</th></tr></thead>
@@ -210,7 +210,7 @@ const AnalyticsInsights = () => {
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-4">Top Visited Exhibitions</h2>
+          <h2 className="section-title">Top Visited Exhibitions</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead><tr><th className="text-left px-3 py-2 text-slate-500">Name</th><th className="text-right px-3 py-2 text-slate-500">Views</th><th className="text-right px-3 py-2 text-slate-500">Total</th></tr></thead>

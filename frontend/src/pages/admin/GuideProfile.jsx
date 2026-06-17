@@ -12,7 +12,7 @@ const DAY_LABELS = {
 };
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
+ 'form-input';
 
 const defaultAvailability = DAYS.map((day) => ({
  day,
@@ -135,7 +135,7 @@ const GuideProfile = () => {
  if (notLinked) {
  return (
  <div className="max-w-2xl mx-auto">
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 text-center">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 text-center">
  <User size={48} className="mx-auto text-slate-400 dark:text-slate-500 mb-4" />
  <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-2">
  No Guide Profile Linked
@@ -151,15 +151,15 @@ const GuideProfile = () => {
 
  return (
  <div className="max-w-3xl mx-auto">
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-3">
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
  <User size={28} />
  My Guide Profile
  </h1>
 
  <form onSubmit={handleSubmit} className="space-y-6">
  {/* Profile Image & Basic Info */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Basic Information</h2>
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title">Basic Information</h2>
 
  {/* Image */}
  <div className="flex items-center gap-6 mb-6">
@@ -181,25 +181,25 @@ const GuideProfile = () => {
 
  <div className="grid md:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <span className="flex items-center gap-1"><User size={14} /> Name *</span>
  </label>
  <input name="name" value={form.name} onChange={handleChange} required className={inputClass} placeholder="Your full name" />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <span className="flex items-center gap-1"><Mail size={14} /> Email</span>
  </label>
  <input name="email" type="email" value={form.email} onChange={handleChange} className={inputClass} placeholder="guide@museum.rw" />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <span className="flex items-center gap-1"><Phone size={14} /> Phone</span>
  </label>
  <input name="phone" value={form.phone} onChange={handleChange} className={inputClass} placeholder="+250 7XX XXX XXX" />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <span className="flex items-center gap-1"><Globe size={14} /> Languages</span>
  </label>
  <input name="languages" value={form.languages} onChange={handleChange} className={inputClass} placeholder="English, French, Kinyarwanda" />
@@ -207,14 +207,14 @@ const GuideProfile = () => {
  </div>
 
  <div className="mt-4">
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <span className="flex items-center gap-1"><Star size={14} /> Specializations</span>
  </label>
  <input name="specializations" value={form.specializations} onChange={handleChange} className={inputClass} placeholder="Art History, Colonial Architecture, Traditional Crafts" />
  </div>
 
  <div className="mt-4">
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bio</label>
+ <label className="form-label">Bio</label>
  <textarea
  name="bio"
  value={form.bio}
@@ -227,8 +227,8 @@ const GuideProfile = () => {
  </div>
 
  {/* Availability Schedule */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title flex items-center gap-2">
  <Clock size={20} />
  Weekly Availability
  </h2>

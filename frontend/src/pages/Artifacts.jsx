@@ -60,7 +60,7 @@ const Artifacts = () => {
  useEffect(() => { loadArtifacts(); }, [loadArtifacts]);
 
  return (
- <div className="container mx-auto px-4 py-8">
+ <div className="page-container">
  <div className="mb-8">
  <h1 className="text-3xl font-bold dark:text-white">{t('artifact.title') || 'Artifacts'}</h1>
  <p className="text-slate-600 dark:text-slate-400 mt-1">{t('artifact.subtitle') || 'Discover historical objects and their stories'}</p>
@@ -68,14 +68,14 @@ const Artifacts = () => {
 
  {/* Search */}
  <div className="mb-8">
- <div className="relative max-w-md">
+ <div className="relative w-full sm:max-w-md">
  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
  <input
  type="text"
  placeholder={t('common.search') + '...'}
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="form-input pl-10"
  />
  </div>
  </div>
@@ -90,7 +90,7 @@ const Artifacts = () => {
  <Link
  key={artifact._id}
  to={`/artifacts/${artifact._id}`}
- className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group"
+ className="card-flush group hover:shadow-lg transition-all duration-300"
  >
  <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {artifact.image ? (

@@ -82,7 +82,7 @@ const AdminUsers = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">User Management</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">User Management</h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition font-medium"
@@ -98,8 +98,8 @@ const AdminUsers = () => {
             <Users size={24} className="text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Users</p>
-            <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{counts.total}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Total Users</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{counts.total}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
@@ -107,8 +107,8 @@ const AdminUsers = () => {
             <Shield size={24} className="text-purple-600 dark:text-purple-400" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Admins</p>
-            <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{counts.admins}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Admins</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{counts.admins}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
@@ -116,8 +116,8 @@ const AdminUsers = () => {
             <UserCog size={24} className="text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Guides</p>
-            <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{counts.guides}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Guides</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{counts.guides}</p>
           </div>
         </div>
       </div>
@@ -125,48 +125,48 @@ const AdminUsers = () => {
       {/* Add User Form */}
       {showAddForm && (
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Add New User</h2>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Add New User</h2>
           <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+              <label className="form-label">Username</label>
               <input
                 type="text"
                 required
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
                 placeholder="Enter username"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+              <label className="form-label">Email</label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
                 placeholder="Enter email"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+              <label className="form-label">Password</label>
               <input
                 type="password"
                 required
                 minLength={6}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
                 placeholder="Min 6 characters"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
+              <label className="form-label">Role</label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
               >
                 <option value="admin">Admin</option>
                 <option value="guide">Guide</option>
@@ -183,7 +183,7 @@ const AdminUsers = () => {
               <button
                 type="button"
                 onClick={() => setShowAddForm(false)}
-                className="bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 px-6 py-2 rounded-lg transition font-medium"
+                className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-6 py-2 rounded-lg transition font-medium"
               >
                 Cancel
               </button>
@@ -195,22 +195,22 @@ const AdminUsers = () => {
       {/* Users Table */}
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-slate-800 border-b dark:border-slate-700">
+          <thead className="bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-700">
             <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Username</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Email</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Role</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Username</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Email</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Role</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Status</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
             {users.map((user) => {
               const isSelf = user._id === admin?._id;
               const canManage = !isSelf && !user.isProtected;
               return (
-                <tr key={user._id} className={`hover:bg-gray-50 dark:hover:bg-slate-800 ${isSelf ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}`}>
-                  <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-200">
+                <tr key={user._id} className={`hover:bg-slate-50 dark:hover:bg-slate-800 ${isSelf ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}`}>
+                  <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">
                     {user.username}
                     {isSelf && (
                       <span className="ml-2 text-xs bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full">You</span>
@@ -221,13 +221,13 @@ const AdminUsers = () => {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.email}</td>
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{user.email}</td>
                   <td className="px-6 py-4">
                     {canManage ? (
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                        className="px-2 py-1 border border-gray-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 dark:bg-slate-800 dark:text-white"
+                        className="px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 dark:bg-slate-800 dark:text-white"
                       >
                         <option value="admin">Admin</option>
                         <option value="guide">Guide</option>
@@ -278,7 +278,7 @@ const AdminUsers = () => {
             })}
             {users.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                <td colSpan="5" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                   No users found.
                 </td>
               </tr>

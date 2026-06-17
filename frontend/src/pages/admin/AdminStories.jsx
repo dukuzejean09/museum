@@ -51,7 +51,7 @@ const AdminStories = () => {
  return (
  <div>
  <div className="flex justify-between items-center mb-6">
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Stories</h1>
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Stories</h1>
  <Link
  to="/admin/stories/new"
  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition font-medium"
@@ -74,7 +74,7 @@ const AdminStories = () => {
  </select>
  </div>
 
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
  <table className="w-full">
  <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
  <tr>

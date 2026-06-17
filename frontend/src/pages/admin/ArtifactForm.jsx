@@ -13,7 +13,7 @@ const LANGUAGES = ['en', 'fr', 'rw'];
 const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
+ 'form-input';
 
 const ArtifactForm = () => {
  const { id } = useParams();
@@ -186,27 +186,27 @@ const ArtifactForm = () => {
  <ArrowLeft size={20} /> Back to Artifacts
  </button>
 
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
  {isEditing ? 'Edit Artifact' : 'Create Artifact'}
  </h1>
 
  <form onSubmit={handleSubmit}>
  {/* Name & Description */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Artifact Name <span className="text-red-500">*</span>
  </label>
  {renderMultiLangInput('name', nameLang, setNameLang, 'input', 'Artifact name')}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Short Description <span className="text-red-500">*</span>
  </label>
  {renderMultiLangInput('description', descLang, setDescLang, 'textarea', 'Short description')}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Historical Story <span className="text-red-500">*</span>
  </label>
  {renderMultiLangInput('historicalStory', storyLang, setStoryLang, 'textarea', 'Historical story')}
@@ -214,11 +214,11 @@ const ArtifactForm = () => {
  </div>
 
  {/* Optional Fields */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6 mt-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6 mt-6">
  <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Optional Details</h2>
  <div className="grid md:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date Created</label>
+ <label className="form-label">Date Created</label>
  <input
  type="text"
  value={form.dateCreated}
@@ -228,7 +228,7 @@ const ArtifactForm = () => {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date Discovered / Collected</label>
+ <label className="form-label">Date Discovered / Collected</label>
  <input
  type="text"
  value={form.dateDiscovered}
@@ -238,7 +238,7 @@ const ArtifactForm = () => {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
+ <label className="form-label">Category</label>
  <input
  type="text"
  value={form.category}
@@ -249,11 +249,11 @@ const ArtifactForm = () => {
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Origin / Location</label>
+ <label className="form-label">Origin / Location</label>
  {renderMultiLangInput('originLocation', originLang, setOriginLang, 'input', 'Origin or location')}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+ <label className="form-label">Status</label>
  <select
  value={form.status}
  onChange={(e) => handleChange('status', e.target.value)}
@@ -267,10 +267,10 @@ const ArtifactForm = () => {
  </div>
 
  {/* Images */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6 mt-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6 mt-6">
  <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Images</h2>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ <label className="form-label mb-2">
  Artifact Image <span className="text-red-500">*</span>
  </label>
  <div className="flex items-center gap-4">
@@ -297,7 +297,7 @@ const ArtifactForm = () => {
  </div>
 
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Additional Images</label>
+ <label className="form-label mb-2">Additional Images</label>
  <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Images</span>

@@ -221,21 +221,21 @@ const AdminAccessCodes = () => {
  </div>
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">Label (optional)</label>
+ <label className="form-label">Label (optional)</label>
  <input
  type="text"
  value={form.label}
  onChange={e => setForm({ ...form, label: e.target.value })}
  placeholder="e.g. June 2026 Batch, Entrance Poster..."
- className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none"
+ className="form-input"
  />
  </div>
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">Code Type</label>
+ <label className="form-label">Code Type</label>
  <select
  value={form.type}
  onChange={e => setForm({ ...form, type: e.target.value })}
- className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none"
+ className="form-input"
  >
  {TYPE_OPTIONS.map(opt => (
  <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -267,7 +267,7 @@ const AdminAccessCodes = () => {
  </div>
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">
+ <label className="form-label">
  <Users size={14} className="inline mr-1" />
  Max Uses / Group Size (optional)
  </label>
@@ -277,12 +277,12 @@ const AdminAccessCodes = () => {
  onChange={e => setForm({ ...form, maxUses: e.target.value })}
  placeholder="Leave empty for unlimited"
  min="1"
- className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none"
+ className="form-input"
  />
  <p className="text-xs text-slate-400 mt-1">Number of people who can use this code</p>
  </div>
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">Code Expires At (optional)</label>
+ <label className="form-label">Code Expires At (optional)</label>
  <div className="flex flex-wrap gap-1.5 mb-2">
  {[
  { label: 'In 1 hour', hours: 1 },
@@ -313,7 +313,7 @@ const AdminAccessCodes = () => {
  type="datetime-local"
  value={form.expiresAt}
  onChange={e => setForm({ ...form, expiresAt: e.target.value })}
- className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none"
+ className="form-input"
  />
  <p className="text-xs text-slate-400 mt-1">When the code itself stops accepting scans</p>
  </div>
@@ -366,7 +366,7 @@ const AdminAccessCodes = () => {
  {codes.map(code => {
  const status = getStatus(code);
  return (
- <tr key={code._id} className="border-b border-slate-100 dark:border-slate-800 last:border-0">
+ <tr key={code._id} className="border-b border-slate-100 dark:border-slate-700 last:border-0">
  <td className="px-4 py-3">
  <code className="font-mono font-bold text-amber-600 dark:text-amber-400">{code.code}</code>
  </td>

@@ -14,7 +14,7 @@ const LANGUAGES = ['en', 'fr', 'rw'];
 const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
+ 'form-input';
 
 const StoryForm = () => {
  const { id } = useParams();
@@ -148,14 +148,14 @@ const StoryForm = () => {
  <ArrowLeft size={20} /> Back to Stories
  </button>
 
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
  {isEditing ? 'Edit Story' : 'Create Story'}
  </h1>
 
  <form onSubmit={handleSubmit} className="space-y-6">
  {/* Title */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Title</h2>
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title">Title</h2>
  {renderLangTabs(titleLang, setTitleLang)}
  {LANGUAGES.map((lang) => (
  <input
@@ -170,8 +170,8 @@ const StoryForm = () => {
  </div>
 
  {/* Content */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Content</h2>
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title">Content</h2>
  {renderLangTabs(contentLang, setContentLang)}
  {LANGUAGES.map((lang) => (
  <textarea
@@ -186,11 +186,11 @@ const StoryForm = () => {
  </div>
 
  {/* Exhibition & Status */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Settings</h2>
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <h2 className="section-title">Settings</h2>
  <div className="grid md:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Exhibition <span className="text-red-500">*</span></label>
+ <label className="form-label">Exhibition <span className="text-red-500">*</span></label>
  <select
  value={form.exhibition}
  onChange={(e) => handleChange('exhibition', e.target.value)}
@@ -206,7 +206,7 @@ const StoryForm = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+ <label className="form-label">Status</label>
  <select
  value={form.status}
  onChange={(e) => handleChange('status', e.target.value)}

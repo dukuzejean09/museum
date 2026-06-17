@@ -25,7 +25,7 @@ const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 const TABS = ['Basic Info', 'Stops', 'Media', 'Settings'];
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
+ 'form-input';
 
 const emptyMultilang = () => ({ en: '', fr: '', rw: '' });
 
@@ -311,7 +311,7 @@ const TrailForm = () => {
  <ArrowLeft size={20} /> Back to Trails
  </button>
 
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
  {isEditing ? 'Edit Trail' : 'Create Trail'}
  </h1>
 
@@ -336,23 +336,23 @@ const TrailForm = () => {
  <form onSubmit={handleSubmit}>
  {/* TAB 0: Basic Info */}
  {activeTab === 0 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Title *
  </label>
  {renderMultiLangInput('title', titleLang, setTitleLang, 'input', 'Trail title')}
  </div>
 
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Introduction
  </label>
  {renderMultiLangInput('introduction', introLang, setIntroLang, 'textarea', 'Introduction')}
  </div>
 
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Description
  </label>
  {renderMultiLangInput('description', descLang, setDescLang, 'textarea', 'Description')}
@@ -360,7 +360,7 @@ const TrailForm = () => {
 
  {/* Cover Image */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ <label className="form-label mb-2">
  Cover Image
  </label>
  <div className="flex items-center gap-4">
@@ -390,7 +390,7 @@ const TrailForm = () => {
 
  {/* TAB 1: Stops */}
  {activeTab === 1 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
  <div className="flex justify-between items-center mb-4">
  <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
  Trail Stops ({form.stops.length})
@@ -433,9 +433,9 @@ const TrailForm = () => {
 
  {/* TAB 2: Media */}
  {activeTab === 2 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ <label className="form-label mb-2">
  Narration Audio
  </label>
  <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
@@ -457,7 +457,7 @@ const TrailForm = () => {
  </div>
 
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ <label className="form-label mb-2">
  Video
  </label>
  <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
@@ -482,10 +482,10 @@ const TrailForm = () => {
 
  {/* TAB 3: Settings */}
  {activeTab === 3 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div className="grid md:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Estimated Duration (minutes)
  </label>
  <input
@@ -497,7 +497,7 @@ const TrailForm = () => {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Difficulty
  </label>
  <select
@@ -511,7 +511,7 @@ const TrailForm = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  Tags (comma-separated)
  </label>
  <input

@@ -53,7 +53,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6">Dashboard</h1>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -63,8 +63,8 @@ const Dashboard = () => {
               <Icon size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
-              <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{count}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
+              <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{count}</p>
             </div>
           </div>
         ))}
@@ -72,7 +72,7 @@ const Dashboard = () => {
 
       {/* Chart */}
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Content Overview</h2>
+        <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Content Overview</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -87,40 +87,40 @@ const Dashboard = () => {
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent Messages */}
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Recent Messages</h2>
+          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Recent Messages</h2>
           {stats?.recentMessages?.length > 0 ? (
             <div className="space-y-3">
               {stats.recentMessages.map((msg) => (
-                <div key={msg._id} className="border border-gray-100 dark:border-slate-700 rounded-lg p-4">
+                <div key={msg._id} className="border border-slate-100 dark:border-slate-700 rounded-lg p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-800 dark:text-gray-200">{msg.name}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{msg.email}</p>
+                      <p className="font-medium text-slate-800 dark:text-slate-200">{msg.name}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{msg.email}</p>
                     </div>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                    <span className="text-xs text-slate-400 dark:text-slate-500">
                       {new Date(msg.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">{msg.message}</p>
+                  <p className="text-slate-600 dark:text-slate-400 mt-2 text-sm">{msg.message}</p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 dark:text-gray-400">No messages yet.</p>
+            <p className="text-slate-500 dark:text-slate-400">No messages yet.</p>
           )}
         </div>
 
         {/* Recent Bookings */}
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Recent Bookings</h2>
+          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Recent Bookings</h2>
           {stats?.recentBookings?.length > 0 ? (
             <div className="space-y-3">
               {stats.recentBookings.map((b) => (
-                <div key={b._id} className="border border-gray-100 dark:border-slate-700 rounded-lg p-4">
+                <div key={b._id} className="border border-slate-100 dark:border-slate-700 rounded-lg p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-800 dark:text-gray-200">{b.visitorName}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Guide: {b.guideId?.name || 'N/A'}</p>
+                      <p className="font-medium text-slate-800 dark:text-slate-200">{b.visitorName}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">Guide: {b.guideId?.name || 'N/A'}</p>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                       b.status === 'confirmed' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' :
@@ -130,14 +130,14 @@ const Dashboard = () => {
                       {b.status}
                     </span>
                   </div>
-                  <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                  <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
                     {new Date(b.date).toLocaleDateString()} at {b.time} — {b.groupSize} people
                   </p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 dark:text-gray-400">No bookings yet.</p>
+            <p className="text-slate-500 dark:text-slate-400">No bookings yet.</p>
           )}
         </div>
       </div>

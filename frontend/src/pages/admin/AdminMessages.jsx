@@ -127,7 +127,7 @@ const AdminMessages = () => {
 
  {/* Replies */}
  {msg.replies?.length > 0 && (
- <div className="border-t border-slate-100 dark:border-slate-800">
+ <div className="border-t border-slate-100 dark:border-slate-700">
  <button
  onClick={() => setExpanded((p) => ({ ...p, [msg._id]: !p[msg._id] }))}
  className="w-full px-5 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 flex items-center gap-1"
@@ -159,7 +159,7 @@ const AdminMessages = () => {
  )}
 
  {/* Reply input */}
- <div className="border-t border-slate-100 dark:border-slate-800 p-4 flex gap-2">
+ <div className="border-t border-slate-100 dark:border-slate-700 p-4 flex gap-2">
  <input
  type="text"
  value={replyInputs[msg._id] || ''}

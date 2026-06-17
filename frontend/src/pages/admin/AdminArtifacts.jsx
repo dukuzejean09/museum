@@ -81,7 +81,7 @@ const AdminArtifacts = () => {
  return (
  <div>
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Artifacts</h1>
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Artifacts</h1>
  <div className="flex items-center gap-2">
  <button
  onClick={() => setBulkQrOpen(true)}
@@ -107,7 +107,7 @@ const AdminArtifacts = () => {
  value={search}
  onChange={(e) => setSearch(e.target.value)}
  placeholder="Search by name..."
- className="pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none text-sm w-64"
+ className="form-input pl-9 pr-4 text-sm sm:w-64"
  />
  </form>
  <select
@@ -122,7 +122,7 @@ const AdminArtifacts = () => {
  </select>
  </div>
 
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden overflow-x-auto">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden overflow-x-auto">
  <table className="w-full min-w-[600px]">
  <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
  <tr>

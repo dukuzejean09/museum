@@ -15,7 +15,7 @@ const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
 const TABS = ['Basic Info', 'Artifacts', 'Media', 'Narration', 'Settings', 'Timeline'];
 
 const inputClass =
- 'w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none';
+ 'form-input';
 
 const ExhibitionForm = () => {
  const { id } = useParams();
@@ -285,7 +285,7 @@ const ExhibitionForm = () => {
  <ArrowLeft size={20} /> Back to Exhibitions
  </button>
 
- <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+ <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
  {isEditing ? 'Edit Exhibition' : 'Create Exhibition'}
  </h1>
 
@@ -310,21 +310,21 @@ const ExhibitionForm = () => {
  <form onSubmit={handleSubmit}>
  {/* TAB 0: Basic Info */}
  {activeTab === 0 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Title</label>
+ <label className="form-label">Title</label>
  {renderMultiLangInput('title', titleLang, setTitleLang, 'input', 'Exhibition title')}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Short Description</label>
+ <label className="form-label">Short Description</label>
  {renderMultiLangInput('shortDescription', shortDescLang, setShortDescLang, 'input', 'Short description')}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Description</label>
+ <label className="form-label">Full Description</label>
  {renderMultiLangInput('fullDescription', fullDescLang, setFullDescLang, 'textarea', 'Full description')}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Historical Significance</label>
+ <label className="form-label">Historical Significance</label>
  {renderMultiLangInput('historicalSignificance', significanceLang, setSignificanceLang, 'textarea', 'Historical significance')}
  </div>
  </div>
@@ -332,7 +332,7 @@ const ExhibitionForm = () => {
 
  {/* TAB 1: Artifacts */}
  {activeTab === 1 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div className="grid md:grid-cols-2 gap-6">
  {/* Available Artifacts */}
  <div>
@@ -450,10 +450,10 @@ const ExhibitionForm = () => {
 
  {/* TAB 2: Media */}
  {activeTab === 2 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  {/* Cover Image */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Cover Image</label>
+ <label className="form-label mb-2">Cover Image</label>
  <div className="flex items-center gap-4">
  {coverPreview && (
  <img src={coverPreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
@@ -479,7 +479,7 @@ const ExhibitionForm = () => {
 
  {/* Gallery Images */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Gallery Images</label>
+ <label className="form-label mb-2">Gallery Images</label>
  <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Gallery Images</span>
@@ -500,7 +500,7 @@ const ExhibitionForm = () => {
 
  {/* Video URLs */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Video URLs</label>
+ <label className="form-label mb-2">Video URLs</label>
  <div className="space-y-2">
  {form.videoUrls.map((url, idx) => (
  <div key={idx} className="flex gap-2">
@@ -536,9 +536,9 @@ const ExhibitionForm = () => {
 
  {/* TAB 3: Narration */}
  {activeTab === 3 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Full Narration Audio</label>
+ <label className="form-label mb-2">Full Narration Audio</label>
  <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Narration Audio</span>
@@ -554,7 +554,7 @@ const ExhibitionForm = () => {
  )}
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Preview Audio (15s teaser)</label>
+ <label className="form-label mb-2">Preview Audio (15s teaser)</label>
  <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Preview Audio</span>
@@ -574,10 +574,10 @@ const ExhibitionForm = () => {
 
  {/* TAB 4: Settings */}
  {activeTab === 4 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
  <div className="grid md:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tags (comma-separated)</label>
+ <label className="form-label">Tags (comma-separated)</label>
  <input
  type="text"
  value={form.tags}
@@ -589,7 +589,7 @@ const ExhibitionForm = () => {
  </div>
  <div className="grid md:grid-cols-3 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Access Level</label>
+ <label className="form-label">Access Level</label>
  <select
  value={form.accessLevel}
  onChange={(e) => handleChange('accessLevel', e.target.value)}
@@ -601,7 +601,7 @@ const ExhibitionForm = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+ <label className="form-label">Status</label>
  <select
  value={form.status}
  onChange={(e) => handleChange('status', e.target.value)}
@@ -614,7 +614,7 @@ const ExhibitionForm = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Order</label>
+ <label className="form-label">Order</label>
  <input
  type="number"
  value={form.order}
@@ -629,7 +629,7 @@ const ExhibitionForm = () => {
 
  {/* TAB 5: Timeline */}
  {activeTab === 5 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+ <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
  <div className="flex justify-between items-center mb-4">
  <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Timeline Entries</h2>
  <button

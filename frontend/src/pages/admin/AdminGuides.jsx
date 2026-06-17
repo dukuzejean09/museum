@@ -42,7 +42,7 @@ const AdminGuides = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Guides</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Guides</h1>
         <Link
           to="/admin/guides/new"
           className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition font-medium"
@@ -53,18 +53,18 @@ const AdminGuides = () => {
 
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-slate-50 border-b">
             <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500">Image</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500">Name</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500">Bio</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500">Languages</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-gray-500">Actions</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Image</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Name</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Bio</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Languages</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-slate-100">
             {guides.map((guide) => (
-              <tr key={guide._id} className="hover:bg-gray-50">
+              <tr key={guide._id} className="hover:bg-slate-50">
                 <td className="px-6 py-4">
                   {guide.imageUrl ? (
                     <img
@@ -73,13 +73,13 @@ const AdminGuides = () => {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 text-xs">
                       No img
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4 font-medium text-gray-800">{guide.name}</td>
-                <td className="px-6 py-4 text-gray-600 max-w-xs truncate">{guide.bio}</td>
+                <td className="px-6 py-4 font-medium text-slate-800">{guide.name}</td>
+                <td className="px-6 py-4 text-slate-600 max-w-xs truncate">{guide.bio}</td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1">
                     {guide.languages?.map((lang) => (
@@ -113,7 +113,7 @@ const AdminGuides = () => {
             ))}
             {guides.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
+                <td colSpan="5" className="px-6 py-12 text-center text-slate-500">
                   No guides found. Add your first guide!
                 </td>
               </tr>

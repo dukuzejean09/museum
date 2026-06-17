@@ -234,7 +234,7 @@ const SearchPage = () => {
  });
 
  return (
- <div className="container mx-auto px-4 py-8 max-w-3xl">
+ <div className="page-container max-w-3xl">
  {/* Header */}
  <div className="text-center mb-6">
  <h1 className="text-2xl font-bold dark:text-white mb-1">{t('search.title')}</h1>
@@ -448,7 +448,7 @@ const SearchPage = () => {
  {scanMode === 'camera' && !preview && (
  <div className="mb-6">
  <div className="relative rounded-2xl overflow-hidden bg-black">
- <video ref={videoRef} autoPlay playsInline className="w-full h-[400px] object-cover" />
+ <video ref={videoRef} autoPlay playsInline className="w-full h-64 sm:h-80 md:h-[400px] object-cover" />
  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
  <div className="w-56 h-56 border-2 border-white/50 rounded-2xl" />
  </div>
@@ -469,7 +469,7 @@ const SearchPage = () => {
  {preview && (
  <div className="mb-6">
  <div className="relative rounded-2xl overflow-hidden">
- <img src={preview} alt="Captured" className="w-full h-[400px] object-cover" />
+ <img src={preview} alt="Captured" className="w-full h-64 sm:h-80 md:h-[400px] object-cover" />
  {identifying && (
  <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
  <Loader2 size={48} className="text-amber-500 animate-spin" />

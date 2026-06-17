@@ -227,22 +227,22 @@ const BookVisit = () => {
  {/* Name & Email */}
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <User size={14} className="inline mr-1" /> Full Name *
  </label>
  <input
  type="text" name="visitorName" value={form.visitorName} onChange={handleChange} required
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="form-input"
  placeholder="Your full name"
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <Mail size={14} className="inline mr-1" /> Email *
  </label>
  <input
  type="email" name="visitorEmail" value={form.visitorEmail} onChange={handleChange} required
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="form-input"
  placeholder="you@example.com"
  />
  </div>
@@ -250,12 +250,12 @@ const BookVisit = () => {
 
  {/* Phone */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <Phone size={14} className="inline mr-1" /> Phone (optional)
  </label>
  <input
  type="tel" name="visitorPhone" value={form.visitorPhone} onChange={handleChange}
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="form-input"
  placeholder="+250 7XX XXX XXX"
  />
  </div>
@@ -263,22 +263,22 @@ const BookVisit = () => {
  {/* Date & Time (time only for physical) */}
  <div className={`grid ${isPhysical ? 'sm:grid-cols-2' : ''} gap-4`}>
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <Calendar size={14} className="inline mr-1" /> {isPhysical ? 'Visit Date *' : 'Preferred Date *'}
  </label>
  <input
  type="date" name="date" value={form.date} onChange={handleChange} required min={today}
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="form-input"
  />
  </div>
  {isPhysical && (
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <Clock size={14} className="inline mr-1" /> Time Slot *
  </label>
  <select
  name="time" value={form.time} onChange={handleChange} required
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="form-input"
  >
  <option value="">Select time</option>
  {timeSlots.map(slot => (
@@ -292,13 +292,13 @@ const BookVisit = () => {
  {/* Guide selection (physical only) */}
  {isPhysical && (
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+ <label className="form-label mb-2">
  Choose a Guide *
  </label>
  {guides.length === 0 ? (
  <p className="text-sm text-slate-400">No guides available</p>
  ) : (
- <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+ <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
  {guides.map(g => (
  <button
  type="button"
@@ -327,23 +327,23 @@ const BookVisit = () => {
 
  {/* Group size */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <Users size={14} className="inline mr-1" /> {isPhysical ? 'Group Size' : 'Number of People'}
  </label>
  <input
  type="number" name="groupSize" value={form.groupSize} onChange={handleChange} min="1" max="50"
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+ className="form-input"
  />
  </div>
 
  {/* Message */}
  <div>
- <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+ <label className="form-label">
  <MessageSquare size={14} className="inline mr-1" /> {isPhysical ? 'Special Requests' : 'Message'} (optional)
  </label>
  <textarea
  name="message" value={form.message} onChange={handleChange} rows={3}
- className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"
+ className="form-input resize-none"
  placeholder={isPhysical ? 'Any special requirements or accessibility needs...' : 'Tell us about your interest in the museum...'}
  />
  </div>

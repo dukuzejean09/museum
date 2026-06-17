@@ -125,7 +125,7 @@ const ExhibitionDetail = () => {
  </div>
  </ArtifactSlideshow>
 
- <div className="container mx-auto px-4 py-8">
+ <div className="page-container">
  {/* Tab Navigation */}
  <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-8 overflow-x-auto">
  {tabs.map(tab => (

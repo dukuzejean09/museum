@@ -83,7 +83,7 @@ const Feedback = () => {
  finally { setSubmitting(false); }
  };
 
- const inputClass = "w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition";
+ const inputClass = "form-input";
 
  // Survey success screen
  if (surveySubmitted) {
@@ -112,7 +112,7 @@ const Feedback = () => {
  ];
 
  return (
- <div className="container mx-auto px-4 py-8 max-w-2xl">
+ <div className="page-container max-w-2xl">
  <div className="text-center mb-8">
  <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
  <ClipboardList size={32} className="text-amber-600" />
@@ -142,17 +142,17 @@ const Feedback = () => {
  {tab === 'survey' && (
  <form onSubmit={handleSurveySubmit} className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('survey.name')}</label>
+ <label className="form-label">{t('survey.name')}</label>
  <input type="text" name="visitorName" value={surveyForm.visitorName} onChange={handleSurveyChange} className={inputClass} />
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-2 dark:text-slate-300">{t('survey.overall')} *</label>
+ <label className="form-label mb-2">{t('survey.overall')} *</label>
  <StarRating value={surveyForm.overallRating} onChange={(val) => setSurveyForm(prev => ({ ...prev, overallRating: val }))} />
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('survey.favorite')}</label>
+ <label className="form-label">{t('survey.favorite')}</label>
  <select name="favoriteExhibition" value={surveyForm.favoriteExhibition} onChange={handleSurveyChange} className={inputClass}>
  <option value="">{t('survey.selectExhibit')}</option>
  {exhibitions.map(e => <option key={e._id} value={getLocalizedText(e.title, lang)}>{getLocalizedText(e.title, lang)}</option>)}
@@ -160,7 +160,7 @@ const Feedback = () => {
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('survey.duration')}</label>
+ <label className="form-label">{t('survey.duration')}</label>
  <select name="visitDuration" value={surveyForm.visitDuration} onChange={handleSurveyChange} className={inputClass}>
  <option value="">{t('survey.selectDuration')}</option>
  <option value="Less than 30 minutes">{t('survey.duration30')}</option>
@@ -177,7 +177,7 @@ const Feedback = () => {
  </div>
 
  <div>
- <label className="block text-sm font-medium mb-1 dark:text-slate-300">{t('survey.comments')}</label>
+ <label className="form-label">{t('survey.comments')}</label>
  <textarea name="comments" value={surveyForm.comments} onChange={handleSurveyChange} rows="4"
  placeholder={t('survey.commentsPlaceholder')} className={inputClass} />
  </div>
@@ -192,7 +192,7 @@ const Feedback = () => {
  {tab === 'contact' && (
  <>
  {messageSubmitted && (
- <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-4 rounded-xl mb-6 text-center font-medium">
+ <div className="alert-success mb-6 text-center font-medium">
  {t('chat.sent')}
  </div>
  )}

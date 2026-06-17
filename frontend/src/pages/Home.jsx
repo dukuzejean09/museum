@@ -142,7 +142,7 @@ const Home = () => {
 
  {/* Right — hero image */}
  <div className="relative mx-auto w-full max-w-md">
- <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
+ <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20">
  <img src={HomeCt} alt="Kandt House Museum" className="h-full w-full object-cover" />
  </div>
  </div>
@@ -172,7 +172,7 @@ const Home = () => {
  2. EXPLORE THE MUSEUM
  Quick-link grid: Exhibitions, Artifacts, Trails, Search, Guides, Feedback
  ═══════════════════════════════════════════════════════════════ */}
- <section className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 py-16">
+ <section className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 py-16">
  <div className="container mx-auto px-4">
  <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
  {t('home.exploreTitle')}
@@ -213,7 +213,7 @@ const Home = () => {
  Featured trail cards with slideshow, difficulty, stops, duration
  ═══════════════════════════════════════════════════════════════ */}
  {trails.length > 0 && (
- <section className="bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-slate-900 dark:via-slate-800/30 dark:to-slate-900 border-b border-slate-200 dark:border-slate-800 py-16">
+ <section className="bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-slate-900 dark:via-slate-800/30 dark:to-slate-900 border-b border-slate-200 dark:border-slate-700 py-16">
  <div className="container mx-auto px-4">
  <div className="text-center mb-10">
  <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
@@ -304,7 +304,7 @@ const Home = () => {
  4. MUSEUM COLLECTIONS & HISTORICAL CONTENT
  Six collection categories + Notable Artifacts banner
  ═══════════════════════════════════════════════════════════════ */}
- <section className="bg-gradient-to-b from-amber-50 to-white dark:from-slate-900 dark:to-slate-950 border-b border-slate-200 dark:border-slate-800">
+ <section className="bg-gradient-to-b from-amber-50 to-white dark:from-slate-900 dark:to-slate-950 border-b border-slate-200 dark:border-slate-700">
  <ImigongoBorder />
  <div className="container mx-auto px-4 py-14">
  <div className="text-center mb-4">

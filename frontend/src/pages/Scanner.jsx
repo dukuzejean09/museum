@@ -134,7 +134,7 @@ const Scanner = () => {
   const fullAudioUrl = audioUrl ? (audioUrl.startsWith('http') ? audioUrl : `${API_BASE}${audioUrl}`) : null;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="page-container max-w-2xl">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
@@ -182,7 +182,7 @@ const Scanner = () => {
       {mode === 'camera' && !preview && (
         <div className="mb-6">
           <div className="relative rounded-2xl overflow-hidden bg-black">
-            <video ref={videoRef} autoPlay playsInline className="w-full h-[400px] object-cover" />
+            <video ref={videoRef} autoPlay playsInline className="w-full h-64 sm:h-80 md:h-[400px] object-cover" />
             {/* Viewfinder overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-56 h-56 border-2 border-white/50 rounded-2xl" />
@@ -210,7 +210,7 @@ const Scanner = () => {
       {preview && (
         <div className="mb-6">
           <div className="relative rounded-2xl overflow-hidden">
-            <img src={preview} alt="Captured" className="w-full h-[400px] object-cover" />
+            <img src={preview} alt="Captured" className="w-full h-64 sm:h-80 md:h-[400px] object-cover" />
             {identifying && (
               <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
                 <Loader2 size={48} className="text-amber-500 animate-spin" />
