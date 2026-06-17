@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { aiIdentify, aiNarrate } from '../api';
+import { aiIdentify, aiNarrateStream } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Camera, Upload, Volume2, Square, Loader2, Search, RotateCcw } from 'lucide-react';
 
@@ -101,8 +101,8 @@ const Scanner = () => {
           const narrationPayload = data.matched && data.exhibitionId
             ? { exhibitionId: data.exhibitionId }
             : { text: data.description };
-          const { data: audioData } = await aiNarrate(narrationPayload);
-          setAudioUrl(audioData.audioUrl);
+          const blobUrl = await aiNarrateStream(narrationPayload);
+          setAudioUrl(blobUrl);
         } catch {
           // Narration failed but identification succeeded — still usable
         } finally {

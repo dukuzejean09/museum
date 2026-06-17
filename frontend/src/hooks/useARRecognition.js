@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { fetchExhibitionById, fetchArtifactById, fetchARDescriptors, aiIdentifyVisitor, aiNarrate, trackEvent } from '../api';
+import { fetchExhibitionById, fetchArtifactById, fetchARDescriptors, aiIdentifyVisitor, aiNarrateStream, trackEvent } from '../api';
 import useOpenCV from './useOpenCV';
 import useYOLO from './useYOLO';
 
@@ -152,9 +152,11 @@ export default function useARRecognition({ videoRef, canvasRef, enabled = true }
         return;
       }
       const payload = type === 'artifact' ? { artifactId: id } : { exhibitionId: id };
-      const { data } = await aiNarrate(payload);
-      const url = data.audioUrl?.startsWith('http') ? data.audioUrl : `${API_BASE}${data.audioUrl}`;
-      setAudioUrl(url);
+      const blobUrl = await aiNarrateStream(payload);
+      // '__browser_tts__' means the browser is speaking it directly — no audio URL needed
+      if (blobUrl && blobUrl !== '__browser_tts__') {
+        setAudioUrl(blobUrl);
+      }
     } catch {
       // Narration is optional
     }

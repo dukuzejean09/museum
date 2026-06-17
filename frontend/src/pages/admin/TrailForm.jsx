@@ -621,7 +621,7 @@ const StopCard = ({
 
  {/* Artifact selector */}
  <div className="mb-3 relative">
- <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
+ <label className="form-label">
  Artifact *
  </label>
  <button
@@ -643,7 +643,7 @@ const StopCard = ({
  value={artifactSearch}
  onChange={(e) => setArtifactSearch(e.target.value)}
  placeholder="Search artifacts..."
- className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-amber-500"
+ className="form-input"
  autoFocus
  />
  </div>
@@ -674,7 +674,7 @@ const StopCard = ({
 
  {/* Stop description (multilingual) */}
  <div>
- <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
+ <label className="form-label">
  Stop Description
  </label>
  <div className="flex gap-1 mb-1">
@@ -698,7 +698,7 @@ const StopCard = ({
  key={lang}
  value={stop.description[lang]}
  onChange={(e) => onUpdateStopDesc(idx, lang, e.target.value)}
- className={`w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-amber-500 ${
+ className={`form-input ${
  descLang !== lang ? 'hidden' : ''
  }`}
  placeholder={`Description (${LANG_LABELS[lang]})`}

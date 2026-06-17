@@ -52,9 +52,12 @@ const Trails = () => {
 
  return (
  <div className="page-container">
- <div className="mb-8">
- <h1 className="text-3xl font-bold dark:text-white">{t('trail.title') || 'Guided Trails'}</h1>
- <p className="text-slate-600 dark:text-slate-400 mt-1">{t('trail.subtitle') || 'Explore the museum through curated guided journeys'}</p>
+ <div className="text-center mb-8">
+ <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
+ <MapPin size={28} className="text-amber-600" />
+ </div>
+ <h1 className="text-3xl font-bold dark:text-white">{t('trail.title')}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-2">{t('trail.subtitle')}</p>
  </div>
 
  {loading ? (

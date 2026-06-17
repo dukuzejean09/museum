@@ -238,14 +238,14 @@ const GuideForm = () => {
  type="time"
  value={slot.startTime}
  onChange={(e) => handleAvailabilityChange(index, 'startTime', e.target.value)}
- className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+ className="form-input"
  />
  <span className="text-slate-400 dark:text-slate-500 text-sm">to</span>
  <input
  type="time"
  value={slot.endTime}
  onChange={(e) => handleAvailabilityChange(index, 'endTime', e.target.value)}
- className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+ className="form-input"
  />
  </div>
  ) : (

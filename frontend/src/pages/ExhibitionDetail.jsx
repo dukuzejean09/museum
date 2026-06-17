@@ -245,7 +245,7 @@ const ExhibitionDetail = () => {
  {stories.length > 0 ? (
  <div className="space-y-6">
  {stories.map(story => (
- <div key={story._id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+ <div key={story._id} className="card">
  <h3 className="text-lg font-bold dark:text-white">{getLocalizedText(story.title, lang)}</h3>
  <p className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">
  {getLocalizedText(story.content, lang)}
@@ -320,7 +320,7 @@ const ExhibitionDetail = () => {
 
  {/* Related Exhibitions */}
  {relatedExhibitions.length > 0 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <div className="card p-5">
  <h3 className="font-semibold mb-4 dark:text-white">{t('exhibition.related')}</h3>
  <div className="space-y-3">
  {relatedExhibitions.map(rel => (

@@ -106,7 +106,7 @@ const AdminExhibitions = () => {
  value={search}
  onChange={(e) => setSearch(e.target.value)}
  placeholder="Search by title..."
- className="form-input pl-9 pr-4 text-sm sm:w-64"
+ className="form-input pl-9 pr-4 text-sm w-full sm:w-64"
  />
  </form>
  <select
@@ -122,7 +122,7 @@ const AdminExhibitions = () => {
  </select>
  </div>
 
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden overflow-x-auto">
+ <div className="card overflow-hidden overflow-x-auto !p-0">
  <table className="w-full min-w-[600px]">
  <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
  <tr>

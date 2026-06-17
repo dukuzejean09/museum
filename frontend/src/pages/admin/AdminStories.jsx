@@ -74,7 +74,7 @@ const AdminStories = () => {
  </select>
  </div>
 
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+ <div className="card overflow-hidden !p-0">
  <table className="w-full">
  <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
  <tr>

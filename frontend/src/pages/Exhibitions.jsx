@@ -67,9 +67,12 @@ const Exhibitions = () => {
 
  return (
  <div className="page-container">
- <div className="mb-8">
+ <div className="text-center mb-8">
+ <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
+ <Sparkles size={28} className="text-amber-600" />
+ </div>
  <h1 className="text-3xl font-bold dark:text-white">{t('exhibition.title')}</h1>
- <p className="text-slate-600 dark:text-slate-400 mt-1">{t('exhibition.subtitle')}</p>
+ <p className="text-slate-600 dark:text-slate-400 mt-2">{t('exhibition.subtitle')}</p>
  </div>
 
  {/* Search */}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
-import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints, Sparkles, Heart, ScanLine } from 'lucide-react';
+import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints, Heart, ScanLine } from 'lucide-react';
 import HomeCt from '../assets/HomeCt.jpeg';
 import { useLanguage } from '../i18n/LanguageContext';
 import { fetchFeaturedTrails, fetchExhibitions, fetchGuides, fetchArtifacts } from '../api';
@@ -9,13 +9,13 @@ import { ImigongoBorder, ImigongoDivider, AgasekeIcon } from '../components/Rwan
 import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 
 const quickLinks = [
- { to: '/exhibitions', icon: BookOpen, labelKey: 'nav.exhibitions', descKey: 'home.linkExhibitions', color: 'from-amber-500 to-orange-500' },
- { to: '/artifacts', icon: Gem, labelKey: 'nav.artifacts', descKey: 'home.linkArtifacts', color: 'from-emerald-500 to-teal-500' },
- { to: '/trails', icon: Compass, labelKey: 'nav.trails', descKey: 'home.linkTrails', color: 'from-sky-500 to-blue-500' },
- { to: '/ar', icon: ScanLine, labelKey: 'nav.ar', descKey: 'home.linkAR', color: 'from-violet-500 to-purple-500' },
- { to: '/search', icon: Search, labelKey: 'nav.search', descKey: 'home.linkScanner', color: 'from-cyan-500 to-sky-500' },
- { to: '/guides', icon: Users, labelKey: 'nav.guides', descKey: 'home.linkGuides', color: 'from-rose-500 to-pink-500' },
- { to: '/feedback', icon: MessageSquare, labelKey: 'nav.feedback', descKey: 'home.linkFeedback', color: 'from-amber-600 to-yellow-500' },
+ { to: '/exhibitions', icon: BookOpen, labelKey: 'nav.exhibitions', descKey: 'home.linkExhibitions' },
+ { to: '/artifacts', icon: Gem, labelKey: 'nav.artifacts', descKey: 'home.linkArtifacts' },
+ { to: '/trails', icon: Compass, labelKey: 'nav.trails', descKey: 'home.linkTrails' },
+ { to: '/ar', icon: ScanLine, labelKey: 'nav.ar', descKey: 'home.linkAR' },
+ { to: '/search', icon: Search, labelKey: 'nav.search', descKey: 'home.linkScanner' },
+ { to: '/guides', icon: Users, labelKey: 'nav.guides', descKey: 'home.linkGuides' },
+ { to: '/feedback', icon: MessageSquare, labelKey: 'nav.feedback', descKey: 'home.linkFeedback' },
 ];
 
 const Home = () => {
@@ -74,14 +74,6 @@ const Home = () => {
  { value: '3', labelKey: 'home.statLanguages', icon: Globe },
  ];
 
- const accentColors = [
- 'from-amber-500 to-orange-500',
- 'from-emerald-500 to-teal-500',
- 'from-violet-500 to-purple-500',
- 'from-sky-500 to-blue-500',
- 'from-rose-500 to-pink-500',
- 'from-amber-600 to-yellow-500',
- ];
 
  return (
  <main>
@@ -109,7 +101,7 @@ const Home = () => {
  </p>
 
  {/* QR-enabled AR intro — compact inline */}
- <div className="flex items-center gap-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur rounded-2xl p-4 border border-slate-200 dark:border-slate-700 max-w-lg mx-auto lg:mx-0">
+ <div className="flex items-center gap-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur rounded-2xl p-4 border border-slate-200 dark:border-slate-700 w-full max-w-lg mx-auto lg:mx-0">
  <div className="flex-shrink-0 rounded-xl bg-slate-50 dark:bg-slate-700 p-2.5">
  <QRCodeSVG value={window.location.origin + '/exhibitions'} size={72} />
  </div>
@@ -190,8 +182,8 @@ const Home = () => {
  to={link.to}
  className="group flex items-start gap-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm hover:shadow-xl hover:border-amber-400 hover:-translate-y-1 transition-all duration-300"
  >
- <div className={`flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${link.color} group-hover:scale-110 transition-transform duration-300`}>
- <Icon size={22} className="text-white" />
+ <div className="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-600 group-hover:dark:bg-amber-600 group-hover:scale-110 transition-all duration-300">
+ <Icon size={22} className="text-amber-600 dark:text-amber-400 group-hover:text-white transition-colors duration-300" />
  </div>
  <div>
  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
@@ -232,9 +224,7 @@ const Home = () => {
  const title = getLocalizedText(trail.title);
  const desc = getLocalizedText(trail.description || trail.introduction);
  const cover = imgUrl(trail.coverImage);
- const accent = accentColors[idx % accentColors.length];
  const difficulty = trail.difficulty || 'easy';
- const diffColors = { easy: 'bg-green-500', moderate: 'bg-yellow-500', detailed: 'bg-red-500' };
  return (
  <Link
  key={trail._id}
@@ -251,13 +241,12 @@ const Home = () => {
  ) : cover ? (
  <img src={cover} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
  ) : (
- <div className={`w-full h-full bg-gradient-to-br ${accent} flex items-center justify-center`}>
+ <div className="w-full h-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
  <Footprints size={40} className="text-white/70" />
  </div>
  )}
  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
- <div className="absolute top-3 left-3 flex items-center gap-2">
- <span className={`w-2 h-2 rounded-full ${diffColors[difficulty]}`} />
+ <div className="absolute top-3 left-3">
  <span className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs font-medium capitalize">
  {difficulty}
  </span>
@@ -265,7 +254,7 @@ const Home = () => {
  <div className="absolute bottom-3 left-4 right-4">
  <h3 className="text-white font-bold text-sm drop-shadow-lg leading-tight line-clamp-2">{title}</h3>
  </div>
- <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${accent} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+ <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
  </div>
  <div className="p-4">
  <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mb-2">
@@ -279,7 +268,7 @@ const Home = () => {
  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
  {desc}
  </p>
- <span className={`inline-flex items-center gap-1 mt-3 text-xs font-bold bg-gradient-to-r ${accent} bg-clip-text text-transparent`}>
+ <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-amber-600 dark:text-amber-400">
  {t('home.startTrail')} &rarr;
  </span>
  </div>
@@ -322,43 +311,12 @@ const Home = () => {
 
  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-10">
  {[
- {
- icon: AgasekeIcon,
- isCustomIcon: true,
- titleKey: 'home.collPreColonial',
- descKey: 'home.collPreColonialDesc',
- gradient: 'from-amber-500 to-orange-500',
- },
- {
- icon: Crown,
- titleKey: 'home.collKingdom',
- descKey: 'home.collKingdomDesc',
- gradient: 'from-violet-500 to-purple-500',
- },
- {
- icon: Landmark,
- titleKey: 'home.collGerman',
- descKey: 'home.collGermanDesc',
- gradient: 'from-sky-500 to-blue-600',
- },
- {
- icon: Scroll,
- titleKey: 'home.collBelgian',
- descKey: 'home.collBelgianDesc',
- gradient: 'from-rose-500 to-pink-600',
- },
- {
- icon: TreePine,
- titleKey: 'home.collNature',
- descKey: 'home.collNatureDesc',
- gradient: 'from-emerald-500 to-teal-500',
- },
- {
- icon: Flag,
- titleKey: 'home.collModern',
- descKey: 'home.collModernDesc',
- gradient: 'from-amber-600 to-yellow-500',
- },
+ { icon: AgasekeIcon, isCustomIcon: true, titleKey: 'home.collPreColonial', descKey: 'home.collPreColonialDesc' },
+ { icon: Crown, titleKey: 'home.collKingdom', descKey: 'home.collKingdomDesc' },
+ { icon: Landmark, titleKey: 'home.collGerman', descKey: 'home.collGermanDesc' },
+ { icon: Scroll, titleKey: 'home.collBelgian', descKey: 'home.collBelgianDesc' },
+ { icon: TreePine, titleKey: 'home.collNature', descKey: 'home.collNatureDesc' },
+ { icon: Flag, titleKey: 'home.collModern', descKey: 'home.collModernDesc' },
  ].map((item, i) => {
  const IconComp = item.icon;
  return (
@@ -366,10 +324,10 @@ const Home = () => {
  key={i}
  className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-500 overflow-hidden"
  >
- <div className={`h-1 bg-gradient-to-r ${item.gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-300`} />
+ <div className="h-1 bg-gradient-to-r from-amber-500 to-orange-500 opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
  <div className="p-6">
- <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
- {item.isCustomIcon ? <IconComp size={24} className="text-white" /> : <IconComp size={22} className="text-white" />}
+ <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 mb-4 group-hover:scale-110 transition-transform duration-300">
+ {item.isCustomIcon ? <IconComp size={24} className="text-amber-600 dark:text-amber-400" /> : <IconComp size={22} className="text-amber-600 dark:text-amber-400" />}
  </div>
  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-amber-600 transition-colors">
  {t(item.titleKey)}
@@ -443,7 +401,7 @@ const Home = () => {
 
  {/* Living Heritage */}
  <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
- <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 mb-4">
+ <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 mb-4">
  <Heart size={20} />
  </div>
  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
@@ -456,7 +414,7 @@ const Home = () => {
 
  {/* Visit Information */}
  <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 md:col-span-2 lg:col-span-1">
- <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 mb-4">
+ <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 mb-4">
  <MapPin size={20} />
  </div>
  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">

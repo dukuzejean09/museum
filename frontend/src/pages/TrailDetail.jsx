@@ -184,7 +184,7 @@ const TrailDetail = () => {
  {/* Introduction */}
  {isIntro && (
  <div className="max-w-2xl mx-auto space-y-6">
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+ <div className="card">
  <h2 className="text-xl font-bold dark:text-white mb-3">{t('trail.introduction') || 'Introduction'}</h2>
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
  {getLocalizedText(trail.introduction || trail.description, lang)}
@@ -200,7 +200,7 @@ const TrailDetail = () => {
  </div>
 
  {/* Preview of stops */}
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+ <div className="card">
  <h3 className="font-bold dark:text-white mb-4">{t('trail.stops') || 'Trail Stops'} ({totalStops})</h3>
  <div className="space-y-3">
  {stops.map((s, idx) => (
@@ -232,7 +232,7 @@ const TrailDetail = () => {
  <div className="max-w-2xl mx-auto space-y-6">
  {/* Artifact Card */}
  {artifact && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+ <div className="card-flush">
  {artifact.image && (
  <img
  src={imgUrl(artifact.image)}

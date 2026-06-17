@@ -51,7 +51,7 @@ const AdminGuides = () => {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="card overflow-hidden !p-0">
         <table className="w-full">
           <thead className="bg-slate-50 border-b">
             <tr>

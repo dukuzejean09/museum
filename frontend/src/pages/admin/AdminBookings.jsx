@@ -124,14 +124,14 @@ const AdminBookings = () => {
       </div>
 
       {bookings.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8 text-center text-slate-500 dark:text-slate-400">
+        <div className="card p-8 text-center text-slate-500 dark:text-slate-400">
           <Clock size={48} className="mx-auto mb-3 opacity-50" />
           <p>No bookings yet.</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
+        <div className="card overflow-hidden !p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[700px] text-sm">
               <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase text-xs">
                 <tr>
                   <th className="px-4 py-3 text-left">Type</th>
@@ -235,7 +235,7 @@ const AdminBookings = () => {
 
       {/* Special requests */}
       {bookings.filter(b => b.message).length > 0 && (
-        <div className="mt-6 bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="mt-6 card p-6">
           <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Special Requests & Messages</h2>
           <div className="space-y-3">
             {bookings.filter(b => b.message).map(b => (

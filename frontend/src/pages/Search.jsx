@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { globalSearch, aiIdentifyVisitor, aiNarrateVisitor } from '../api';
+import { globalSearch, aiIdentifyVisitor, aiNarrateVisitorStream } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import {
  Search as SearchIcon, Sparkles, Compass, X, Clock, ArrowRight,
@@ -189,8 +189,8 @@ const SearchPage = () => {
  } else {
   payload = { text: data.description };
  }
- const { data: audioData } = await aiNarrateVisitor(payload);
- setAudioUrl(audioData.audioUrl);
+ const blobUrl = await aiNarrateVisitorStream(payload);
+ setAudioUrl(blobUrl);
  } catch {
  // Narration failed silently
  } finally {
@@ -237,8 +237,11 @@ const SearchPage = () => {
  <div className="page-container max-w-3xl">
  {/* Header */}
  <div className="text-center mb-6">
- <h1 className="text-2xl font-bold dark:text-white mb-1">{t('search.title')}</h1>
- <p className="text-slate-500 dark:text-slate-400 text-sm">{t('search.subtitle') || t('search.placeholder')}</p>
+ <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
+ <SearchIcon size={28} className="text-amber-600" />
+ </div>
+ <h1 className="text-3xl font-bold dark:text-white mb-1">{t('search.title')}</h1>
+ <p className="text-slate-500 dark:text-slate-400 text-sm">{t('search.subtitle')}</p>
  </div>
 
  {/* Tab Switch: Text Search vs Image Search */}

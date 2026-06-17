@@ -4,12 +4,51 @@ import Artifact from '../models/Artifact.js';
 import { asyncHandler } from '../utils/errors.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
 
-const getOpenAI = () => {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY is not configured');
-  }
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+/* ═══════════════════════════════════════════════════════════════
+   Multi-Provider AI — automatic fallback chain
+
+   Priority: GPT-4o → Gemini 2.0 Flash → Groq (Llama 4 Scout)
+
+   All three use OpenAI-compatible APIs, so we reuse the same
+   `openai` npm package with different baseURL + apiKey.
+═══════════════════════════════════════════════════════════════ */
+
+const providers = [
+  {
+    name: 'gpt-4o',
+    model: 'gpt-4o',
+    envKey: 'OPENAI_API_KEY',
+    baseURL: undefined, // default OpenAI
+    supportsImageUrl: true,
+  },
+  {
+    name: 'gemini-2.0-flash',
+    model: 'gemini-2.0-flash',
+    envKey: 'GEMINI_API_KEY',
+    baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+    supportsImageUrl: true,
+  },
+  {
+    name: 'groq-llama-4-scout',
+    model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+    envKey: 'GROQ_API_KEY',
+    baseURL: 'https://api.groq.com/openai/v1',
+    supportsImageUrl: true,
+  },
+];
+
+// Build a client for a specific provider
+const getClient = (provider) => {
+  const key = process.env[provider.envKey];
+  if (!key) return null;
+  return new OpenAI({
+    apiKey: key,
+    ...(provider.baseURL && { baseURL: provider.baseURL }),
+  });
 };
+
+// Get available providers (ones that have API keys configured)
+const getAvailableProviders = () => providers.filter(p => process.env[p.envKey]);
 
 const getLocalizedText = (field, lang = 'en') => {
   if (!field) return '';
@@ -35,26 +74,19 @@ const buildMuseumContext = async () => {
   return { exhibitionList, artifactList };
 };
 
-// Shared identification logic used by both admin and visitor endpoints
-const runIdentification = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No image uploaded' });
-    }
+// Check if an error is a quota/rate-limit/auth failure (should trigger fallback)
+const shouldFallback = (error) => {
+  const status = error?.status || error?.response?.status;
+  // 429 = rate limit, 402 = payment required, 401 = invalid key, 403 = forbidden, 503 = service unavailable
+  if ([429, 402, 401, 403, 503].includes(status)) return true;
+  const msg = (error?.message || '').toLowerCase();
+  if (msg.includes('quota') || msg.includes('rate limit') || msg.includes('billing') ||
+      msg.includes('exceeded') || msg.includes('insufficient') || msg.includes('limit')) return true;
+  return false;
+};
 
-    const openai = getOpenAI();
-    // multer uses memory storage — image is in req.file.buffer, not on disk
-    const base64Image = req.file.buffer.toString('base64');
-    const mimeType = req.file.mimetype;
-
-    const { exhibitionList, artifactList } = await buildMuseumContext();
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an AI museum guide for the Kandt House Museum in Kigali, Rwanda. The museum focuses on natural history, taxonomy, and the history of Richard Kandt.
+// Build the system prompt for identification
+const buildSystemPrompt = (exhibitionList, artifactList) => `You are an AI museum guide for the Kandt House Museum in Kigali, Rwanda. The museum focuses on natural history, taxonomy, and the history of Richard Kandt.
 
 When shown an image, identify which museum exhibition OR artifact it matches from the lists below. Check BOTH exhibitions and artifacts.
 
@@ -70,141 +102,228 @@ Museum exhibitions:
 ${exhibitionList}
 
 Museum artifacts:
-${artifactList}`
-        },
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: 'Please identify this museum artifact, specimen, or exhibition:' },
-            { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } }
-          ]
-        }
-      ],
-      max_tokens: 500,
-    });
+${artifactList}`;
 
-    const aiText = response.choices[0].message.content.trim();
-
-    let result;
-    try {
-      const cleaned = aiText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      result = JSON.parse(cleaned);
-    } catch {
-      result = { matched: false, entityType: null, entityId: null, confidence: 'none', description: aiText };
-    }
-
-    // Backward compat: if old-format response has exhibitionId but no entityType
-    if (result.exhibitionId && !result.entityType) {
-      result.entityType = 'exhibition';
-      result.entityId = result.exhibitionId;
-    }
-
-    // Fetch full entity data
-    let entity = null;
-    if (result.matched && result.entityId) {
-      if (result.entityType === 'artifact') {
-        entity = await Artifact.findById(result.entityId).lean();
-      } else {
-        entity = await Exhibition.findById(result.entityId).lean();
-      }
-    }
-
-    res.json({
-      matched: result.matched,
-      entityType: result.entityType || null,
-      entityId: result.entityId || null,
-      confidence: result.confidence,
-      description: result.description,
-      entity: entity || null,
-      // Backward compat fields
-      exhibitionId: result.entityType === 'exhibition' ? result.entityId : null,
-      exhibition: result.entityType === 'exhibition' ? entity : null,
-    });
-  } catch (error) {
-    if (error.message === 'OPENAI_API_KEY is not configured') {
-      return res.status(503).json({ message: 'AI service is not configured. Please contact the administrator.' });
-    }
-    throw error;
+/* ═══════════════════════════════════════════════════════════════
+   Core identification — tries each provider in priority order
+═══════════════════════════════════════════════════════════════ */
+const runIdentification = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No image uploaded' });
   }
+
+  const availableProviders = getAvailableProviders();
+  if (availableProviders.length === 0) {
+    return res.status(503).json({
+      message: 'No AI providers configured. Add OPENAI_API_KEY, GEMINI_API_KEY, or GROQ_API_KEY to your environment.',
+    });
+  }
+
+  const base64Image = req.file.buffer.toString('base64');
+  const mimeType = req.file.mimetype;
+  const { exhibitionList, artifactList } = await buildMuseumContext();
+  const systemPrompt = buildSystemPrompt(exhibitionList, artifactList);
+
+  let lastError = null;
+  let usedProvider = null;
+
+  // Try each provider in order
+  for (const provider of availableProviders) {
+    const client = getClient(provider);
+    if (!client) continue;
+
+    try {
+      const response = await client.chat.completions.create({
+        model: provider.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: 'Please identify this museum artifact, specimen, or exhibition:' },
+              { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
+            ],
+          },
+        ],
+        max_tokens: 500,
+      });
+
+      usedProvider = provider.name;
+      const aiText = response.choices[0].message.content.trim();
+
+      let result;
+      try {
+        const cleaned = aiText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        result = JSON.parse(cleaned);
+      } catch {
+        result = { matched: false, entityType: null, entityId: null, confidence: 'none', description: aiText };
+      }
+
+      // Backward compat: if old-format response has exhibitionId but no entityType
+      if (result.exhibitionId && !result.entityType) {
+        result.entityType = 'exhibition';
+        result.entityId = result.exhibitionId;
+      }
+
+      // Fetch full entity data (gracefully handle invalid/missing IDs)
+      let entity = null;
+      if (result.matched && result.entityId) {
+        try {
+          if (result.entityType === 'artifact') {
+            entity = await Artifact.findById(result.entityId).lean();
+          } else {
+            entity = await Exhibition.findById(result.entityId).lean();
+          }
+        } catch {
+          entity = null;
+        }
+
+        if (!entity) {
+          result.matched = false;
+          result.confidence = 'none';
+          if (!result.description) {
+            result.description = 'This item was detected but could not be found in our museum collection. It may not be catalogued yet.';
+          }
+        }
+      }
+
+      return res.json({
+        matched: result.matched,
+        entityType: result.matched ? (result.entityType || null) : null,
+        entityId: result.matched ? (result.entityId || null) : null,
+        confidence: result.confidence,
+        description: result.description,
+        entity: entity || null,
+        provider: usedProvider,
+        // Backward compat fields
+        exhibitionId: result.entityType === 'exhibition' && entity ? result.entityId : null,
+        exhibition: result.entityType === 'exhibition' ? entity : null,
+      });
+
+    } catch (error) {
+      lastError = error;
+      console.warn(`[AI Fallback] ${provider.name} failed: ${error.message || error.status}. Trying next provider...`);
+
+      if (shouldFallback(error)) {
+        continue; // Try next provider
+      }
+      // Non-quota error (e.g., network timeout) — still try next provider
+      continue;
+    }
+  }
+
+  // All providers failed
+  console.error('[AI Fallback] All providers exhausted.', lastError?.message);
+  return res.status(503).json({
+    message: 'All AI services are currently unavailable. Please try again later.',
+    providers: availableProviders.map(p => p.name),
+  });
 };
 
-// @desc    Upload image, identify exhibition/artifact via GPT-4o vision (admin/guide)
+// @desc    Upload image, identify exhibition/artifact via vision AI (admin/guide)
 // @route   POST /api/ai/identify
 export const identifyExhibit = asyncHandler(async (req, res) => {
   return runIdentification(req, res);
 });
 
-// @desc    Upload image, identify exhibition/artifact via GPT-4o vision (visitor-accessible)
+// @desc    Upload image, identify exhibition/artifact via vision AI (visitor-accessible)
 // @route   POST /api/ai/identify-visitor
 export const identifyVisitor = asyncHandler(async (req, res) => {
   return runIdentification(req, res);
 });
 
-// @desc    Generate TTS audio for exhibition or artifact description
-// @route   POST /api/ai/narrate
-export const narrateExhibit = asyncHandler(async (req, res) => {
-  try {
-    const { text, exhibitionId, artifactId, lang = 'en' } = req.body;
-    const openai = getOpenAI();
+// Helper: build narration text from request body
+const buildNarrationText = async (body) => {
+  const { text, exhibitionId, artifactId, lang = 'en' } = body;
 
-    let narrationText = text;
+  if (text) return text;
 
-    if (exhibitionId && !text) {
-      const exhibition = await Exhibition.findById(exhibitionId).lean();
-      if (!exhibition) return res.status(404).json({ message: 'Exhibition not found' });
-
-      narrationText = `Welcome! You're looking at ${getLocalizedText(exhibition.title, lang)}. `;
-      const desc = getLocalizedText(exhibition.fullDescription || exhibition.description, lang);
-      if (desc) narrationText += desc + ' ';
-      const significance = getLocalizedText(exhibition.historicalSignificance, lang);
-      if (significance) narrationText += significance;
-    }
-
-    if (artifactId && !text && !exhibitionId) {
-      const artifact = await Artifact.findById(artifactId).lean();
-      if (!artifact) return res.status(404).json({ message: 'Artifact not found' });
-
-      narrationText = `Welcome! You're looking at ${getLocalizedText(artifact.name, lang)}. `;
-      const desc = getLocalizedText(artifact.description, lang);
-      if (desc) narrationText += desc + ' ';
-      const story = getLocalizedText(artifact.historicalStory, lang);
-      if (story) narrationText += story + ' ';
-      const origin = getLocalizedText(artifact.originLocation, lang);
-      if (origin) narrationText += `This artifact originates from ${origin}. `;
-      if (artifact.dateCreated) narrationText += `It dates back to ${artifact.dateCreated}.`;
-    }
-
-    if (!narrationText) {
-      return res.status(400).json({ message: 'No text, exhibitionId, or artifactId provided' });
-    }
-
-    // Select voice based on language — 'nova' for English, 'alloy' for French/Kinyarwanda
-    // 'alloy' has a more neutral accent that works better for non-English content
-    const voice = (lang === 'fr' || lang === 'rw') ? 'alloy' : 'nova';
-
-    const mp3Response = await openai.audio.speech.create({
-      model: 'tts-1-hd',
-      voice,
-      input: narrationText,
-      response_format: 'mp3',
-    });
-
-    const buffer = Buffer.from(await mp3Response.arrayBuffer());
-    const { url: audioUrl } = await uploadToCloudinary(buffer, {
-      folder: 'museum/narrations',
-      resource_type: 'video',
-      public_id: `narration-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      format: 'mp3',
-    });
-
-    res.json({
-      audioUrl,
-      text: narrationText,
-    });
-  } catch (error) {
-    if (error.message === 'OPENAI_API_KEY is not configured') {
-      return res.status(503).json({ message: 'AI service is not configured. Please contact the administrator.' });
-    }
-    throw error;
+  if (exhibitionId) {
+    const exhibition = await Exhibition.findById(exhibitionId).lean();
+    if (!exhibition) return null;
+    let t = `Welcome! You're looking at ${getLocalizedText(exhibition.title, lang)}. `;
+    const desc = getLocalizedText(exhibition.fullDescription || exhibition.description, lang);
+    if (desc) t += desc + ' ';
+    const significance = getLocalizedText(exhibition.historicalSignificance, lang);
+    if (significance) t += significance;
+    return t;
   }
+
+  if (artifactId) {
+    const artifact = await Artifact.findById(artifactId).lean();
+    if (!artifact) return null;
+    let t = `Welcome! You're looking at ${getLocalizedText(artifact.name, lang)}. `;
+    const desc = getLocalizedText(artifact.description, lang);
+    if (desc) t += desc + ' ';
+    const story = getLocalizedText(artifact.historicalStory, lang);
+    if (story) t += story + ' ';
+    const origin = getLocalizedText(artifact.originLocation, lang);
+    if (origin) t += `This artifact originates from ${origin}. `;
+    if (artifact.dateCreated) t += `It dates back to ${artifact.dateCreated}.`;
+    return t;
+  }
+
+  return null;
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   TTS Narration — OpenAI TTS with Gemini text-only fallback
+═══════════════════════════════════════════════════════════════ */
+export const narrateExhibit = asyncHandler(async (req, res) => {
+  const { lang = 'en' } = req.body;
+
+  const narrationText = await buildNarrationText(req.body);
+  if (!narrationText) {
+    return res.status(400).json({ message: 'No text, exhibitionId, or artifactId provided' });
+  }
+
+  // Try OpenAI TTS first
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (openaiKey) {
+    try {
+      const openai = new OpenAI({ apiKey: openaiKey });
+      const voice = (lang === 'fr' || lang === 'rw') ? 'alloy' : 'nova';
+
+      const mp3Response = await openai.audio.speech.create({
+        model: 'tts-1',
+        voice,
+        input: narrationText,
+        response_format: 'mp3',
+      });
+
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Transfer-Encoding', 'chunked');
+      res.setHeader('Cache-Control', 'no-cache');
+
+      const nodeStream = mp3Response.body;
+      const chunks = [];
+
+      for await (const chunk of nodeStream) {
+        chunks.push(chunk);
+        res.write(chunk);
+      }
+      res.end();
+
+      // Background: upload to Cloudinary for caching
+      const fullBuffer = Buffer.concat(chunks);
+      uploadToCloudinary(fullBuffer, {
+        folder: 'museum/narrations',
+        resource_type: 'video',
+        public_id: `narration-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        format: 'mp3',
+      }).catch(() => {});
+
+      return;
+    } catch (error) {
+      // If streaming already started, just end
+      if (res.headersSent) return res.end();
+
+      // If quota/auth error, fall through to text fallback
+      if (!shouldFallback(error)) throw error;
+      console.warn(`[TTS Fallback] OpenAI TTS failed: ${error.message}. Returning text narration.`);
+    }
+  }
+
+  // Fallback: return narration as plain text (frontend can use browser Speech Synthesis)
+  res.json({ text: narrationText, fallback: true });
 });

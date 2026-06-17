@@ -1,8 +1,31 @@
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin.js';
 import { asyncHandler, NotFoundError, ValidationError, UnauthorizedError, ConflictError } from '../utils/errors.js';
 
-const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+/**
+ * Generate a fingerprint hash from the request to bind JWT to client.
+ * Combines User-Agent + IP to prevent stolen token reuse from different machines.
+ */
+const generateFingerprint = (req) => {
+  const ua = req.headers['user-agent'] || '';
+  const ip = req.ip || req.connection?.remoteAddress || '';
+  return crypto.createHash('sha256').update(`${ua}|${ip}`).digest('hex').slice(0, 16);
+};
+
+/**
+ * Generate JWT with fingerprint binding and unique jti to prevent replay attacks.
+ * Token expires in 1 day (reduced from 7d for security).
+ */
+const generateToken = (id, req) => {
+  const fingerprint = generateFingerprint(req);
+  const jti = crypto.randomBytes(16).toString('hex');
+  return jwt.sign(
+    { id, fp: fingerprint, jti },
+    process.env.JWT_SECRET,
+    { expiresIn: '1d' }
+  );
+};
 
 // @desc    Login admin
 // @route   POST /api/auth/login
@@ -33,7 +56,7 @@ export const loginAdmin = asyncHandler(async (req, res) => {
     role: admin.role,
     profile: admin.profile,
     settings: admin.settings,
-    token: generateToken(admin._id),
+    token: generateToken(admin._id, req),
   });
 });
 

@@ -93,7 +93,7 @@ const AdminUsers = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div className="card p-5 flex items-center gap-4">
           <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
             <Users size={24} className="text-blue-600 dark:text-blue-400" />
           </div>
@@ -102,7 +102,7 @@ const AdminUsers = () => {
             <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{counts.total}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div className="card p-5 flex items-center gap-4">
           <div className="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
             <Shield size={24} className="text-purple-600 dark:text-purple-400" />
           </div>
@@ -111,7 +111,7 @@ const AdminUsers = () => {
             <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{counts.admins}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div className="card p-5 flex items-center gap-4">
           <div className="p-3 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
             <UserCog size={24} className="text-amber-600 dark:text-amber-400" />
           </div>
@@ -124,7 +124,7 @@ const AdminUsers = () => {
 
       {/* Add User Form */}
       {showAddForm && (
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-6">
+        <div className="card p-6 mb-6">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Add New User</h2>
           <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -193,7 +193,7 @@ const AdminUsers = () => {
       )}
 
       {/* Users Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm overflow-hidden">
+      <div className="card overflow-hidden !p-0">
         <table className="w-full">
           <thead className="bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-700">
             <tr>

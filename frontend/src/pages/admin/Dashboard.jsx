@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { DashboardSkeleton } from '../../components/ui/LoadingSkeleton';
 
 const Dashboard = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, admin } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -51,14 +51,32 @@ const Dashboard = () => {
   const cards = allCards.filter(c => c.roles.includes(isAdmin ? 'admin' : 'guide'));
   const chartData = cards.map(({ label, count }) => ({ name: label, count }));
 
+  const displayName = admin?.profile?.firstName
+    ? `${admin.profile.firstName} ${admin.profile.lastName || ''}`.trim()
+    : admin?.username || 'Staff';
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6">Dashboard</h1>
+      {/* Welcome header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+          {isAdmin ? 'Welcome to your Dashboard' : 'Welcome to your Dashboard'}
+          {displayName && <span className="text-amber-600">, {displayName}</span>}
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          {isAdmin
+            ? 'Manage museum content, track bookings, and monitor visitor engagement.'
+            : 'View your assigned tours, manage content, and connect with visitors.'}
+        </p>
+        <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-xs font-semibold uppercase tracking-wider">
+          {isAdmin ? 'Administrator' : 'Museum Guide'}
+        </div>
+      </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {cards.map(({ label, count, icon: Icon, color }) => (
-          <div key={label} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 flex items-center gap-4">
+          <div key={label} className="card p-6 flex items-center gap-4">
             <div className={`${color} text-white p-3 rounded-lg`}>
               <Icon size={24} />
             </div>
@@ -71,7 +89,7 @@ const Dashboard = () => {
       </div>
 
       {/* Chart */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-8">
+      <div className="card p-6 mb-8">
         <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Content Overview</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
@@ -86,7 +104,7 @@ const Dashboard = () => {
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent Messages */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Recent Messages</h2>
           {stats?.recentMessages?.length > 0 ? (
             <div className="space-y-3">
@@ -111,7 +129,7 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Bookings */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="card p-6">
           <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Recent Bookings</h2>
           {stats?.recentBookings?.length > 0 ? (
             <div className="space-y-3">

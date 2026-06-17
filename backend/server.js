@@ -39,11 +39,15 @@ const app = express();
 // Trust proxy (required behind reverse proxy / Docker / Render / etc.)
 app.set('trust proxy', 1);
 
-// Security headers (allow HF Spaces iframe embedding)
+// Security headers — hardened against clickjacking, XSS, MIME sniffing, spoofing
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
-  frameguard: false,
-  contentSecurityPolicy: false,
+  frameguard: { action: 'sameorigin' }, // prevent clickjacking (allow same-origin only)
+  contentSecurityPolicy: false, // handled by frontend meta tags
+  xContentTypeOptions: true, // prevent MIME-type sniffing
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  hsts: { maxAge: 31536000, includeSubDomains: true }, // enforce HTTPS
+  xssFilter: true, // legacy XSS protection header
 }));
 
 // CORS — restrict to frontend origin
@@ -73,8 +77,11 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { message: 'Too many login attempts, please try again later' },
+  max: 5, // 5 attempts per 15 min — brute force protection
+  message: { message: 'Too many login attempts. Please wait 15 minutes before trying again.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true, // only count failed attempts
 });
 
 const aiLimiter = rateLimit({

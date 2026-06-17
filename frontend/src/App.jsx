@@ -28,7 +28,6 @@ const NotFound = React.lazy(() => import('./pages/NotFound'));
 const ARScanner = React.lazy(() => import('./pages/ARScanner'));
 
 // Lazy-loaded admin pages
-const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
 const AdminLayout = React.lazy(() => import('./pages/admin/AdminLayout'));
 const Dashboard = React.lazy(() => import('./pages/admin/Dashboard'));
 const AdminTrails = React.lazy(() => import('./pages/admin/AdminTrails'));
@@ -61,7 +60,7 @@ const PageLoader = () => (
 const ProtectedRoute = () => {
   const { admin, loading } = useAuth();
   if (loading) return <PageLoader />;
-  return admin ? <Outlet /> : <Navigate to="/admin/login" replace />;
+  return admin ? <Outlet /> : <Navigate to="/enter" replace />;
 };
 
 // Admin-only route protection
@@ -138,8 +137,8 @@ function App() {
                       </Route>
                     </Route>
 
-                    {/* Staff login (public) */}
-                    <Route path="/admin/login" element={<AdminLogin />} />
+                    {/* Staff login — redirect to Gateway (login is now in Gateway modal) */}
+                    <Route path="/admin/login" element={<Navigate to="/enter" replace />} />
 
                     {/* Staff protected routes (admin + guide) */}
                     <Route path="/admin" element={<ProtectedRoute />}>
@@ -175,6 +174,13 @@ function App() {
                         </Route>
                       </Route>
                     </Route>
+
+                    {/* Public booking page (accessible without visitor token, minimal wrapper) */}
+                    <Route path="/book-external" element={
+                      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4">
+                        <BookVisit />
+                      </div>
+                    } />
 
                     {/* 404 catch-all */}
                     <Route path="*" element={<Layout />}>

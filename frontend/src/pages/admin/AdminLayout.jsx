@@ -37,7 +37,7 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/enter');
   };
 
   return (

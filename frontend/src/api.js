@@ -47,10 +47,10 @@ AdminAPI.interceptors.request.use((config) => {
 AdminAPI.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
+    if (error.response?.status === 401 && window.location.pathname.startsWith('/admin')) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminInfo');
-      window.location.href = '/admin/login';
+      window.location.href = '/enter';
     }
     return Promise.reject(error);
   }
@@ -125,6 +125,41 @@ export const aiIdentify = (formData) =>
   API.post('/ai/identify', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const aiNarrate = (data) => API.post('/ai/narrate', data);
 
+// Streaming narration — returns a blob URL that can play immediately
+export const aiNarrateStream = async (data) => {
+  const token = localStorage.getItem('adminToken') || localStorage.getItem('visitorToken');
+  const resp = await fetch(`${API_BASE}/ai/narrate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!resp.ok) throw new Error('Narration failed');
+
+  const contentType = resp.headers.get('Content-Type') || '';
+
+  // If backend returned JSON (TTS quota exhausted), use browser Speech Synthesis
+  if (contentType.includes('application/json')) {
+    const json = await resp.json();
+    if (json.fallback && json.text && 'speechSynthesis' in window) {
+      return new Promise((resolve, reject) => {
+        const utterance = new SpeechSynthesisUtterance(json.text);
+        utterance.lang = data.lang === 'fr' ? 'fr-FR' : data.lang === 'rw' ? 'sw-KE' : 'en-US';
+        utterance.rate = 0.9;
+        speechSynthesis.speak(utterance);
+        // Return a special marker so the audio controls know it's browser TTS
+        resolve('__browser_tts__');
+      });
+    }
+    throw new Error('Narration unavailable');
+  }
+
+  const blob = await resp.blob();
+  return URL.createObjectURL(blob);
+};
+
 // Exhibitions
 export const fetchExhibitions = (params) => API.get('/exhibitions', { params });
 export const fetchExhibitionById = (id) => API.get(`/exhibitions/${id}`);
@@ -178,6 +213,22 @@ export const adminDeleteStory = (id) => AdminAPI.delete(`/admin/stories/${id}`);
 export const aiIdentifyVisitor = (formData) =>
   API.post('/ai/identify-visitor', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const aiNarrateVisitor = (data) => API.post('/ai/narrate-visitor', data);
+
+// Streaming narration (visitor) — returns a blob URL that can play immediately
+export const aiNarrateVisitorStream = async (data) => {
+  const token = localStorage.getItem('visitorToken') || localStorage.getItem('adminToken');
+  const resp = await fetch(`${API_BASE}/ai/narrate-visitor`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!resp.ok) throw new Error('Narration failed');
+  const blob = await resp.blob();
+  return URL.createObjectURL(blob);
+};
 export const fetchARDescriptors = (type) => API.get('/ar/descriptors', { params: { type } });
 export const generateArtifactQR = (artifactId) => AdminAPI.get(`/qr/artifact/${artifactId}`);
 export const adminRebuildDescriptors = () => AdminAPI.post('/admin/ar/descriptors/rebuild');

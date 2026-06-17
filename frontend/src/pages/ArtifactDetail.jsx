@@ -176,7 +176,7 @@ const ArtifactDetail = () => {
 
  {/* Related Exhibitions */}
  {artifact.exhibitions?.length > 0 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <div className="card p-5">
  <h3 className="font-semibold mb-4 dark:text-white">{t('artifact.inExhibitions') || 'Found in Exhibitions'}</h3>
  <div className="space-y-3">
  {artifact.exhibitions.map(ex => (
@@ -206,7 +206,7 @@ const ArtifactDetail = () => {
 
  {/* Related Trails */}
  {artifact.trails?.length > 0 && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <div className="card p-5">
  <h3 className="font-semibold mb-4 dark:text-white">{t('artifact.inTrails') || 'Featured in Trails'}</h3>
  <div className="space-y-3">
  {artifact.trails.map(trail => (

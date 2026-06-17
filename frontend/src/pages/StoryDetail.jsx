@@ -106,7 +106,7 @@ const StoryDetail = () => {
 
  {/* Linked Exhibition */}
  {story.exhibitionId && (
- <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+ <div className="card p-5">
  <h3 className="font-semibold mb-4 dark:text-white">{t('story.exhibition') || 'Exhibition'}</h3>
  <Link
  to={`/exhibitions/${story.exhibitionId._id || story.exhibitionId}`}

@@ -135,10 +135,10 @@ const BookVisit = () => {
  {t('nav.booking') || 'Book a Visit'}
  </span>
  <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100">
- How would you like to visit?
+ {t('bookVisit.title')}
  </h1>
  <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-lg mx-auto">
- Choose between an in-person guided tour at the museum or request online access to explore our digital collections remotely.
+ {t('bookVisit.subtitle')}
  </p>
  </div>
 
@@ -152,10 +152,10 @@ const BookVisit = () => {
  <Landmark size={28} />
  </div>
  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-amber-600 transition-colors">
- Visit In Person
+ {t('bookVisit.physical')}
  </h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
- Book a guided tour with one of our expert guides. Walk through the museum and experience the exhibits in person.
+ {t('bookVisit.physicalDesc')}
  </p>
  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
  <li className="flex items-center gap-2"><MapPin size={14} className="text-amber-500" /> On-site guided experience</li>
@@ -176,10 +176,10 @@ const BookVisit = () => {
  <Wifi size={28} />
  </div>
  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-emerald-600 transition-colors">
- Explore Online
+ {t('bookVisit.online')}
  </h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
- Request remote access to browse exhibitions, artifacts, and trails from anywhere in the world.
+ {t('bookVisit.onlineDesc')}
  </p>
  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
  <li className="flex items-center gap-2"><Globe size={14} className="text-emerald-500" /> Access from anywhere</li>
@@ -214,12 +214,10 @@ const BookVisit = () => {
  {isPhysical ? <Landmark size={28} /> : <Wifi size={28} />}
  </div>
  <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
- {isPhysical ? 'Book a Guided Tour' : 'Request Online Access'}
+ {isPhysical ? t('bookVisit.guidedTour') : t('bookVisit.onlineAccess')}
  </h1>
  <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
- {isPhysical
- ? 'Fill in your details and choose a guide for your museum visit.'
- : 'Submit your request and receive an access code once approved.'}
+ {isPhysical ? t('bookVisit.guidedTourDesc') : t('bookVisit.onlineAccessDesc')}
  </p>
  </div>
 

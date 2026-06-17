@@ -66,11 +66,12 @@ const Guides = () => {
 
  return (
  <div className="page-container">
- <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
- <div>
- <h1 className="text-3xl font-bold dark:text-white">{t('guides.title')}</h1>
- <p className="text-slate-600 dark:text-slate-400 mt-1">{t('booking.subtitle')}</p>
+ <div className="text-center mb-8">
+ <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
+ <Users size={28} className="text-amber-600" />
  </div>
+ <h1 className="text-3xl font-bold dark:text-white">{t('guides.title')}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-2">{t('booking.subtitle')}</p>
  </div>
 
  {loading && (
@@ -87,7 +88,7 @@ const Guides = () => {
  {/* Guide Cards */}
  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
  {guides.map((g) => (
- <div key={g._id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700">
+ <div key={g._id} className="card-flush">
  {g.imageUrl && (
  <img src={imageUrl(g.imageUrl)} alt={g.name} className="w-full h-48 object-cover" />
  )}

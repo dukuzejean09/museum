@@ -117,12 +117,12 @@ const Feedback = () => {
  <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
  <ClipboardList size={32} className="text-amber-600" />
  </div>
- <h1 className="text-3xl font-bold dark:text-white">{t('nav.feedback')}</h1>
- <p className="text-slate-600 dark:text-slate-400 mt-2">{t('survey.subtitle')}</p>
+ <h1 className="text-3xl font-bold dark:text-white">{t('feedback.title')}</h1>
+ <p className="text-slate-600 dark:text-slate-400 mt-2">{t('feedback.subtitle')}</p>
  </div>
 
  {/* Tabs */}
- <div className="flex bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-1 mb-6">
+ <div className="card p-1 mb-6">
  {tabs.map(({ id, label, icon: Icon }) => (
  <button
  key={id}
@@ -140,7 +140,7 @@ const Feedback = () => {
 
  {/* Survey Tab */}
  {tab === 'survey' && (
- <form onSubmit={handleSurveySubmit} className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+ <form onSubmit={handleSurveySubmit} className="card p-8 space-y-6">
  <div>
  <label className="form-label">{t('survey.name')}</label>
  <input type="text" name="visitorName" value={surveyForm.visitorName} onChange={handleSurveyChange} className={inputClass} />
@@ -196,7 +196,7 @@ const Feedback = () => {
  {t('chat.sent')}
  </div>
  )}
- <form onSubmit={handleMsgSubmit} className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+ <form onSubmit={handleMsgSubmit} className="card p-8 space-y-4">
  <input type="text" name="name" placeholder={t('chat.name')} value={msgForm.name} onChange={handleMsgChange} required className={inputClass} />
  <input type="email" name="email" placeholder={t('chat.email')} value={msgForm.email} onChange={handleMsgChange} required className={inputClass} />
  <select name="exhibitionId" value={msgForm.exhibitionId} onChange={handleMsgChange} className={inputClass}>
