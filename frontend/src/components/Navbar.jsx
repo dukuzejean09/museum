@@ -10,23 +10,40 @@ const border = 'border-slate-800';
 const linkBase = 'px-3 py-2 rounded-lg transition-colors font-medium text-amber-400 hover:bg-amber-400/10 hover:text-amber-300';
 const linkActive = 'px-3 py-2 rounded-lg transition-colors font-medium bg-amber-400/15 text-amber-200';
 
-const AccessTimer = () => {
-  const { remainingTime } = useVisitor();
-  const { t } = useLanguage();
-  if (!remainingTime) return null;
+const formatCountdown = (totalSeconds) => {
+  if (!totalSeconds || totalSeconds <= 0) return '0:00';
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+};
 
-  const hours = Math.floor(remainingTime / 60);
-  const minutes = remainingTime % 60;
-  const timeStr = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-  const isLow = remainingTime <= 15;
+const formatTime = (date) => {
+  if (!date) return '';
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+const AccessTimer = () => {
+  const { remainingTime, sessionStart, expiresAt } = useVisitor();
+  const { t } = useLanguage();
+  if (!remainingTime || remainingTime <= 0) return null;
+
+  const isLow = remainingTime <= 300; // 5 minutes
+  const isVeryLow = remainingTime <= 60; // 1 minute
 
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
-      isLow ? 'text-red-400 bg-red-400/10' : 'text-amber-400/70 bg-amber-400/5'
+    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
+      isVeryLow ? 'text-red-400 bg-red-400/15 animate-pulse' : isLow ? 'text-red-400 bg-red-400/10' : 'text-amber-400/70 bg-amber-400/5'
     }`}>
       <Clock size={12} />
-      {timeStr} {t('gateway.remaining')}
-    </span>
+      <span className="font-mono">{formatCountdown(remainingTime)}</span>
+      {sessionStart && expiresAt && (
+        <span className="hidden sm:inline text-[10px] opacity-60 ml-1">
+          ({formatTime(sessionStart)} — {formatTime(expiresAt)})
+        </span>
+      )}
+    </div>
   );
 };
 

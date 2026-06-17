@@ -10,7 +10,7 @@ const Gateway = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { isAuthenticated, activateAccess, loading } = useVisitor();
+  const { isAuthenticated, activateAccess, clearAccess, loading } = useVisitor();
   const [code, setCode] = useState('');
   const [validating, setValidating] = useState(false);
   const [error, setError] = useState('');
@@ -29,7 +29,7 @@ const Gateway = () => {
   // Auto-validate code from URL query param (?code=KM-XXXXX)
   useEffect(() => {
     const urlCode = searchParams.get('code');
-    if (urlCode && !isAuthenticated && !autoValidating) {
+    if (urlCode && !autoValidating) {
       setAutoValidating(true);
       setCode(urlCode);
       handleValidate(urlCode);
@@ -44,6 +44,8 @@ const Gateway = () => {
     setError('');
 
     try {
+      // Clear any existing session before activating new code
+      clearAccess();
       await activateAccess(c.trim());
       navigate(redirectTo, { replace: true });
     } catch (err) {

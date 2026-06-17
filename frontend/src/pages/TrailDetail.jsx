@@ -5,10 +5,15 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { ArrowLeft, MapPin, Clock, ChevronRight, ChevronLeft, Check, Sparkles, ExternalLink } from 'lucide-react';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
 import ArtifactSlideshow from '../components/ArtifactSlideshow';
+import NarrationPlayer from '../components/ui/NarrationPlayer';
 import toast from 'react-hot-toast';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
 const imgUrl = (path) => {
+ if (!path) return null;
+ return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
+};
+const mediaUrl = (path) => {
  if (!path) return null;
  return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
 };
@@ -184,6 +189,14 @@ const TrailDetail = () => {
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
  {getLocalizedText(trail.introduction || trail.description, lang)}
  </p>
+ <div className="mt-4">
+ <NarrationPlayer
+ audioSrc={mediaUrl(trail.audio)}
+ text={[getLocalizedText(trail.title, lang), getLocalizedText(trail.introduction || trail.description, lang)].filter(Boolean).join('. ')}
+ title={t('exhibits.audioNarration') || 'Audio Narration'}
+ lang={lang}
+ />
+ </div>
  </div>
 
  {/* Preview of stops */}
@@ -246,6 +259,16 @@ const TrailDetail = () => {
  </p>
  </div>
  )}
+
+ {/* Artifact narration */}
+ <div className="mt-4">
+ <NarrationPlayer
+ audioSrc={mediaUrl(artifact.narrationAudioUrl)}
+ text={[getLocalizedText(artifact.name, lang), getLocalizedText(artifact.description, lang), getLocalizedText(stop.description, lang)].filter(Boolean).join('. ')}
+ title={t('exhibits.audioNarration') || 'Audio Narration'}
+ lang={lang}
+ />
+ </div>
 
  <Link
  to={`/artifacts/${artifact._id}`}

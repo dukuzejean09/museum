@@ -4,6 +4,7 @@ import { fetchStoryById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
+import NarrationPlayer from '../components/ui/NarrationPlayer';
 import toast from 'react-hot-toast';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -96,6 +97,13 @@ const StoryDetail = () => {
 
  {/* Sidebar */}
  <div className="space-y-6">
+ {/* Audio Narration */}
+ <NarrationPlayer
+ text={[getLocalizedText(story.title, lang), getLocalizedText(story.content, lang)].filter(Boolean).join('. ')}
+ title={t('exhibits.audioNarration') || 'Audio Narration'}
+ lang={lang}
+ />
+
  {/* Linked Exhibition */}
  {story.exhibitionId && (
  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
