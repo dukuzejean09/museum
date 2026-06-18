@@ -24,6 +24,7 @@ import authRoutes from './routes/authRoutes.js';
 import qrRoutes from './routes/qrRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import visitorAuthRoutes from './routes/visitorAuthRoutes.js';
+import visitorProtect from './middleware/visitorMiddleware.js';
 import { publicRouter as arPublic, adminRouter as arAdmin } from './routes/arRoutes.js';
 import { publicRouter as evaluationPublic, adminRouter as evaluationAdmin } from './routes/evaluationRoutes.js';
 import yoloProxyRoutes from './routes/yoloProxyRoutes.js';
@@ -152,18 +153,18 @@ app.use('/api/auth', authRoutes);
 app.use('/api/messages', messagePublic);
 
 // ──────────────────────────────────────────────
-// Public API routes (read-only, no auth required)
-app.use('/api/exhibitions', exhibitionPublic);
-app.use('/api/artifacts', artifactPublic);
-app.use('/api/stories', storyPublic);
-app.use('/api/trails', trailPublic);
-app.use('/api/guides', guidePublic);
-app.use('/api/bookings', bookingPublic);
-app.use('/api/surveys', surveyPublic);
-app.use('/api/search', searchPublic);
-app.use('/api/analytics', analyticsPublic);
-app.use('/api/ar', arPublic);
-app.use('/api/evaluations', evaluationPublic);
+// Visitor-protected API routes (require valid visitor or admin token)
+app.use('/api/exhibitions', visitorProtect, exhibitionPublic);
+app.use('/api/artifacts', visitorProtect, artifactPublic);
+app.use('/api/stories', visitorProtect, storyPublic);
+app.use('/api/trails', visitorProtect, trailPublic);
+app.use('/api/guides', visitorProtect, guidePublic);
+app.use('/api/bookings', bookingPublic);           // public — visitors book before getting a code
+app.use('/api/surveys', visitorProtect, surveyPublic);
+app.use('/api/search', visitorProtect, searchPublic);
+app.use('/api/analytics', analyticsPublic);         // public — analytics collection
+app.use('/api/ar', visitorProtect, arPublic);
+app.use('/api/evaluations', visitorProtect, evaluationPublic);
 
 // ──────────────────────────────────────────────
 // Admin API routes (protected by auth middleware in each route file)

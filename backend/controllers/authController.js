@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin.js';
 import { asyncHandler, NotFoundError, ValidationError, UnauthorizedError, ConflictError } from '../utils/errors.js';
+import { sendCredentialsEmail } from '../utils/email.js';
 
 /**
  * Generate a fingerprint hash from the request to bind JWT to client.
@@ -60,32 +61,103 @@ export const loginAdmin = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * Validate Rwandan phone number.
+ * Accepted formats: +250 7XX XXX XXX, 07XX XXX XXX, 7XX XXX XXX
+ * Valid prefixes after country code: 72, 73, 78, 79 (MTN, Airtel, etc.)
+ */
+const isValidRwandanPhone = (phone) => {
+  if (!phone) return false;
+  const cleaned = phone.replace(/[\s\-().]/g, '');
+  // +250 7[2389] XXXXXXX  or  07[2389] XXXXXXX  or  7[2389] XXXXXXX
+  return /^(\+?250|0)?7[2389]\d{7}$/.test(cleaned);
+};
+
 // @desc    Register new user (admin or guide) — admin only
 // @route   POST /api/auth/register
 export const registerAdmin = asyncHandler(async (req, res) => {
   const { username, email, password, role, profile } = req.body;
 
+  // ── Required fields ──
   if (!username || !email || !password) {
     throw new ValidationError('Username, email, and password are required');
   }
+
+  // ── Username validation ──
+  const trimmedUsername = username.trim();
+  if (trimmedUsername.length < 3 || trimmedUsername.length > 30) {
+    throw new ValidationError('Username must be between 3 and 30 characters');
+  }
+  if (!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
+    throw new ValidationError('Username can only contain letters, numbers, and underscores');
+  }
+
+  // ── Email validation ──
+  const trimmedEmail = email.toLowerCase().trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmedEmail)) {
+    throw new ValidationError('Invalid email format');
+  }
+
+  // ── Password validation ──
   if (password.length < 6) {
     throw new ValidationError('Password must be at least 6 characters');
   }
 
-  const exists = await Admin.findOne({ email: email.toLowerCase().trim() });
-  if (exists) {
+  // ── Profile validation ──
+  const profileData = profile || {};
+  if (!profileData.firstName || !profileData.firstName.trim()) {
+    throw new ValidationError('First name is required');
+  }
+  if (!profileData.lastName || !profileData.lastName.trim()) {
+    throw new ValidationError('Last name is required');
+  }
+  if (profileData.firstName.trim().length > 50 || profileData.lastName.trim().length > 50) {
+    throw new ValidationError('First name and last name must be under 50 characters');
+  }
+
+  // ── Phone number validation (Rwandan) ──
+  if (!profileData.phone || !profileData.phone.trim()) {
+    throw new ValidationError('Phone number is required');
+  }
+  if (!isValidRwandanPhone(profileData.phone)) {
+    throw new ValidationError('Invalid Rwandan phone number. Use format: 07XXXXXXXX or +2507XXXXXXXX (valid prefixes: 72, 73, 78, 79)');
+  }
+
+  // ── Check duplicates ──
+  const existsByEmail = await Admin.findOne({ email: trimmedEmail });
+  if (existsByEmail) {
     throw new ConflictError('An account with this email already exists');
+  }
+  const existsByUsername = await Admin.findOne({ username: trimmedUsername });
+  if (existsByUsername) {
+    throw new ConflictError('An account with this username already exists');
   }
 
   const validRoles = ['admin', 'guide'];
   const assignedRole = validRoles.includes(role) ? role : 'admin';
 
   const admin = await Admin.create({
-    username,
-    email: email.toLowerCase().trim(),
+    username: trimmedUsername,
+    email: trimmedEmail,
     password,
     role: assignedRole,
-    profile: profile || {},
+    profile: {
+      firstName: profileData.firstName.trim(),
+      lastName: profileData.lastName.trim(),
+      phone: profileData.phone.replace(/[\s\-().]/g, ''),
+    },
+  });
+
+  // Send credentials email (non-blocking)
+  sendCredentialsEmail({
+    name: `${profileData.firstName.trim()} ${profileData.lastName.trim()}`,
+    email: trimmedEmail,
+    username: trimmedUsername,
+    password, // plain text — before hashing
+    role: assignedRole,
+  }).catch(err => {
+    console.error('Failed to send credentials email:', err.message);
   });
 
   res.status(201).json({

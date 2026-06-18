@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { validateVisitorCode } from '../api';
+import { validateVisitorCode, verifyVisitorToken } from '../api';
 import toast from 'react-hot-toast';
 
 const VisitorContext = createContext();
@@ -13,26 +13,39 @@ export const VisitorProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [remainingTime, setRemainingTime] = useState(null); // in seconds
 
-  // Check localStorage on mount
+  // Check localStorage on mount and verify token with backend
   useEffect(() => {
-    const savedToken = localStorage.getItem('visitorToken');
-    const savedExpiry = localStorage.getItem('visitorExpiresAt');
-    const savedStart = localStorage.getItem('visitorSessionStart');
+    const verify = async () => {
+      const savedToken = localStorage.getItem('visitorToken');
+      const savedExpiry = localStorage.getItem('visitorExpiresAt');
+      const savedStart = localStorage.getItem('visitorSessionStart');
 
-    if (savedToken && savedExpiry) {
-      const expiry = new Date(savedExpiry);
-      if (expiry > new Date()) {
-        setToken(savedToken);
-        setExpiresAt(expiry);
-        setSessionStart(savedStart ? new Date(savedStart) : null);
-      } else {
-        // Expired — clean up
-        localStorage.removeItem('visitorToken');
-        localStorage.removeItem('visitorExpiresAt');
-        localStorage.removeItem('visitorSessionStart');
+      if (savedToken && savedExpiry) {
+        const expiry = new Date(savedExpiry);
+        if (expiry > new Date()) {
+          // Verify token is still valid on the backend
+          try {
+            await verifyVisitorToken(savedToken);
+            setToken(savedToken);
+            setExpiresAt(expiry);
+            setSessionStart(savedStart ? new Date(savedStart) : null);
+          } catch {
+            // Token rejected by backend — clear stale session
+            localStorage.removeItem('visitorToken');
+            localStorage.removeItem('visitorExpiresAt');
+            localStorage.removeItem('visitorSessionStart');
+          }
+        } else {
+          // Expired client-side — clean up
+          localStorage.removeItem('visitorToken');
+          localStorage.removeItem('visitorExpiresAt');
+          localStorage.removeItem('visitorSessionStart');
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    verify();
   }, []);
 
   // Update remaining time every second for accurate countdown
@@ -50,6 +63,10 @@ export const VisitorProvider = ({ children }) => {
       if (diff <= 0) {
         clearAccess();
         toast.error('Your access has expired. Please scan the QR code again.');
+        // Redirect to gateway for re-authentication
+        if (window.location.pathname !== '/enter' && !window.location.pathname.startsWith('/admin')) {
+          window.location.href = '/enter';
+        }
       }
     };
 

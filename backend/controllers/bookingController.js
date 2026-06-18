@@ -6,7 +6,7 @@ import Guide from '../models/Guide.js';
 import AccessCode from '../models/AccessCode.js';
 import { asyncHandler, NotFoundError, ValidationError, ConflictError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
-import { sendBookingConfirmation } from '../utils/email.js';
+import { sendBookingConfirmation, sendBookingConfirmationWithCode } from '../utils/email.js';
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
@@ -127,15 +127,22 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
   if (status === 'confirmed') {
     booking.confirmationSentAt = new Date();
 
-    // Auto-generate access code for online bookings
-    if (booking.visitType === 'online' && !booking.accessCodeId) {
+    // Auto-generate access code for ALL confirmed bookings that don't have one
+    if (!booking.accessCodeId) {
       const code = generateCode();
+      const accessDuration = req.body.duration || 3; // hours (default 3h)
+      // Code expires 1 month from now (or custom expiresAt from request)
+      const codeExpiresAt = req.body.codeExpiresAt
+        ? new Date(req.body.codeExpiresAt)
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days default
+
       const accessCode = await AccessCode.create({
         code,
-        label: `Online booking ${booking.referenceNumber}`,
-        type: 'virtual',
-        duration: 3,
+        label: `${booking.visitType === 'online' ? 'Online' : 'Tour'} booking ${booking.referenceNumber}`,
+        type: booking.visitType === 'online' ? 'virtual' : 'physical',
+        duration: accessDuration,
         maxUses: booking.groupSize || 1,
+        expiresAt: codeExpiresAt,
         createdBy: req.admin._id,
       });
       booking.accessCodeId = accessCode._id;
@@ -147,7 +154,7 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
   // Populate for response
   await booking.populate([
     { path: 'guideId', select: 'name imageUrl' },
-    { path: 'accessCodeId', select: 'code isActive timesUsed maxUses expiresAt' },
+    { path: 'accessCodeId', select: 'code isActive timesUsed maxUses expiresAt duration' },
   ]);
 
   // Build response with QR if access code was generated
@@ -158,10 +165,21 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
     response.gatewayUrl = gatewayUrl;
   }
 
-  // Send confirmation email for physical tours
-  if (status === 'confirmed' && booking.visitType === 'physical') {
-    const guide = await Guide.findById(booking.guideId).lean();
-    sendBookingConfirmation(booking, guide).catch(err => {
+  // Send confirmation email with access code for all confirmed bookings
+  if (status === 'confirmed') {
+    const guide = booking.visitType === 'physical' && booking.guideId
+      ? await Guide.findById(booking.guideId).lean()
+      : null;
+    const gatewayUrl = booking.accessCodeId
+      ? `${FRONTEND_URL}/enter?code=${booking.accessCodeId.code}`
+      : null;
+
+    sendBookingConfirmationWithCode(booking, guide, {
+      code: booking.accessCodeId?.code,
+      gatewayUrl,
+      duration: booking.accessCodeId?.duration,
+      expiresAt: booking.accessCodeId?.expiresAt,
+    }).catch(err => {
       console.error('Failed to send booking confirmation email:', err.message);
     });
   }
@@ -180,12 +198,18 @@ export const generateBookingAccessCode = asyncHandler(async (req, res) => {
   }
 
   const code = generateCode();
+  const accessDuration = req.body.duration || 3;
+  const codeExpiresAt = req.body.codeExpiresAt
+    ? new Date(req.body.codeExpiresAt)
+    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days default
+
   const accessCode = await AccessCode.create({
     code,
     label: `Booking ${booking.referenceNumber} — ${booking.visitorName}`,
     type: booking.visitType === 'online' ? 'virtual' : 'physical',
-    duration: req.body.duration || 3,
+    duration: accessDuration,
     maxUses: req.body.maxUses || booking.groupSize || 1,
+    expiresAt: codeExpiresAt,
     createdBy: req.admin._id,
   });
 
@@ -199,6 +223,20 @@ export const generateBookingAccessCode = asyncHandler(async (req, res) => {
   const gatewayUrl = `${FRONTEND_URL}/enter?code=${code}`;
   const qrCodeDataUrl = await QRCode.toDataURL(gatewayUrl, { width: 300, margin: 2 });
 
+  // Send confirmation email with access code
+  const guide = booking.visitType === 'physical' && booking.guideId
+    ? await Guide.findById(booking.guideId).lean()
+    : null;
+
+  sendBookingConfirmationWithCode(booking, guide, {
+    code: accessCode.code,
+    gatewayUrl,
+    duration: accessCode.duration,
+    expiresAt: accessCode.expiresAt,
+  }).catch(err => {
+    console.error('Failed to send booking confirmation email:', err.message);
+  });
+
   res.status(201).json({
     booking: booking.toObject(),
     accessCode: {
@@ -207,6 +245,7 @@ export const generateBookingAccessCode = asyncHandler(async (req, res) => {
       type: accessCode.type,
       duration: accessCode.duration,
       maxUses: accessCode.maxUses,
+      expiresAt: accessCode.expiresAt,
     },
     qrCodeDataUrl,
     gatewayUrl,

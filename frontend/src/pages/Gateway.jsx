@@ -34,13 +34,6 @@ const Gateway = () => {
 
   const redirectTo = location.state?.from || '/';
 
-  // If visitor already authenticated, redirect to content
-  useEffect(() => {
-    if (!loading && isAuthenticated && !admin) {
-      navigate(redirectTo, { replace: true });
-    }
-  }, [isAuthenticated, loading, navigate, redirectTo, admin]);
-
   // If staff already authenticated, redirect to dashboard
   useEffect(() => {
     if (admin) {
@@ -157,88 +150,119 @@ const Gateway = () => {
             </p>
           </div>
 
-          {/* Hook message */}
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-8 text-center">
-            <p className="text-amber-300 text-sm font-medium leading-relaxed">
-              {t('gateway.hookMessage')}
-            </p>
-          </div>
-
-          {/* Error message */}
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 justify-center text-sm">
-              <AlertCircle size={16} />
-              {error}
-            </div>
-          )}
-
-          {/* Auto-validating from QR scan */}
-          {autoValidating ? (
-            <div className="flex items-center justify-center gap-3 text-amber-400 mb-6 py-8">
-              <Loader2 size={24} className="animate-spin" />
-              <span className="text-lg">{t('gateway.validating')}</span>
+          {/* Already authenticated — show continue or re-enter */}
+          {!loading && isAuthenticated && !admin ? (
+            <div className="space-y-5">
+              <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500/20 rounded-full mb-3">
+                  <ShieldCheck size={24} className="text-green-400" />
+                </div>
+                <p className="text-green-300 font-semibold mb-1">{t('gateway.alreadyActive') || 'Access Active'}</p>
+                <p className="text-slate-400 text-sm">{t('gateway.alreadyActiveDesc') || 'You already have a valid access session.'}</p>
+              </div>
+              <button
+                onClick={() => navigate(redirectTo, { replace: true })}
+                className="w-full bg-amber-600 text-white py-3.5 rounded-xl hover:bg-amber-700 transition font-semibold flex items-center justify-center gap-2"
+              >
+                {t('gateway.continue') || 'Continue to Museum'}
+                <ArrowRight size={16} />
+              </button>
+              <button
+                onClick={() => { clearAccess(); setCode(''); setError(''); }}
+                className="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 py-3 rounded-xl transition font-medium border border-slate-600/50 flex items-center justify-center gap-2"
+              >
+                <KeyRound size={16} />
+                {t('gateway.useNewCode') || 'Enter a Different Code'}
+              </button>
             </div>
           ) : (
             <>
-              {/* ─── Access Code Entry ─── */}
-              <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-2xl p-6 mb-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <QrCode size={18} className="text-amber-400" />
-                  <h2 className="text-white font-semibold">{t('gateway.accessTitle')}</h2>
-                </div>
-                <p className="text-slate-400 text-sm mb-4">
-                  {t('gateway.enterCode')}
+              {/* Hook message */}
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-8 text-center">
+                <p className="text-amber-300 text-sm font-medium leading-relaxed">
+                  {t('gateway.hookMessage')}
                 </p>
-                <form onSubmit={handleCodeSubmit} className="space-y-3">
-                  <div className="relative">
-                    <KeyRound size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                    <input
-                      type="text"
-                      value={code}
-                      onChange={(e) => setCode(e.target.value.toUpperCase())}
-                      placeholder={t('gateway.codePlaceholder')}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition text-center text-lg tracking-widest font-mono"
-                      disabled={validating}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={validating || !code.trim()}
-                    className="w-full bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {validating ? (
-                      <>
-                        <Loader2 size={18} className="animate-spin" />
-                        {t('gateway.validating')}
-                      </>
-                    ) : (
-                      <>
-                        {t('gateway.enter')}
-                        <ArrowRight size={16} />
-                      </>
-                    )}
-                  </button>
-                </form>
               </div>
 
-              {/* ─── Book a Visit ─── */}
-              <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-2xl p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Calendar size={18} className="text-amber-400" />
-                  <h2 className="text-white font-semibold">{t('gateway.bookTitle')}</h2>
+              {/* Error message */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 justify-center text-sm">
+                  <AlertCircle size={16} />
+                  {error}
                 </div>
-                <p className="text-slate-400 text-sm mb-4">
-                  {t('gateway.bookDesc')}
-                </p>
-                <button
-                  onClick={() => navigate('/book-external')}
-                  className="w-full flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 text-white py-3 px-4 rounded-xl transition font-medium border border-slate-600/50"
-                >
-                  <Calendar size={16} />
-                  {t('gateway.bookTitle')}
-                  <ArrowRight size={14} className="ml-auto" />
-                </button>
-              </div>
+              )}
+
+              {/* Auto-validating from QR scan */}
+              {autoValidating ? (
+                <div className="flex items-center justify-center gap-3 text-amber-400 mb-6 py-8">
+                  <Loader2 size={24} className="animate-spin" />
+                  <span className="text-lg">{t('gateway.validating')}</span>
+                </div>
+              ) : (
+                <>
+                  {/* ─── Access Code Entry ─── */}
+                  <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-2xl p-6 mb-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <QrCode size={18} className="text-amber-400" />
+                      <h2 className="text-white font-semibold">{t('gateway.accessTitle')}</h2>
+                    </div>
+                    <p className="text-slate-400 text-sm mb-4">
+                      {t('gateway.enterCode')}
+                    </p>
+                    <form onSubmit={handleCodeSubmit} className="space-y-3">
+                      <div className="relative">
+                        <KeyRound size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-500/70" />
+                        <input
+                          type="text"
+                          value={code}
+                          onChange={(e) => setCode(e.target.value.toUpperCase())}
+                          placeholder={t('gateway.codePlaceholder')}
+                          className="w-full pl-11 pr-4 py-3.5 bg-slate-800 border-2 border-slate-600 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-center text-lg tracking-widest font-mono"
+                          disabled={validating}
+                          autoFocus
+                          autoComplete="off"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={validating || !code.trim()}
+                        className="w-full bg-amber-600 text-white py-3.5 rounded-xl hover:bg-amber-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {validating ? (
+                          <>
+                            <Loader2 size={18} className="animate-spin" />
+                            {t('gateway.validating')}
+                          </>
+                        ) : (
+                          <>
+                            {t('gateway.enter')}
+                            <ArrowRight size={16} />
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* ─── Book a Visit ─── */}
+                  <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-2xl p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Calendar size={18} className="text-amber-400" />
+                      <h2 className="text-white font-semibold">{t('gateway.bookTitle')}</h2>
+                    </div>
+                    <p className="text-slate-400 text-sm mb-4">
+                      {t('gateway.bookDesc')}
+                    </p>
+                    <button
+                      onClick={() => navigate('/book-external')}
+                      className="w-full flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 text-white py-3 px-4 rounded-xl transition font-medium border border-slate-600/50"
+                    >
+                      <Calendar size={16} />
+                      {t('gateway.bookTitle')}
+                      <ArrowRight size={14} className="ml-auto" />
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>

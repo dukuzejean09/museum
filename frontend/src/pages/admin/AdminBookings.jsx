@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { adminFetchBookings, adminUpdateBooking, adminGenerateBookingAccess, adminDeleteBooking } from '../../api';
 import { useAuth } from '../../context/AuthContext';
-import { CheckCircle, XCircle, Trash2, Clock, Key, Copy, Download, X, Globe, MapPin, QrCode } from 'lucide-react';
+import { CheckCircle, XCircle, Trash2, Clock, Key, Copy, Download, X, Globe, MapPin, QrCode, Users, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
@@ -24,6 +24,8 @@ const AdminBookings = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, physical, online
   const [accessModal, setAccessModal] = useState(null); // { qrCodeDataUrl, gatewayUrl, code }
+  const [confirmModal, setConfirmModal] = useState(null); // { bookingId, visitorName, visitType }
+  const [confirmForm, setConfirmForm] = useState({ duration: '3', codeExpiresAt: '' });
 
   const loadBookings = async () => {
     try {
@@ -40,18 +42,41 @@ const AdminBookings = () => {
 
   useEffect(() => { loadBookings(); }, [filter]);
 
-  const handleStatus = async (id, status) => {
+  const openConfirmModal = (booking) => {
+    // Default expiry: 30 days from now
+    const d = new Date(Date.now() + 30 * 24 * 3600000);
+    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    setConfirmForm({ duration: '3', codeExpiresAt: local });
+    setConfirmModal({ bookingId: booking._id, visitorName: booking.visitorName, visitType: booking.visitType });
+  };
+
+  const handleConfirmBooking = async () => {
+    if (!confirmModal) return;
     try {
-      const { data } = await adminUpdateBooking(id, { status });
-      toast.success(`Booking ${status}`);
-      // If confirming an online booking, show the access code modal
-      if (status === 'confirmed' && data.qrCodeDataUrl) {
+      const { data } = await adminUpdateBooking(confirmModal.bookingId, {
+        status: 'confirmed',
+        duration: Number(confirmForm.duration) || 3,
+        codeExpiresAt: confirmForm.codeExpiresAt || null,
+      });
+      toast.success('Booking confirmed & email sent!');
+      setConfirmModal(null);
+      if (data.qrCodeDataUrl) {
         setAccessModal({
           qrCodeDataUrl: data.qrCodeDataUrl,
           gatewayUrl: data.gatewayUrl,
           code: data.accessCodeId?.code || '',
         });
       }
+      loadBookings();
+    } catch {
+      toast.error('Failed to confirm booking');
+    }
+  };
+
+  const handleStatus = async (id, status) => {
+    try {
+      const { data } = await adminUpdateBooking(id, { status });
+      toast.success(`Booking ${status}`);
       loadBookings();
     } catch {
       toast.error('Failed to update booking');
@@ -189,9 +214,9 @@ const AdminBookings = () => {
                           {b.status === 'pending' && (
                             <>
                               <button
-                                onClick={() => handleStatus(b._id, 'confirmed')}
+                                onClick={() => openConfirmModal(b)}
                                 className="p-1.5 rounded-lg text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
-                                title="Confirm"
+                                title="Confirm & Generate Access"
                               >
                                 <CheckCircle size={18} />
                               </button>
@@ -249,6 +274,115 @@ const AdminBookings = () => {
                 <p className="text-sm text-slate-600 dark:text-slate-400">{b.message}</p>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Booking Modal — set access duration & code expiration */}
+      {confirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setConfirmModal(null)}>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">Confirm Booking</h3>
+              <button onClick={() => setConfirmModal(null)} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                <X size={20} className="dark:text-slate-400" />
+              </button>
+            </div>
+
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              Confirm <strong>{confirmModal.visitorName}</strong>'s {confirmModal.visitType === 'online' ? 'online access' : 'tour'} booking.
+              An access code will be generated and sent to their email.
+            </p>
+
+            <div className="space-y-4">
+              {/* Access Duration */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  <Clock size={14} className="inline mr-1" />
+                  Access Duration (per session)
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { label: '10 min', value: 10 / 60 },
+                    { label: '20 min', value: 20 / 60 },
+                    { label: '30 min', value: 0.5 },
+                    { label: '1 hr', value: 1 },
+                    { label: '3 hrs', value: 3 },
+                    { label: '6 hrs', value: 6 },
+                    { label: '1 day', value: 24 },
+                  ].map(p => (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() => setConfirmForm({ ...confirmForm, duration: String(p.value) })}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${
+                        Number(confirmForm.duration) === p.value
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Code Expiration */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  <Key size={14} className="inline mr-1" />
+                  Code Valid Until
+                </label>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {[
+                    { label: '1 day', hours: 24 },
+                    { label: '1 week', hours: 168 },
+                    { label: '1 month', hours: 720 },
+                    { label: '3 months', hours: 2160 },
+                  ].map(opt => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      onClick={() => {
+                        const d = new Date(Date.now() + opt.hours * 3600000);
+                        const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                        setConfirmForm({ ...confirmForm, codeExpiresAt: local });
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="datetime-local"
+                  value={confirmForm.codeExpiresAt}
+                  onChange={e => setConfirmForm({ ...confirmForm, codeExpiresAt: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-amber-500 outline-none"
+                />
+                <p className="text-xs text-slate-400 mt-1">The code will stop accepting scans after this date, even if unused</p>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 rounded-xl p-3 text-xs text-blue-700 dark:text-blue-300">
+                <Mail size={14} className="inline mr-1" />
+                A confirmation email with the access code will be sent to the visitor automatically.
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-5">
+              <button
+                onClick={handleConfirmBooking}
+                className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-xl font-semibold transition"
+              >
+                <CheckCircle size={16} /> Confirm & Send Code
+              </button>
+              <button
+                onClick={() => setConfirmModal(null)}
+                className="px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

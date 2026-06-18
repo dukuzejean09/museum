@@ -1,17 +1,29 @@
 import { useState, useEffect } from 'react';
 import { fetchUsers, registerAdmin, updateUserRole, toggleUserStatus, deleteUser } from '../../api';
 import { useAuth } from '../../context/AuthContext';
-import { UserPlus, Trash2, Shield, UserCheck, UserX, Users, UserCog } from 'lucide-react';
+import { UserPlus, Trash2, Shield, UserCheck, UserX, Users, UserCog, Mail, Phone, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+
+/** Validate Rwandan phone: 07[2389]XXXXXXX or +2507[2389]XXXXXXX */
+const isValidRwandanPhone = (phone) => {
+  if (!phone) return false;
+  const cleaned = phone.replace(/[\s\-().]/g, '');
+  return /^(\+?250|0)?7[2389]\d{7}$/.test(cleaned);
+};
+
 const AdminUsers = () => {
   const { admin } = useAuth();
   const [users, setUsers] = useState([]);
   const [counts, setCounts] = useState({ total: 0, admins: 0, guides: 0 });
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState({ username: '', email: '', password: '', role: 'guide' });
+  const [formData, setFormData] = useState({
+    username: '', email: '', password: '', role: 'guide',
+    profile: { firstName: '', lastName: '', phone: '' },
+  });
+  const [formErrors, setFormErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
   const loadUsers = async () => {
@@ -28,13 +40,29 @@ const AdminUsers = () => {
 
   useEffect(() => { loadUsers(); }, []);
 
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.profile.firstName.trim()) errors.firstName = 'First name is required';
+    if (!formData.profile.lastName.trim()) errors.lastName = 'Last name is required';
+    if (!formData.username.trim() || formData.username.trim().length < 3) errors.username = 'Username must be at least 3 characters';
+    if (!/^[a-zA-Z0-9_]+$/.test(formData.username.trim())) errors.username = 'Letters, numbers, and underscores only';
+    if (!formData.email.trim()) errors.email = 'Email is required';
+    if (!formData.password || formData.password.length < 6) errors.password = 'Min 6 characters';
+    if (!formData.profile.phone.trim()) errors.phone = 'Phone number is required';
+    else if (!isValidRwandanPhone(formData.profile.phone)) errors.phone = 'Invalid Rwandan number (07X XXXX XXX)';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleAddUser = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     setSubmitting(true);
     try {
       await registerAdmin(formData);
-      toast.success(`${formData.role === 'admin' ? 'Admin' : 'Guide'} created successfully`);
-      setFormData({ username: '', email: '', password: '', role: 'guide' });
+      toast.success(`${formData.role === 'admin' ? 'Admin' : 'Guide'} created — credentials sent via email`);
+      setFormData({ username: '', email: '', password: '', role: 'guide', profile: { firstName: '', lastName: '', phone: '' } });
+      setFormErrors({});
       setShowAddForm(false);
       loadUsers();
     } catch (err) {
@@ -127,40 +155,86 @@ const AdminUsers = () => {
         <div className="card p-6 mb-6">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Add New User</h2>
           <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Name */}
             <div>
-              <label className="form-label">Username</label>
+              <label className="form-label">First Name *</label>
+              <input
+                type="text"
+                required
+                value={formData.profile.firstName}
+                onChange={(e) => setFormData({ ...formData, profile: { ...formData.profile, firstName: e.target.value } })}
+                className={`w-full px-3 py-2 border ${formErrors.firstName ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'} rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white`}
+                placeholder="First name"
+              />
+              {formErrors.firstName && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} />{formErrors.firstName}</p>}
+            </div>
+            {/* Last Name */}
+            <div>
+              <label className="form-label">Last Name *</label>
+              <input
+                type="text"
+                required
+                value={formData.profile.lastName}
+                onChange={(e) => setFormData({ ...formData, profile: { ...formData.profile, lastName: e.target.value } })}
+                className={`w-full px-3 py-2 border ${formErrors.lastName ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'} rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white`}
+                placeholder="Last name"
+              />
+              {formErrors.lastName && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} />{formErrors.lastName}</p>}
+            </div>
+            {/* Username */}
+            <div>
+              <label className="form-label">Username *</label>
               <input
                 type="text"
                 required
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
-                placeholder="Enter username"
+                className={`w-full px-3 py-2 border ${formErrors.username ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'} rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white`}
+                placeholder="Letters, numbers, underscores"
               />
+              {formErrors.username && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} />{formErrors.username}</p>}
             </div>
+            {/* Email */}
             <div>
-              <label className="form-label">Email</label>
+              <label className="form-label">Email *</label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
-                placeholder="Enter email"
+                className={`w-full px-3 py-2 border ${formErrors.email ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'} rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white`}
+                placeholder="user@example.com"
               />
+              {formErrors.email && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} />{formErrors.email}</p>}
             </div>
+            {/* Phone (Rwandan) */}
             <div>
-              <label className="form-label">Password</label>
+              <label className="form-label flex items-center gap-1"><Phone size={14} /> Phone (Rwanda) *</label>
+              <input
+                type="tel"
+                required
+                value={formData.profile.phone}
+                onChange={(e) => setFormData({ ...formData, profile: { ...formData.profile, phone: e.target.value } })}
+                className={`w-full px-3 py-2 border ${formErrors.phone ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'} rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white`}
+                placeholder="07XXXXXXXX or +2507XXXXXXXX"
+              />
+              {formErrors.phone && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} />{formErrors.phone}</p>}
+            </div>
+            {/* Password */}
+            <div>
+              <label className="form-label">Password *</label>
               <input
                 type="password"
                 required
                 minLength={6}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white"
+                className={`w-full px-3 py-2 border ${formErrors.password ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'} rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-800 dark:text-white`}
                 placeholder="Min 6 characters"
               />
+              {formErrors.password && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} />{formErrors.password}</p>}
             </div>
+            {/* Role */}
             <div>
               <label className="form-label">Role</label>
               <select
@@ -172,6 +246,13 @@ const AdminUsers = () => {
                 <option value="guide">Guide</option>
               </select>
             </div>
+            {/* Info note */}
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-2 text-sm text-blue-700 dark:text-blue-300">
+                <Mail size={16} className="flex-shrink-0" />
+                Login credentials will be sent to the user's email automatically.
+              </div>
+            </div>
             <div className="md:col-span-2 flex gap-3">
               <button
                 type="submit"
@@ -182,7 +263,7 @@ const AdminUsers = () => {
               </button>
               <button
                 type="button"
-                onClick={() => setShowAddForm(false)}
+                onClick={() => { setShowAddForm(false); setFormErrors({}); }}
                 className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-6 py-2 rounded-lg transition font-medium"
               >
                 Cancel

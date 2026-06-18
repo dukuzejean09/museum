@@ -248,6 +248,8 @@ export const fetchHeatmapData = (params) => AdminAPI.get('/admin/analytics/heatm
 
 // Visitor Auth
 export const validateVisitorCode = (code) => axios.post(`${API_BASE}/visitor/validate`, { code });
+export const verifyVisitorToken = (token) =>
+  axios.get(`${API_BASE}/visitor/verify`, { headers: { Authorization: `Bearer ${token}` } });
 export const adminGenerateAccessCode = (data) => AdminAPI.post('/visitor/codes', data);
 export const adminFetchAccessCodes = () => AdminAPI.get('/visitor/codes');
 export const adminDeactivateCode = (id) => AdminAPI.put(`/visitor/codes/${id}/deactivate`);
