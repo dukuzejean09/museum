@@ -90,8 +90,8 @@ const BookVisit = () => {
  return (
  <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-950">
  <div className="max-w-md w-full text-center space-y-6">
- <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-900/30">
- <CheckCircle size={40} className="text-green-400" />
+ <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-900/30">
+ <CheckCircle size={40} className="text-amber-400" />
  </div>
  <h2 className="text-2xl font-bold text-slate-100">
  {visitType === 'online' ? 'Access Request Submitted!' : 'Tour Booking Submitted!'}
@@ -167,23 +167,23 @@ const BookVisit = () => {
  {/* Online Access */}
  <button
  onClick={() => setVisitType('online')}
- className="group text-left rounded-2xl border-2 border-slate-700 bg-slate-900 p-8 hover:border-emerald-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-700 bg-slate-900 p-8 hover:border-amber-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
- <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white mb-5 group-hover:scale-110 transition-transform">
+ <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Wifi size={28} />
  </div>
- <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-emerald-400 transition-colors">
+ <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-amber-400 transition-colors">
  {t('bookVisit.online')}
  </h3>
  <p className="text-sm text-slate-400 leading-relaxed mb-4">
  {t('bookVisit.onlineDesc')}
  </p>
  <ul className="space-y-2 text-sm text-slate-300">
- <li className="flex items-center gap-2"><Globe size={14} className="text-emerald-500" /> Access from anywhere</li>
- <li className="flex items-center gap-2"><Calendar size={14} className="text-emerald-500" /> Choose your visit date</li>
- <li className="flex items-center gap-2"><CheckCircle size={14} className="text-emerald-500" /> Get access code upon approval</li>
+ <li className="flex items-center gap-2"><Globe size={14} className="text-amber-500" /> Access from anywhere</li>
+ <li className="flex items-center gap-2"><Calendar size={14} className="text-amber-500" /> Choose your visit date</li>
+ <li className="flex items-center gap-2"><CheckCircle size={14} className="text-amber-500" /> Get access code upon approval</li>
  </ul>
- <div className="mt-5 flex items-center gap-2 text-emerald-400 font-semibold text-sm group-hover:gap-3 transition-all">
+ <div className="mt-5 flex items-center gap-2 text-amber-400 font-semibold text-sm group-hover:gap-3 transition-all">
  Request Access <ArrowRight size={16} />
  </div>
  </button>
@@ -194,7 +194,7 @@ const BookVisit = () => {
  }
 
  const isPhysical = visitType === 'physical';
- const accent = isPhysical ? 'amber' : 'emerald';
+ const accent = isPhysical ? 'amber' : 'amber';
 
  return (
  <div className="max-w-2xl mx-auto px-4 py-10 min-h-screen bg-slate-950">
@@ -207,7 +207,7 @@ const BookVisit = () => {
  </button>
 
  <div className="text-center mb-8">
- <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${isPhysical ? 'from-amber-500 to-orange-500' : 'from-emerald-500 to-teal-500'} text-white mb-4`}>
+ <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white mb-4`}>
  {isPhysical ? <Landmark size={28} /> : <Wifi size={28} />}
  </div>
  <h1 className="text-2xl font-bold text-slate-100">
@@ -350,7 +350,7 @@ const BookVisit = () => {
  className={`w-full py-3 rounded-xl font-semibold text-white shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
  isPhysical
  ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/25'
- : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/25'
+ : 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/25'
  }`}
  >
  {loading
