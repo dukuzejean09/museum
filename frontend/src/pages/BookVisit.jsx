@@ -88,36 +88,36 @@ const BookVisit = () => {
  // Success screen
  if (submitted) {
  return (
- <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-950">
+ <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-950">
  <div className="max-w-md w-full text-center space-y-6">
- <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30">
- <CheckCircle size={40} className="text-green-600 dark:text-green-400" />
+ <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-900/30">
+ <CheckCircle size={40} className="text-green-400" />
  </div>
- <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+ <h2 className="text-2xl font-bold text-slate-100">
  {visitType === 'online' ? 'Access Request Submitted!' : 'Tour Booking Submitted!'}
  </h2>
- <p className="text-slate-600 dark:text-slate-300">
+ <p className="text-slate-300">
  {visitType === 'online'
  ? 'Your online access request is being reviewed. Once approved, you will receive an access code to explore the museum virtually.'
  : 'Your tour booking is pending confirmation. You will receive an email with your booking details.'}
  </p>
- <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
- <p className="text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400 font-semibold mb-1">Reference Number</p>
- <p className="text-2xl font-mono font-bold text-amber-800 dark:text-amber-200">{refNumber}</p>
- <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Save this for your records</p>
+ <div className="bg-amber-900/20 rounded-xl p-4 border border-amber-800">
+ <p className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-1">Reference Number</p>
+ <p className="text-2xl font-mono font-bold text-amber-200">{refNumber}</p>
+ <p className="text-xs text-amber-400 mt-1">Save this for your records</p>
  </div>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
  <button
  onClick={() => { setSubmitted(false); setVisitType(null); setForm({ visitorName: '', visitorEmail: '', visitorPhone: '', date: '', time: '', guideId: '', groupSize: 1, message: '' }); }}
- className="px-5 py-2.5 rounded-full border border-amber-600 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 font-semibold transition"
+ className="px-5 py-2.5 rounded-full border border-amber-600 text-amber-300 hover:bg-amber-900/20 font-semibold transition"
  >
  Book Another
  </button>
  <Link
- to="/"
+ to="/enter"
  className="px-5 py-2.5 rounded-full bg-amber-600 text-white hover:bg-amber-700 font-semibold transition"
  >
- Back to Home
+ Back to Gateway
  </Link>
  </div>
  </div>
@@ -128,16 +128,13 @@ const BookVisit = () => {
  // Visit type chooser
  if (!visitType) {
  return (
- <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-950">
+ <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-950">
  <div className="max-w-3xl w-full">
  <div className="text-center mb-10">
- <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
- {t('nav.booking') || 'Book a Visit'}
- </span>
- <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+ <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100">
  {t('bookVisit.title')}
  </h1>
- <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-lg mx-auto">
+ <p className="text-slate-400 mt-3 max-w-lg mx-auto">
  {t('bookVisit.subtitle')}
  </p>
  </div>
@@ -146,23 +143,23 @@ const BookVisit = () => {
  {/* Physical Tour */}
  <button
  onClick={() => setVisitType('physical')}
- className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-700 bg-slate-900 p-8 hover:border-amber-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Landmark size={28} />
  </div>
- <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-amber-600 transition-colors">
+ <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-amber-400 transition-colors">
  {t('bookVisit.physical')}
  </h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+ <p className="text-sm text-slate-400 leading-relaxed mb-4">
  {t('bookVisit.physicalDesc')}
  </p>
- <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+ <ul className="space-y-2 text-sm text-slate-300">
  <li className="flex items-center gap-2"><MapPin size={14} className="text-amber-500" /> On-site guided experience</li>
  <li className="flex items-center gap-2"><Users size={14} className="text-amber-500" /> Groups up to 50 people</li>
  <li className="flex items-center gap-2"><Clock size={14} className="text-amber-500" /> Choose your preferred time</li>
  </ul>
- <div className="mt-5 flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold text-sm group-hover:gap-3 transition-all">
+ <div className="mt-5 flex items-center gap-2 text-amber-400 font-semibold text-sm group-hover:gap-3 transition-all">
  Book Tour <ArrowRight size={16} />
  </div>
  </button>
@@ -170,23 +167,23 @@ const BookVisit = () => {
  {/* Online Access */}
  <button
  onClick={() => setVisitType('online')}
- className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-700 bg-slate-900 p-8 hover:border-emerald-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Wifi size={28} />
  </div>
- <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-emerald-600 transition-colors">
+ <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-emerald-400 transition-colors">
  {t('bookVisit.online')}
  </h3>
- <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+ <p className="text-sm text-slate-400 leading-relaxed mb-4">
  {t('bookVisit.onlineDesc')}
  </p>
- <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+ <ul className="space-y-2 text-sm text-slate-300">
  <li className="flex items-center gap-2"><Globe size={14} className="text-emerald-500" /> Access from anywhere</li>
  <li className="flex items-center gap-2"><Calendar size={14} className="text-emerald-500" /> Choose your visit date</li>
  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-emerald-500" /> Get access code upon approval</li>
  </ul>
- <div className="mt-5 flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-sm group-hover:gap-3 transition-all">
+ <div className="mt-5 flex items-center gap-2 text-emerald-400 font-semibold text-sm group-hover:gap-3 transition-all">
  Request Access <ArrowRight size={16} />
  </div>
  </button>
@@ -200,11 +197,11 @@ const BookVisit = () => {
  const accent = isPhysical ? 'amber' : 'emerald';
 
  return (
- <div className="max-w-2xl mx-auto px-4 py-10 min-h-screen bg-slate-50 dark:bg-slate-950">
+ <div className="max-w-2xl mx-auto px-4 py-10 min-h-screen bg-slate-950">
  {/* Back to chooser */}
  <button
  onClick={() => setVisitType(null)}
- className="text-sm text-slate-500 dark:text-slate-400 hover:text-amber-600 mb-6 flex items-center gap-1"
+ className="text-sm text-slate-400 hover:text-amber-400 mb-6 flex items-center gap-1"
  >
  &larr; Change visit type
  </button>
@@ -213,34 +210,34 @@ const BookVisit = () => {
  <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${isPhysical ? 'from-amber-500 to-orange-500' : 'from-emerald-500 to-teal-500'} text-white mb-4`}>
  {isPhysical ? <Landmark size={28} /> : <Wifi size={28} />}
  </div>
- <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+ <h1 className="text-2xl font-bold text-slate-100">
  {isPhysical ? t('bookVisit.guidedTour') : t('bookVisit.onlineAccess')}
  </h1>
- <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
+ <p className="text-slate-400 mt-1 text-sm">
  {isPhysical ? t('bookVisit.guidedTourDesc') : t('bookVisit.onlineAccessDesc')}
  </p>
  </div>
 
- <form onSubmit={handleSubmit} className="space-y-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 shadow-sm">
+ <form onSubmit={handleSubmit} className="space-y-5 bg-slate-900 rounded-2xl border border-slate-700 p-6 sm:p-8">
  {/* Name & Email */}
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <User size={14} className="inline mr-1" /> Full Name *
  </label>
  <input
  type="text" name="visitorName" value={form.visitorName} onChange={handleChange} required
- className="form-input"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  placeholder="Your full name"
  />
  </div>
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <Mail size={14} className="inline mr-1" /> Email *
  </label>
  <input
  type="email" name="visitorEmail" value={form.visitorEmail} onChange={handleChange} required
- className="form-input"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  placeholder="you@example.com"
  />
  </div>
@@ -248,12 +245,12 @@ const BookVisit = () => {
 
  {/* Phone */}
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <Phone size={14} className="inline mr-1" /> Phone (optional)
  </label>
  <input
  type="tel" name="visitorPhone" value={form.visitorPhone} onChange={handleChange}
- className="form-input"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  placeholder="+250 7XX XXX XXX"
  />
  </div>
@@ -261,22 +258,22 @@ const BookVisit = () => {
  {/* Date & Time (time only for physical) */}
  <div className={`grid ${isPhysical ? 'sm:grid-cols-2' : ''} gap-4`}>
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <Calendar size={14} className="inline mr-1" /> {isPhysical ? 'Visit Date *' : 'Preferred Date *'}
  </label>
  <input
  type="date" name="date" value={form.date} onChange={handleChange} required min={today}
- className="form-input"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  />
  </div>
  {isPhysical && (
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <Clock size={14} className="inline mr-1" /> Time Slot *
  </label>
  <select
  name="time" value={form.time} onChange={handleChange} required
- className="form-input"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  >
  <option value="">Select time</option>
  {timeSlots.map(slot => (
@@ -290,11 +287,11 @@ const BookVisit = () => {
  {/* Guide selection (physical only) */}
  {isPhysical && (
  <div>
- <label className="form-label mb-2">
+ <label className="block text-xs font-medium text-slate-300 mb-2">
  Choose a Guide *
  </label>
  {guides.length === 0 ? (
- <p className="text-sm text-slate-400">No guides available</p>
+ <p className="text-sm text-slate-500">No guides available</p>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
  {guides.map(g => (
@@ -304,18 +301,18 @@ const BookVisit = () => {
  onClick={() => setForm(prev => ({ ...prev, guideId: g._id }))}
  className={`text-center p-3 rounded-xl border-2 transition-all ${
  form.guideId === g._id
- ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 shadow-md'
- : 'border-slate-200 dark:border-slate-600 hover:border-amber-300'
+ ? 'border-amber-500 bg-amber-900/20 shadow-md'
+ : 'border-slate-600 hover:border-amber-500/50'
  }`}
  >
  {g.imageUrl ? (
  <img src={imgUrl(g.imageUrl)} alt={g.name} className="w-12 h-12 rounded-full mx-auto mb-2 object-cover" />
  ) : (
- <div className="w-12 h-12 rounded-full mx-auto mb-2 bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
- <User size={20} className="text-amber-600" />
+ <div className="w-12 h-12 rounded-full mx-auto mb-2 bg-amber-900/30 flex items-center justify-center">
+ <User size={20} className="text-amber-500" />
  </div>
  )}
- <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{g.name}</p>
+ <p className="text-sm font-medium text-slate-200 truncate">{g.name}</p>
  </button>
  ))}
  </div>
@@ -325,23 +322,23 @@ const BookVisit = () => {
 
  {/* Group size */}
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <Users size={14} className="inline mr-1" /> {isPhysical ? 'Group Size' : 'Number of People'}
  </label>
  <input
  type="number" name="groupSize" value={form.groupSize} onChange={handleChange} min="1" max="50"
- className="form-input"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  />
  </div>
 
  {/* Message */}
  <div>
- <label className="form-label">
+ <label className="block text-xs font-medium text-slate-300 mb-1.5">
  <MessageSquare size={14} className="inline mr-1" /> {isPhysical ? 'Special Requests' : 'Message'} (optional)
  </label>
  <textarea
  name="message" value={form.message} onChange={handleChange} rows={3}
- className="form-input resize-none"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition resize-none"
  placeholder={isPhysical ? 'Any special requirements or accessibility needs...' : 'Tell us about your interest in the museum...'}
  />
  </div>

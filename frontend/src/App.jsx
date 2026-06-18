@@ -90,7 +90,7 @@ const VisitorProtectedRoute = () => {
 // Minimal shell for booking page — back button only, no navigation
 const BookingShell = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       {/* Minimal header with back button */}
       <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800">
         <div className="container mx-auto px-4 py-3 flex items-center gap-3">

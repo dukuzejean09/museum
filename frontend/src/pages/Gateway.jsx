@@ -329,12 +329,13 @@ const Gateway = () => {
           {/* Branding content */}
           <div className="relative z-10 px-6 sm:px-10 lg:px-14 pt-8 lg:pt-0 lg:pb-0 flex flex-col justify-center flex-1">
             <div className="max-w-md mx-auto lg:mx-0">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-14 h-14 bg-amber-500/15 rounded-2xl flex items-center justify-center border border-amber-500/20">
-                  <Landmark size={28} className="text-amber-400" />
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-amber-500/15 rounded-3xl flex items-center justify-center border border-amber-500/20 shrink-0">
+                  <Landmark size={44} className="text-amber-400 sm:hidden" />
+                  <Landmark size={52} className="text-amber-400 hidden sm:block" />
                 </div>
                 <div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
                     {t('gateway.welcome')}
                   </h1>
                 </div>
