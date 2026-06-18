@@ -308,10 +308,10 @@ const Gateway = () => {
         </div>
         <button
           onClick={() => setShowLogin(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-amber-400 hover:bg-slate-800/60 transition text-xs"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition text-sm font-medium"
         >
-          <ShieldCheck size={14} />
-          <span className="hidden sm:inline">{t('gateway.staffLogin')}</span>
+          <ShieldCheck size={16} />
+          <span>{t('gateway.staffLogin')}</span>
         </button>
       </div>
 
