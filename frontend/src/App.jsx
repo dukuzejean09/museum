@@ -87,6 +87,36 @@ const VisitorProtectedRoute = () => {
   return <Navigate to="/enter" state={{ from: location.pathname }} replace />;
 };
 
+// Minimal shell for booking page — back button only, no navigation
+const BookingShell = () => {
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+      {/* Minimal header with back button */}
+      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+        <div className="container mx-auto px-4 py-3 flex items-center gap-3">
+          <a
+            href="/enter"
+            className="flex items-center gap-2 text-slate-300 hover:text-amber-400 transition text-sm font-medium"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back to Gateway
+          </a>
+          <span className="ml-auto text-amber-400 font-bold text-sm">Kandt House Museum</span>
+        </div>
+      </header>
+      <main className="flex-1">
+        <Suspense fallback={<PageLoader />}>
+          <BookVisit />
+        </Suspense>
+      </main>
+      {/* Minimal footer */}
+      <footer className="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+        &copy; {new Date().getFullYear()} Kandt House Museum of Natural History
+      </footer>
+    </div>
+  );
+};
+
 function App() {
   return (
     <ErrorBoundary>
@@ -108,15 +138,15 @@ function App() {
                       <Route path="/ar" element={<ARScanner />} />
                     </Route>
 
-                    {/* Public routes — accessible without visitor token */}
-                    <Route element={<Layout />}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/book" element={<BookVisit />} />
-                      <Route path="/book-tour" element={<Navigate to="/book" replace />} />
-                      <Route path="/feedback" element={<Feedback />} />
+                    {/* Booking — accessible without auth, minimal chrome */}
+                    <Route path="/book" element={<BookingShell />} />
+                    <Route path="/book-tour" element={<Navigate to="/book" replace />} />
 
-                      {/* Visitor-protected content routes — requires QR code authentication */}
+                    {/* All visitor-facing routes — requires authentication */}
+                    <Route element={<Layout />}>
                       <Route element={<VisitorProtectedRoute />}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/feedback" element={<Feedback />} />
                         <Route path="/trail" element={<Navigate to="/trails" replace />} />
                         <Route path="/map" element={<Navigate to="/exhibitions" replace />} />
                         <Route path="/scanner" element={<Navigate to="/ar" replace />} />
@@ -181,7 +211,7 @@ function App() {
                       </Route>
                     </Route>
 
-                    {/* Legacy external booking redirect */}
+                    {/* Legacy external booking redirect — goes through protected /book */}
                     <Route path="/book-external" element={<Navigate to="/book" replace />} />
 
                     {/* 404 catch-all */}
