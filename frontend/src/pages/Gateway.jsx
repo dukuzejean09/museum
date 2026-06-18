@@ -16,19 +16,79 @@ import toast from 'react-hot-toast';
    Inline SVG: Rwandan hills silhouette
    ─────────────────────────────────────────── */
 const HillsSilhouette = () => (
-  <svg viewBox="0 0 800 260" className="w-full h-auto" preserveAspectRatio="none">
+  <svg viewBox="0 0 800 340" className="w-full h-auto" preserveAspectRatio="none">
     {/* Far hills — faint */}
-    <path d="M0 260 L0 160 Q100 60 200 130 Q300 50 400 110 Q500 30 600 100 Q700 50 800 120 L800 260Z"
+    <path d="M0 340 L0 160 Q100 60 200 130 Q300 50 400 110 Q500 30 600 100 Q700 50 800 120 L800 340Z"
       fill="url(#hillFar)" opacity="0.25" />
     {/* Mid hills */}
-    <path d="M0 260 L0 190 Q80 110 180 160 Q280 90 380 150 Q480 80 560 140 Q680 70 800 150 L800 260Z"
+    <path d="M0 340 L0 190 Q80 110 180 160 Q280 90 380 150 Q480 80 560 140 Q680 70 800 150 L800 340Z"
       fill="url(#hillMid)" opacity="0.4" />
     {/* Near hills */}
-    <path d="M0 260 L0 200 Q120 140 240 190 Q360 130 480 180 Q600 120 720 175 Q780 155 800 180 L800 260Z"
+    <path d="M0 340 L0 220 Q120 160 240 210 Q360 150 480 200 Q600 140 720 195 Q780 175 800 200 L800 340Z"
       fill="url(#hillNear)" opacity="0.55" />
-    {/* Closest hill with subtle texture */}
-    <path d="M0 260 L0 220 Q200 170 400 210 Q600 170 800 220 L800 260Z"
+    {/* Closest hill */}
+    <path d="M0 340 L0 260 Q200 210 400 250 Q600 210 800 260 L800 340Z"
       fill="url(#hillClose)" opacity="0.7" />
+
+    {/* ── Intore warrior silhouette on the hill ── */}
+    <g transform="translate(540, 145)" opacity="0.6" fill="#fbbf24">
+      {/* Head */}
+      <circle cx="12" cy="0" r="5" />
+      {/* Headdress feathers (Intore crown) */}
+      <path d="M7 -3 L3 -14 M9 -4 L7 -16 M12 -5 L12 -18 M15 -4 L17 -16 M17 -3 L21 -14"
+        stroke="#fbbf24" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* Body */}
+      <path d="M12 5 L12 30" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Right arm raised holding spear */}
+      <path d="M12 12 L26 2" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Spear shaft */}
+      <path d="M26 2 L34 -18" stroke="#fbbf24" strokeWidth="1.8" strokeLinecap="round" />
+      {/* Spear tip */}
+      <path d="M32 -14 L34 -22 L36 -14 Z" />
+      {/* Left arm holding ingabo shield */}
+      <path d="M12 14 L-2 10" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Ingabo (shield) — oval with center line */}
+      <ellipse cx="-8" cy="8" rx="8" ry="14" fill="none" stroke="#fbbf24" strokeWidth="2" />
+      <ellipse cx="-8" cy="8" rx="5" ry="10" fill="none" stroke="#fbbf24" strokeWidth="1" opacity="0.5" />
+      <path d="M-8 -6 L-8 22" stroke="#fbbf24" strokeWidth="1.2" />
+      {/* Skirt / umushanana */}
+      <path d="M6 28 L12 30 L18 28 L16 48 L8 48 Z" />
+      {/* Legs */}
+      <path d="M9 48 L6 65 M15 48 L18 65" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
+    </g>
+
+    {/* ── Inyambo cows (long-horned Rwandan cattle) ── */}
+    {/* Cow 1 — on the nearest hill */}
+    <g transform="translate(160, 230)" opacity="0.45" fill="#d97706">
+      {/* Body */}
+      <ellipse cx="20" cy="12" rx="18" ry="9" />
+      {/* Head */}
+      <ellipse cx="40" cy="8" rx="5" ry="4" />
+      {/* Long curved horns (Inyambo signature) */}
+      <path d="M38 5 Q34 -10 28 -14" stroke="#d97706" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <path d="M42 5 Q46 -10 52 -14" stroke="#d97706" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      {/* Legs */}
+      <path d="M10 20 L8 34 M16 20 L15 34 M26 20 L27 34 M32 20 L33 34" stroke="#d97706" strokeWidth="2" strokeLinecap="round" />
+      {/* Tail */}
+      <path d="M2 10 Q-6 6 -4 14" stroke="#d97706" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+    </g>
+    {/* Cow 2 — slightly further back */}
+    <g transform="translate(240, 222)" opacity="0.35" fill="#b45309">
+      <ellipse cx="16" cy="10" rx="14" ry="7" />
+      <ellipse cx="32" cy="7" rx="4" ry="3" />
+      <path d="M30 4 Q27 -6 22 -9" stroke="#b45309" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M34 4 Q37 -6 42 -9" stroke="#b45309" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M8 16 L7 27 M14 16 L13 27 M22 16 L23 27 M27 16 L28 27" stroke="#b45309" strokeWidth="1.8" strokeLinecap="round" />
+    </g>
+    {/* Cow 3 — grazing, head down */}
+    <g transform="translate(320, 235)" opacity="0.3" fill="#92400e">
+      <ellipse cx="16" cy="10" rx="14" ry="7" />
+      <ellipse cx="32" cy="14" rx="4" ry="3" />
+      <path d="M30 12 Q28 2 24 -1" stroke="#92400e" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M34 12 Q36 2 40 -1" stroke="#92400e" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M8 16 L7 27 M14 16 L13 27 M22 16 L23 27 M27 16 L28 27" stroke="#92400e" strokeWidth="1.8" strokeLinecap="round" />
+    </g>
+
     <defs>
       <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stopColor="#92400e" />
@@ -159,13 +219,18 @@ const Gateway = () => {
   const startScanner = async () => {
     setScannerError('');
     setShowScanner(true);
-    await new Promise((r) => setTimeout(r, 300));
+    // Wait for modal DOM to render before initializing camera
+    await new Promise((r) => setTimeout(r, 500));
     try {
+      const readerEl = document.getElementById('qr-reader');
+      if (!readerEl) throw new Error('Scanner container not found');
       const html5QrCode = new Html5Qrcode('qr-reader');
       html5QrCodeRef.current = html5QrCode;
+      const containerWidth = readerEl.clientWidth;
+      const qrboxSize = Math.min(350, Math.floor(containerWidth * 0.65));
       await html5QrCode.start(
         { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
+        { fps: 10, qrbox: { width: qrboxSize, height: qrboxSize }, aspectRatio: 1.0 },
         (decodedText) => {
           let scannedCode = decodedText;
           try {
@@ -180,8 +245,9 @@ const Gateway = () => {
         () => {}
       );
     } catch (err) {
+      const msg = err?.message || String(err);
       setScannerError(
-        err?.message?.includes('NotAllowedError') || err?.message?.includes('Permission')
+        msg.includes('NotAllowedError') || msg.includes('Permission')
           ? 'Camera permission denied. Please allow camera access.'
           : 'Could not start camera. Make sure no other app is using it.'
       );
@@ -406,55 +472,28 @@ const Gateway = () => {
 
                       {/* ── QR Scanner Card ── */}
                       <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-xl p-4">
-                        {!showScanner ? (
-                          <>
-                            <div className="flex items-center gap-2 mb-3">
-                              <Camera size={16} className="text-amber-400" />
-                              <h2 className="text-white text-sm font-semibold">
-                                {t('gateway.scanTitle') || 'Scan QR Code'}
-                              </h2>
-                            </div>
-                            <p className="text-slate-400 text-xs mb-3 leading-relaxed">
-                              {t('gateway.scanDesc') || 'Use your camera to scan the QR code at the entrance.'}
-                            </p>
-                            {scannerError && (
-                              <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-2 py-2 rounded-lg flex items-start gap-1.5 text-xs mb-3">
-                                <AlertCircle size={12} className="mt-0.5 shrink-0" />
-                                {scannerError}
-                              </div>
-                            )}
-                            <button
-                              onClick={startScanner}
-                              className="w-full flex items-center justify-center gap-2 bg-slate-700/60 hover:bg-slate-700 text-white py-2.5 rounded-lg transition font-semibold border border-slate-600/50 text-sm"
-                            >
-                              <QrCode size={16} />
-                              {t('gateway.openScanner') || 'Open Scanner'}
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-1.5">
-                                <ScanLine size={14} className="text-amber-400 animate-pulse" />
-                                <h2 className="text-white text-sm font-semibold">
-                                  {t('gateway.scanning') || 'Scanning...'}
-                                </h2>
-                              </div>
-                              <button onClick={stopScanner} className="p-1 rounded-md hover:bg-slate-800 text-slate-400 transition">
-                                <X size={16} />
-                              </button>
-                            </div>
-                            <div
-                              id="qr-reader"
-                              ref={scannerRef}
-                              className="w-full rounded-lg overflow-hidden bg-black"
-                              style={{ minHeight: '180px' }}
-                            />
-                            <p className="text-slate-500 text-[10px] text-center mt-2">
-                              {t('gateway.pointCamera') || 'Point camera at QR code'}
-                            </p>
-                          </>
+                        <div className="flex items-center gap-2 mb-3">
+                          <Camera size={16} className="text-amber-400" />
+                          <h2 className="text-white text-sm font-semibold">
+                            {t('gateway.scanTitle') || 'Scan QR Code'}
+                          </h2>
+                        </div>
+                        <p className="text-slate-400 text-xs mb-3 leading-relaxed">
+                          {t('gateway.scanDesc') || 'Use your camera to scan the QR code at the entrance.'}
+                        </p>
+                        {scannerError && (
+                          <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-2 py-2 rounded-lg flex items-start gap-1.5 text-xs mb-3">
+                            <AlertCircle size={12} className="mt-0.5 shrink-0" />
+                            {scannerError}
+                          </div>
                         )}
+                        <button
+                          onClick={startScanner}
+                          className="w-full flex items-center justify-center gap-2 bg-slate-700/60 hover:bg-slate-700 text-white py-2.5 rounded-lg transition font-semibold border border-slate-600/50 text-sm"
+                        >
+                          <QrCode size={16} />
+                          {t('gateway.openScanner') || 'Open Scanner'}
+                        </button>
                       </div>
                     </div>
 
@@ -491,6 +530,62 @@ const Gateway = () => {
         <Lock size={10} />
         {t('gateway.secureFooter')}
       </div>
+
+      {/* ═══════════════════════════════════
+          QR Scanner Modal (full-screen camera overlay)
+         ═══════════════════════════════════ */}
+      {showScanner && (
+        <div className="fixed inset-0 bg-black z-50 flex flex-col">
+          {/* Header bar */}
+          <div className="flex items-center justify-between px-4 py-3 bg-slate-900/80">
+            <div className="flex items-center gap-2">
+              <ScanLine size={20} className="text-amber-400 animate-pulse" />
+              <span className="text-white font-bold text-sm">
+                {t('gateway.scanning') || 'Scanning QR Code'}
+              </span>
+            </div>
+            <button
+              onClick={stopScanner}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition"
+            >
+              <X size={22} />
+            </button>
+          </div>
+
+          {/* Camera — takes remaining space */}
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="w-full max-w-lg aspect-square rounded-2xl overflow-hidden bg-black relative border-2 border-amber-500/40 shadow-[0_0_60px_rgba(217,119,6,0.2)]">
+              <div
+                id="qr-reader"
+                ref={scannerRef}
+                className="w-full h-full qr-reader-no-title"
+              />
+              {/* Corner scan markers */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-4 left-4 w-12 h-12 border-t-4 border-l-4 border-amber-400 rounded-tl-xl" />
+                <div className="absolute top-4 right-4 w-12 h-12 border-t-4 border-r-4 border-amber-400 rounded-tr-xl" />
+                <div className="absolute bottom-4 left-4 w-12 h-12 border-b-4 border-l-4 border-amber-400 rounded-bl-xl" />
+                <div className="absolute bottom-4 right-4 w-12 h-12 border-b-4 border-r-4 border-amber-400 rounded-br-xl" />
+              </div>
+              {/* Animated scan line */}
+              <div className="absolute left-4 right-4 h-0.5 bg-amber-400/60 animate-[scanline_2s_ease-in-out_infinite] pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Bottom instructions */}
+          <div className="px-4 pb-6 text-center space-y-3">
+            <p className="text-slate-400 text-sm">
+              {t('gateway.pointCamera') || 'Point your camera at the QR code displayed at the museum entrance'}
+            </p>
+            <button
+              onClick={stopScanner}
+              className="text-slate-500 hover:text-white text-sm transition underline underline-offset-2"
+            >
+              {t('gateway.cancelScan') || 'Cancel'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ═══════════════════════════════════
           Staff Login Modal

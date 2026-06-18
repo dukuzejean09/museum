@@ -513,3 +513,33 @@ img {
   background: var(--color-text-muted);
   border-radius: 3px;
 }
+
+/* ── QR Scanner: hide html5-qrcode library title/header ── */
+#qr-reader__dashboard_section_csr,
+#qr-reader__header_message,
+#qr-reader__dashboard_section_swaplink,
+#qr-reader > div:first-child {
+  display: none !important;
+}
+#qr-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 0 !important;
+}
+#qr-reader {
+  border: none !important;
+  background: black !important;
+}
+#qr-reader__scan_region {
+  min-height: unset !important;
+}
+#qr-reader__scan_region video {
+  border-radius: 0 !important;
+}
+
+/* ── QR scanner animated scan line ── */
+@keyframes scanline {
+  0%, 100% { top: 15%; }
+  50% { top: 80%; }
+}

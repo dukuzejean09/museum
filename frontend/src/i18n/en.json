@@ -162,6 +162,12 @@
   "gateway.signingIn": "Signing in...",
   "gateway.loginSuccess": "Welcome back!",
   "gateway.loginFailed": "Login failed. Please check your credentials.",
+  "gateway.scanTitle": "Scan QR Code",
+  "gateway.scanDesc": "Use your camera to scan the QR code at the entrance.",
+  "gateway.openScanner": "Open Scanner",
+  "gateway.scanning": "Scanning QR Code",
+  "gateway.pointCamera": "Point your camera at the QR code displayed at the museum entrance",
+  "gateway.cancelScan": "Cancel",
   "gateway.secureFooter": "Kandt House Museum — Kigali, Rwanda — Secure Access",
 
   "home.viewExhibitions": "View Exhibitions",

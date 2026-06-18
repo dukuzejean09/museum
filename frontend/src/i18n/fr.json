@@ -162,6 +162,12 @@
   "gateway.signingIn": "Connexion...",
   "gateway.loginSuccess": "Bienvenue !",
   "gateway.loginFailed": "Échec de connexion. Vérifiez vos identifiants.",
+  "gateway.scanTitle": "Scanner le QR Code",
+  "gateway.scanDesc": "Utilisez votre caméra pour scanner le QR code à l'entrée.",
+  "gateway.openScanner": "Ouvrir le Scanner",
+  "gateway.scanning": "Scan du QR Code",
+  "gateway.pointCamera": "Dirigez votre caméra vers le QR code affiché à l'entrée du musée",
+  "gateway.cancelScan": "Annuler",
   "gateway.secureFooter": "Musée Maison Kandt — Kigali, Rwanda — Accès Sécurisé",
 
   "home.viewExhibitions": "Voir les Expositions",

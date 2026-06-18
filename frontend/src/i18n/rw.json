@@ -162,6 +162,12 @@
   "gateway.signingIn": "Kwinjira...",
   "gateway.loginSuccess": "Murakaza neza!",
   "gateway.loginFailed": "Kwinjira byanze. Reba neza amazina yawe.",
+  "gateway.scanTitle": "Soma QR Code",
+  "gateway.scanDesc": "Koresha kamera yawe usoma QR code iri ku muryango.",
+  "gateway.openScanner": "Fungura Scanner",
+  "gateway.scanning": "Gusoma QR Code",
+  "gateway.pointCamera": "Ereka kamera yawe QR code iri ku muryango w'inzu ndangamurage",
+  "gateway.cancelScan": "Hagarika",
   "gateway.secureFooter": "Inzu Ndangamurage ya Kandt — Kigali, Rwanda — Kwinjira Kwizewe",
 
   "home.viewExhibitions": "Reba Amamurikiro",
