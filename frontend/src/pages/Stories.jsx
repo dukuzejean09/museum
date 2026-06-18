@@ -4,6 +4,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchStories } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Search, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton';
 import toast from 'react-hot-toast';
 import { useRealtimeSync } from '../hooks/useRealtimeStore';
@@ -94,9 +95,23 @@ const Stories = () => {
  className="card-flush group hover:shadow-lg transition-all duration-300"
  >
  <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
- <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-600">
- <BookOpen size={48} />
- </div>
+ {story.exhibitionId?.artifacts?.length > 0 ? (
+   <ArtifactSlideshowCard
+     artifacts={story.exhibitionId.artifacts}
+     className="w-full h-full group-hover:scale-105 transition-transform duration-500"
+     interval={3500 + Math.random() * 1500}
+   />
+ ) : story.exhibitionId?.coverImage ? (
+   <img
+     src={imageUrl(story.exhibitionId.coverImage)}
+     alt={getLocalizedText(story.title, lang)}
+     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+   />
+ ) : (
+   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-600 to-amber-800">
+     <BookOpen size={40} className="text-white/50" />
+   </div>
+ )}
  </div>
  <div className="p-5">
  <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">

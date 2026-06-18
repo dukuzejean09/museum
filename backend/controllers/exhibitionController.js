@@ -21,8 +21,24 @@ export const getExhibitions = asyncHandler(async (req, res) => {
     filter.tags = { $in: req.query.tags.split(',').map(t => t.trim()) };
   }
 
-  const result = await paginateWithCount(Exhibition, filter, req);
-  res.json(result);
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+  const sort = req.query.sort || '-createdAt';
+
+  const [data, total] = await Promise.all([
+    Exhibition.find(filter)
+      .populate('artifacts', 'name image additionalImages')
+      .sort(sort)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    Exhibition.countDocuments(filter),
+  ]);
+
+  res.json({
+    data,
+    pagination: { page, limit, total, pages: Math.ceil(total / limit), hasMore: page * limit < total },
+  });
 });
 
 // @desc    Get exhibition by ID (populate artifacts for images)

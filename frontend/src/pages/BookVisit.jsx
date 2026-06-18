@@ -88,7 +88,7 @@ const BookVisit = () => {
  // Success screen
  if (submitted) {
  return (
- <div className="min-h-[70vh] flex items-center justify-center px-4">
+ <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-950">
  <div className="max-w-md w-full text-center space-y-6">
  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30">
  <CheckCircle size={40} className="text-green-600 dark:text-green-400" />
@@ -128,7 +128,7 @@ const BookVisit = () => {
  // Visit type chooser
  if (!visitType) {
  return (
- <div className="min-h-[70vh] flex items-center justify-center px-4">
+ <div className="min-h-[70vh] flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-950">
  <div className="max-w-3xl w-full">
  <div className="text-center mb-10">
  <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
@@ -146,7 +146,7 @@ const BookVisit = () => {
  {/* Physical Tour */}
  <button
  onClick={() => setVisitType('physical')}
- className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Landmark size={28} />
@@ -170,7 +170,7 @@ const BookVisit = () => {
  {/* Online Access */}
  <button
  onClick={() => setVisitType('online')}
- className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+ className="group text-left rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
  >
  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white mb-5 group-hover:scale-110 transition-transform">
  <Wifi size={28} />
@@ -200,7 +200,7 @@ const BookVisit = () => {
  const accent = isPhysical ? 'amber' : 'emerald';
 
  return (
- <div className="max-w-2xl mx-auto px-4 py-10">
+ <div className="max-w-2xl mx-auto px-4 py-10 min-h-screen bg-slate-50 dark:bg-slate-950">
  {/* Back to chooser */}
  <button
  onClick={() => setVisitType(null)}
@@ -221,7 +221,7 @@ const BookVisit = () => {
  </p>
  </div>
 
- <form onSubmit={handleSubmit} className="space-y-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 shadow-sm">
+ <form onSubmit={handleSubmit} className="space-y-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 shadow-sm">
  {/* Name & Email */}
  <div className="grid sm:grid-cols-2 gap-4">
  <div>

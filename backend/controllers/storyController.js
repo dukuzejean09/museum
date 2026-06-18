@@ -19,7 +19,9 @@ export const getStories = asyncHandler(async (req, res) => {
   const sort = req.query.sort || '-createdAt';
 
   const [data, total] = await Promise.all([
-    Story.find(filter).populate('exhibitionId', 'title').sort(sort).skip((page - 1) * limit).limit(limit).lean(),
+    Story.find(filter)
+      .populate({ path: 'exhibitionId', select: 'title coverImage artifacts', populate: { path: 'artifacts', select: 'name image' } })
+      .sort(sort).skip((page - 1) * limit).limit(limit).lean(),
     Story.countDocuments(filter),
   ]);
 
@@ -33,7 +35,7 @@ export const getStories = asyncHandler(async (req, res) => {
 // @route   GET /api/stories/:id
 export const getStoryById = asyncHandler(async (req, res) => {
   const story = await Story.findById(req.params.id)
-    .populate('exhibitionId', 'title')
+    .populate({ path: 'exhibitionId', select: 'title coverImage artifacts', populate: { path: 'artifacts', select: 'name image' } })
     .lean();
 
   if (!story) throw new NotFoundError('Story');
