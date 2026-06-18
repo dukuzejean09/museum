@@ -149,6 +149,21 @@ img {
    COMPONENT CLASSES (plain CSS — no @apply self-references)
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── Page Container ────────────────────────────────────────── */
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding: 2.5rem 2rem;
+  }
+}
+
 /* ── Cards ──────────────────────────────────────────────────── */
 .card {
   background: var(--color-surface);

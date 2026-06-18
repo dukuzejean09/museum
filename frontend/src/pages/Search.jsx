@@ -22,18 +22,18 @@ const getLocalizedText = (field, lang) => {
 };
 
 const typeConfig = {
-  exhibition: { icon: Sparkles, color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', path: '/exhibitions' },
+  exhibition: { icon: Sparkles, color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', path: '/exhibitions' },
   trail: { icon: Compass, color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', path: '/trails' },
-  artifact: { icon: ImageIcon, color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', path: '/artifacts' },
+  artifact: { icon: ImageIcon, color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', path: '/artifacts' },
 };
 
 const typeFilters = ['all', 'exhibition', 'trail', 'artifact'];
 
 const quickCategories = [
-  { key: 'exhibitions', icon: Landmark, label: 'Exhibitions', path: '/exhibitions', gradient: 'from-purple-600 to-indigo-700' },
-  { key: 'artifacts', icon: ImageIcon, label: 'Artifacts', path: '/artifacts', gradient: 'from-emerald-600 to-teal-700' },
-  { key: 'trails', icon: Map, label: 'Trails', path: '/trails', gradient: 'from-amber-600 to-orange-700' },
-  { key: 'stories', icon: BookOpen, label: 'Stories', path: '/stories', gradient: 'from-rose-600 to-pink-700' },
+  { key: 'exhibitions', icon: Landmark, label: 'Exhibitions', path: '/exhibitions' },
+  { key: 'artifacts', icon: ImageIcon, label: 'Artifacts', path: '/artifacts' },
+  { key: 'trails', icon: Map, label: 'Trails', path: '/trails' },
+  { key: 'stories', icon: BookOpen, label: 'Stories', path: '/stories' },
 ];
 
 const suggestedSearches = [
@@ -248,10 +248,10 @@ const SearchPage = () => {
     <div className="page-container max-w-4xl">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl mb-4 shadow-lg shadow-amber-500/20">
-          <SearchIcon size={30} className="text-white" />
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
+          <SearchIcon size={28} className="text-amber-600" />
         </div>
-        <h1 className="text-3xl font-bold dark:text-white mb-2">{t('search.title')}</h1>
+        <h1 className="text-2xl font-bold dark:text-white mb-2">{t('search.title')}</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">{t('search.subtitle')}</p>
       </div>
 
@@ -428,13 +428,12 @@ const SearchPage = () => {
                       <Link
                         key={cat.key}
                         to={cat.path}
-                        className="group relative overflow-hidden rounded-2xl p-5 text-center transition-all hover:scale-[1.02] hover:shadow-lg"
+                        className="group flex flex-col items-center gap-2 rounded-2xl p-5 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 hover:border-amber-400 dark:hover:border-amber-500/50 hover:shadow-md transition-all"
                       >
-                        <div className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} opacity-90 group-hover:opacity-100 transition`} />
-                        <div className="relative z-10">
-                          <Icon size={28} className="text-white/90 mx-auto mb-2" />
-                          <span className="text-white font-semibold text-sm">{cat.label}</span>
+                        <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Icon size={24} className="text-amber-600" />
                         </div>
+                        <span className="font-semibold text-sm dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">{cat.label}</span>
                       </Link>
                     );
                   })}
@@ -460,21 +459,20 @@ const SearchPage = () => {
               </div>
 
               {/* Image Search CTA */}
-              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-800/80 dark:to-slate-900/80 border border-slate-700/50 p-6">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-                <div className="relative flex items-center gap-5">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                    <Camera size={26} className="text-amber-400" />
+              <div className="rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 p-6">
+                <div className="flex items-center gap-5">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                    <Camera size={24} className="text-amber-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-white mb-1">{t('search.imageSearch') || 'Image Search'}</h4>
-                    <p className="text-sm text-slate-400 line-clamp-2">
+                    <h4 className="font-semibold dark:text-white mb-1">{t('search.imageSearch') || 'Image Search'}</h4>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
                       {t('search.orUseImage') || "Don't know the name? Identify an exhibit by photo."}
                     </p>
                   </div>
                   <button
                     onClick={() => switchTab('image')}
-                    className="flex-shrink-0 px-5 py-2.5 bg-amber-600 text-white rounded-full text-sm font-semibold hover:bg-amber-500 transition shadow-lg shadow-amber-600/25"
+                    className="flex-shrink-0 px-5 py-2.5 bg-amber-600 text-white rounded-full text-sm font-semibold hover:bg-amber-700 transition"
                   >
                     {t('search.tryIt') || 'Try it'}
                   </button>

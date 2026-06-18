@@ -67,17 +67,17 @@ const Exhibitions = () => {
 
  return (
  <div className="page-container">
- <div className="text-center mb-8">
- <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
- <Sparkles size={28} className="text-amber-600" />
+ <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+ <div className="flex items-center gap-3">
+ <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+ <Sparkles size={24} className="text-amber-600" />
  </div>
- <h1 className="text-3xl font-bold dark:text-white">{t('exhibition.title')}</h1>
- <p className="text-slate-600 dark:text-slate-400 mt-2">{t('exhibition.subtitle')}</p>
+ <div>
+ <h1 className="text-2xl font-bold dark:text-white">{t('exhibition.title')}</h1>
+ <p className="text-slate-500 dark:text-slate-400 text-sm">{t('exhibition.subtitle')}</p>
  </div>
-
- {/* Search */}
- <div className="mb-8">
- <div className="relative w-full sm:max-w-md">
+ </div>
+ <div className="relative w-full sm:w-72">
  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
  <input
  type="text"
