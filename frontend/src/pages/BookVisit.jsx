@@ -38,7 +38,7 @@ const BookVisit = () => {
  const data = res.data;
  setGuides(Array.isArray(data) ? data : data?.data || []);
  })
- .catch(() => {});
+ .catch(() => setGuides([]));
  }, []);
 
  const imgUrl = (path) => {

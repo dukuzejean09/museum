@@ -174,7 +174,10 @@ export function useBackgroundPreloader(api) {
 
       queryClient.prefetchQuery({
         queryKey: ['guides'],
-        queryFn: () => api.fetchGuides().then(r => r.data),
+        queryFn: () => api.fetchGuides().then(r => {
+          const d = r.data;
+          return Array.isArray(d) ? d : d?.data || [];
+        }),
         ...prefetchOptions,
       });
 

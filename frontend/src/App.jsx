@@ -108,13 +108,16 @@ function App() {
                       <Route path="/ar" element={<ARScanner />} />
                     </Route>
 
-                    {/* Visitor-protected content routes — requires QR code authentication */}
+                    {/* Public routes — accessible without visitor token */}
                     <Route element={<Layout />}>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/book" element={<BookVisit />} />
+                      <Route path="/book-tour" element={<Navigate to="/book" replace />} />
+                      <Route path="/feedback" element={<Feedback />} />
+
+                      {/* Visitor-protected content routes — requires QR code authentication */}
                       <Route element={<VisitorProtectedRoute />}>
-                        <Route path="/" element={<Home />} />
                         <Route path="/trail" element={<Navigate to="/trails" replace />} />
-                        <Route path="/guides" element={<Guides />} />
-                        <Route path="/feedback" element={<Feedback />} />
                         <Route path="/map" element={<Navigate to="/exhibitions" replace />} />
                         <Route path="/scanner" element={<Navigate to="/ar" replace />} />
                         <Route path="/exhibitions" element={<Exhibitions />} />
@@ -126,7 +129,7 @@ function App() {
                         <Route path="/stories" element={<Stories />} />
                         <Route path="/stories/:id" element={<StoryDetail />} />
                         <Route path="/search" element={<SearchPage />} />
-                        <Route path="/book" element={<BookVisit />} />
+                        <Route path="/guides" element={<Guides />} />
                         {/* Redirects for old routes */}
                         <Route path="/exhibits" element={<Navigate to="/exhibitions" replace />} />
                         <Route path="/exhibits/:id" element={<Navigate to="/exhibitions" replace />} />
@@ -135,7 +138,6 @@ function App() {
                         <Route path="/collections/:id" element={<Navigate to="/exhibitions" replace />} />
                         <Route path="/ai-scanner" element={<Navigate to="/ar" replace />} />
                         <Route path="/scan" element={<Navigate to="/exhibitions" replace />} />
-                        <Route path="/book-tour" element={<Navigate to="/book" replace />} />
                         <Route path="/survey" element={<Navigate to="/feedback" replace />} />
                         <Route path="/chat" element={<Navigate to="/feedback" replace />} />
                       </Route>
@@ -179,12 +181,8 @@ function App() {
                       </Route>
                     </Route>
 
-                    {/* Public booking page (accessible without visitor token, minimal wrapper) */}
-                    <Route path="/book-external" element={
-                      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4">
-                        <BookVisit />
-                      </div>
-                    } />
+                    {/* Legacy external booking redirect */}
+                    <Route path="/book-external" element={<Navigate to="/book" replace />} />
 
                     {/* 404 catch-all */}
                     <Route path="*" element={<Layout />}>
