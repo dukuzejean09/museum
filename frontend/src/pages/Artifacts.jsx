@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchArtifacts } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Search, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 
 const imageUrl = (path) => {
  if (!path) return null;
@@ -21,13 +23,12 @@ const getLocalizedText = (field, lang) => {
 
 const Artifacts = () => {
  const { t, lang } = useLanguage();
- const [artifacts, setArtifacts] = useState([]);
- const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [debouncedSearch, setDebouncedSearch] = useState('');
  const [page, setPage] = useState(1);
- const [totalPages, setTotalPages] = useState(1);
  const limit = 12;
+
+ useRealtimeSync('artifact', ['artifacts']);
 
  useEffect(() => {
  const timer = setTimeout(() => setDebouncedSearch(search), 400);
@@ -36,28 +37,21 @@ const Artifacts = () => {
 
  useEffect(() => { setPage(1); }, [debouncedSearch]);
 
- const loadArtifacts = useCallback(async () => {
- setLoading(true);
- try {
- const params = { page, limit, status: 'published' };
- if (debouncedSearch) params.q = debouncedSearch;
- const { data } = await fetchArtifacts(params);
- if (Array.isArray(data)) {
- setArtifacts(data);
- setTotalPages(1);
- } else {
- setArtifacts(data.data || []);
- setTotalPages(data.pagination?.pages || 1);
- }
- } catch {
- toast.error('Failed to load artifacts');
- setArtifacts([]);
- } finally {
- setLoading(false);
- }
- }, [page, debouncedSearch]);
+ const { data: queryData, isLoading: loading } = useQuery({
+   queryKey: ['artifacts', { page, search: debouncedSearch }],
+   queryFn: async () => {
+     const params = { page, limit, status: 'published' };
+     if (debouncedSearch) params.q = debouncedSearch;
+     const { data } = await fetchArtifacts(params);
+     if (Array.isArray(data)) return { artifacts: data, totalPages: 1 };
+     return { artifacts: data.data || [], totalPages: data.pagination?.pages || 1 };
+   },
+   staleTime: 5 * 60 * 1000,
+   placeholderData: keepPreviousData,
+ });
 
- useEffect(() => { loadArtifacts(); }, [loadArtifacts]);
+ const artifacts = queryData?.artifacts || [];
+ const totalPages = queryData?.totalPages || 1;
 
  return (
  <div className="page-container">

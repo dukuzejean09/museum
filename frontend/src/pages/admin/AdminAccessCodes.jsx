@@ -4,6 +4,7 @@ import { QrCode, Plus, Copy, Ban, Download, Loader2, Link2, Clock, Users } from 
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 
 const DURATION_PRESETS = [
  { label: '10 minutes', value: 10 / 60, short: '10min' },
@@ -40,6 +41,8 @@ const AdminAccessCodes = () => {
  const [showForm, setShowForm] = useState(false);
  const [form, setForm] = useState({ label: '', maxUses: '', expiresAt: '', duration: '3', type: 'physical' });
  const [selectedQr, setSelectedQr] = useState(null);
+
+ useRealtimeSync('accessCode', ['admin-access-codes']);
 
  useEffect(() => {
  loadCodes();

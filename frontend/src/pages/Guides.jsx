@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchGuides, createBooking } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { CalendarDays, Users, CheckCircle, MapPin, X } from 'lucide-react';
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Guides = () => {
  const { t } = useLanguage();
- const [guides, setGuides] = useState([]);
- const [bookingGuide, setBookingGuide] = useState(null); // guide selected for booking
+ const [bookingGuide, setBookingGuide] = useState(null);
  const [submitted, setSubmitted] = useState(false);
  const [submitting, setSubmitting] = useState(false);
  const [form, setForm] = useState({
@@ -19,17 +20,18 @@ const Guides = () => {
  date: '', time: '', groupSize: 1, message: '',
  });
 
- const [loading, setLoading] = useState(true);
+ useRealtimeSync('guide', ['guides']);
 
- useEffect(() => {
- fetchGuides()
- .then(res => {
- const data = res.data;
- setGuides(Array.isArray(data) ? data : data?.data || []);
- })
- .catch(() => setGuides([]))
- .finally(() => setLoading(false));
- }, []);
+ const { data: guidesData, isLoading: loading } = useQuery({
+   queryKey: ['guides'],
+   queryFn: () => fetchGuides().then(res => {
+     const data = res.data;
+     return Array.isArray(data) ? data : data?.data || [];
+   }),
+   staleTime: 5 * 60 * 1000,
+ });
+
+ const guides = guidesData || [];
 
  const imageUrl = (path) => path?.startsWith('http') ? path : `${API_BASE}${path}`;
 

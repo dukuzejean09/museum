@@ -6,6 +6,7 @@ import { Plus, Edit, Trash2, Search, Star, Clock, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const ITEMS_PER_PAGE = 10;
 
 const AdminTrails = () => {
@@ -14,6 +15,8 @@ const AdminTrails = () => {
  const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [page, setPage] = useState(1);
+
+ useRealtimeSync('trail', ['admin-trails']);
 
  const loadTrails = async () => {
  try {

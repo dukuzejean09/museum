@@ -5,6 +5,7 @@ import { CheckCircle, XCircle, Trash2, Clock, Key, Copy, Download, X, Globe, Map
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const statusStyles = {
   pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
   confirmed: 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
@@ -26,6 +27,8 @@ const AdminBookings = () => {
   const [accessModal, setAccessModal] = useState(null); // { qrCodeDataUrl, gatewayUrl, code }
   const [confirmModal, setConfirmModal] = useState(null); // { bookingId, visitorName, visitType }
   const [confirmForm, setConfirmForm] = useState({ duration: '3', codeExpiresAt: '' });
+
+  useRealtimeSync('booking', ['admin-bookings']);
 
   const loadBookings = async () => {
     try {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchTrailById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ArrowLeft, MapPin, Clock, ChevronRight, ChevronLeft, Check, Sparkles, ExternalLink } from 'lucide-react';
@@ -7,6 +8,7 @@ import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
 import ArtifactSlideshow from '../components/ArtifactSlideshow';
 import NarrationPlayer from '../components/ui/NarrationPlayer';
 import toast from 'react-hot-toast';
+import { useRealtimeEntity } from '../hooks/useRealtimeStore';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
 const imgUrl = (path) => {
@@ -27,25 +29,17 @@ const getLocalizedText = (field, lang) => {
 const TrailDetail = () => {
  const { t, lang } = useLanguage();
  const { id } = useParams();
- const [trail, setTrail] = useState(null);
- const [loading, setLoading] = useState(true);
- const [currentStop, setCurrentStop] = useState(-1); // -1 = intro view
+ const [currentStop, setCurrentStop] = useState(-1);
  const [visitedStops, setVisitedStops] = useState(new Set());
 
- useEffect(() => {
- const load = async () => {
- setLoading(true);
- try {
- const { data } = await fetchTrailById(id);
- setTrail(data);
- } catch {
- toast.error('Failed to load trail');
- } finally {
- setLoading(false);
- }
- };
- load();
- }, [id]);
+ useRealtimeEntity('trail', id, ['trail', id]);
+
+ const { data: trail, isLoading: loading } = useQuery({
+   queryKey: ['trail', id],
+   queryFn: () => fetchTrailById(id).then(r => r.data),
+   staleTime: 5 * 60 * 1000,
+   enabled: !!id,
+ });
 
  if (loading) {
  return (

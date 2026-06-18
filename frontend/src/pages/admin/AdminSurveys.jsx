@@ -4,10 +4,13 @@ import { Star, Trash2, TrendingUp, ThumbsUp, ThumbsDown, Clock, BarChart3 } from
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const AdminSurveys = () => {
   const [surveys, setSurveys] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useRealtimeSync('survey', ['admin-surveys']);
 
   const load = async () => {
     try {

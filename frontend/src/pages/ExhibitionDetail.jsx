@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchExhibitionById, fetchStories, fetchExhibitions, trackEvent } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
@@ -10,6 +11,7 @@ import {
 import ArtifactSlideshow from '../components/ArtifactSlideshow';
 import NarrationPlayer from '../components/ui/NarrationPlayer';
 import toast from 'react-hot-toast';
+import { useRealtimeEntity } from '../hooks/useRealtimeStore';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
 const imgUrl = (path) => {
@@ -32,49 +34,45 @@ const tabs = ['overview', 'artifacts', 'stories', 'gallery'];
 const ExhibitionDetail = () => {
  const { t, lang } = useLanguage();
  const { id } = useParams();
- const [exhibition, setExhibition] = useState(null);
- const [stories, setStories] = useState([]);
- const [relatedExhibitions, setRelatedExhibitions] = useState([]);
- const [loading, setLoading] = useState(true);
  const [activeTab, setActiveTab] = useState('overview');
  const [lightboxOpen, setLightboxOpen] = useState(false);
  const [lightboxIndex, setLightboxIndex] = useState(0);
  const [showShare, setShowShare] = useState(false);
 
- useEffect(() => {
- const load = async () => {
- setLoading(true);
- try {
- const { data } = await fetchExhibitionById(id);
- setExhibition(data);
+ // Real-time updates for this specific exhibition
+ useRealtimeEntity('exhibition', id, ['exhibition', id]);
 
- // Track view
- trackEvent({ eventType: 'view', entityType: 'exhibition', entityId: id }).catch(() => {});
+ const { data: exhibition, isLoading: loading } = useQuery({
+   queryKey: ['exhibition', id],
+   queryFn: async () => {
+     const { data } = await fetchExhibitionById(id);
+     trackEvent({ eventType: 'view', entityType: 'exhibition', entityId: id }).catch(() => {});
+     return data;
+   },
+   staleTime: 5 * 60 * 1000,
+   enabled: !!id,
+ });
 
- // Load stories
- fetchStories({ exhibitionId: id })
- .then(res => {
- const raw = res.data;
- setStories(Array.isArray(raw) ? raw : raw?.data || raw?.stories || []);
- })
- .catch(() => setStories([]));
+ const { data: stories = [] } = useQuery({
+   queryKey: ['stories', { exhibitionId: id }],
+   queryFn: () => fetchStories({ exhibitionId: id }).then(res => {
+     const raw = res.data;
+     return Array.isArray(raw) ? raw : raw?.data || raw?.stories || [];
+   }),
+   staleTime: 5 * 60 * 1000,
+   enabled: !!id,
+ });
 
- // Load related exhibitions
- fetchExhibitions({ limit: 4, status: 'published' })
- .then(res => {
- const raw = res.data;
- const all = Array.isArray(raw) ? raw : raw?.data || raw?.exhibitions || [];
- setRelatedExhibitions(all.filter(e => e._id !== id).slice(0, 3));
- })
- .catch(() => {});
- } catch (err) {
- toast.error('Failed to load exhibition');
- } finally {
- setLoading(false);
- }
- };
- load();
- }, [id]);
+ const { data: relatedExhibitions = [] } = useQuery({
+   queryKey: ['related-exhibitions', id],
+   queryFn: () => fetchExhibitions({ limit: 4, status: 'published' }).then(res => {
+     const raw = res.data;
+     const all = Array.isArray(raw) ? raw : raw?.data || raw?.exhibitions || [];
+     return all.filter(e => e._id !== id).slice(0, 3);
+   }),
+   staleTime: 5 * 60 * 1000,
+   enabled: !!id,
+ });
 
  if (loading) {
  return (

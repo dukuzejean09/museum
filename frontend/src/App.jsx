@@ -5,9 +5,11 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from './lib/queryClient';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { VisitorProvider, useVisitor } from './context/VisitorContext';
+import { SocketProvider } from './context/SocketContext';
 import { LanguageProvider } from './i18n/LanguageContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
+import BackgroundPreloader from './components/BackgroundPreloader';
 
 // Lazy-loaded public pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -91,9 +93,11 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <VisitorProvider>
           <AuthProvider>
-            <LanguageProvider>
-              <BrowserRouter>
-                <Toaster position="top-right" />
+            <SocketProvider>
+              <LanguageProvider>
+                <BrowserRouter>
+                  <BackgroundPreloader />
+                  <Toaster position="top-right" />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     {/* Gateway — always accessible */}
@@ -188,8 +192,9 @@ function App() {
                     </Route>
                   </Routes>
                 </Suspense>
-              </BrowserRouter>
-            </LanguageProvider>
+                </BrowserRouter>
+              </LanguageProvider>
+            </SocketProvider>
           </AuthProvider>
         </VisitorProvider>
       </QueryClientProvider>

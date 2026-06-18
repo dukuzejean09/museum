@@ -2,6 +2,7 @@ import Guide from '../models/Guide.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
+import { guide as guideSocket } from '../utils/socketEmitter.js';
 
 // @desc    Get all guides — paginated, filterable
 // @route   GET /api/guides
@@ -47,6 +48,7 @@ export const createGuide = asyncHandler(async (req, res) => {
     try { data.availability = JSON.parse(data.availability); } catch { delete data.availability; }
   }
   const guide = await Guide.create(data);
+  guideSocket.created(guide);
   res.status(201).json(guide);
 });
 
@@ -69,6 +71,7 @@ export const updateGuide = asyncHandler(async (req, res) => {
   }
   const guide = await Guide.findByIdAndUpdate(req.params.id, data, { new: true });
   if (!guide) throw new NotFoundError('Guide');
+  guideSocket.updated(guide);
   res.json(guide);
 });
 
@@ -77,6 +80,7 @@ export const updateGuide = asyncHandler(async (req, res) => {
 export const deleteGuide = asyncHandler(async (req, res) => {
   const guide = await Guide.findByIdAndDelete(req.params.id);
   if (!guide) throw new NotFoundError('Guide');
+  guideSocket.deleted(req.params.id);
   res.json({ message: 'Guide removed' });
 });
 
@@ -121,5 +125,6 @@ export const updateMyProfile = asyncHandler(async (req, res) => {
   }
 
   const updated = await Guide.findByIdAndUpdate(guide._id, updates, { new: true });
+  guideSocket.updated(updated);
   res.json(updated);
 });

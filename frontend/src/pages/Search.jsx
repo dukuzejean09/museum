@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { globalSearch, aiIdentifyVisitor, aiNarrateVisitorStream } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 import {
   Search as SearchIcon, Sparkles, Compass, X, Clock, ArrowRight,
   Camera, Upload, Volume2, Loader2, RotateCcw, Square, ImageIcon,
@@ -42,6 +43,11 @@ const suggestedSearches = [
 
 const SearchPage = () => {
   const { t, lang } = useLanguage();
+
+  // Real-time sync — search results refresh when content changes
+  useRealtimeSync('exhibition', ['search']);
+  useRealtimeSync('artifact', ['search']);
+  useRealtimeSync('trail', ['search']);
 
   // ── Text Search State ──
   const [query, setQuery] = useState('');

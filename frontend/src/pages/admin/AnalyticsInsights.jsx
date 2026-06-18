@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingUp, Eye, Scan, Headphones, Flame, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 
 const COLORS = ['#d97706', '#059669', '#7c3aed', '#0284c7', '#dc2626', '#db2777', '#ea580c', '#0891b2'];
 
@@ -38,6 +39,9 @@ const AnalyticsInsights = () => {
   const [heatmap, setHeatmap] = useState(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState('30');
+
+  useRealtimeSync('exhibition', ['analytics']);
+  useRealtimeSync('artifact', ['analytics']);
 
   useEffect(() => {
     loadData();

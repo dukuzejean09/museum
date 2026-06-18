@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchTrails } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Sparkles, Clock, MapPin, ChevronRight } from 'lucide-react';
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton';
 import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import toast from 'react-hot-toast';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 
 const imageUrl = (path) => {
  if (!path) return null;
@@ -28,27 +30,19 @@ const difficultyColors = {
 
 const Trails = () => {
  const { t, lang } = useLanguage();
- const [trails, setTrails] = useState([]);
- const [loading, setLoading] = useState(true);
 
- const loadTrails = useCallback(async () => {
- setLoading(true);
- try {
- const { data } = await fetchTrails({ limit: 20 });
- if (Array.isArray(data)) {
- setTrails(data);
- } else {
- setTrails(data.data || []);
- }
- } catch {
- toast.error('Failed to load trails');
- setTrails([]);
- } finally {
- setLoading(false);
- }
- }, []);
+ useRealtimeSync('trail', ['trails']);
 
- useEffect(() => { loadTrails(); }, [loadTrails]);
+ const { data: queryData, isLoading: loading } = useQuery({
+   queryKey: ['trails', { limit: 20 }],
+   queryFn: async () => {
+     const { data } = await fetchTrails({ limit: 20 });
+     return Array.isArray(data) ? data : data.data || [];
+   },
+   staleTime: 5 * 60 * 1000,
+ });
+
+ const trails = queryData || [];
 
  return (
  <div className="page-container">

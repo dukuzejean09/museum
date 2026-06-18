@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchExhibitions } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useAuth } from '../context/AuthContext';
@@ -7,6 +8,7 @@ import { Search, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import toast from 'react-hot-toast';
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 
 const imageUrl = (path) => {
  if (!path) return null;
@@ -24,13 +26,13 @@ const getLocalizedText = (field, lang) => {
 const Exhibitions = () => {
  const { t, lang } = useLanguage();
  const { isAdmin } = useAuth();
- const [exhibitions, setExhibitions] = useState([]);
- const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [debouncedSearch, setDebouncedSearch] = useState('');
  const [page, setPage] = useState(1);
- const [totalPages, setTotalPages] = useState(1);
  const limit = 9;
+
+ // Real-time sync
+ useRealtimeSync('exhibition', ['exhibitions']);
 
  // Debounce search
  useEffect(() => {
@@ -42,28 +44,25 @@ const Exhibitions = () => {
  setPage(1);
  }, [debouncedSearch]);
 
- const loadExhibitions = useCallback(async () => {
- setLoading(true);
- try {
- const params = { page, limit, status: 'published' };
- if (debouncedSearch) params.q = debouncedSearch;
- const { data } = await fetchExhibitions(params);
- if (Array.isArray(data)) {
- setExhibitions(data);
- setTotalPages(1);
- } else {
- setExhibitions(data.data || data.exhibitions || data.docs || []);
- setTotalPages(data.pagination?.pages || data.totalPages || Math.ceil((data.pagination?.total || data.total || 0) / limit) || 1);
- }
- } catch (err) {
- toast.error('Failed to load exhibitions');
- setExhibitions([]);
- } finally {
- setLoading(false);
- }
- }, [page, debouncedSearch]);
+ const { data: queryData, isLoading: loading } = useQuery({
+   queryKey: ['exhibitions', { page, search: debouncedSearch }],
+   queryFn: async () => {
+     const params = { page, limit, status: 'published' };
+     if (debouncedSearch) params.q = debouncedSearch;
+     const { data } = await fetchExhibitions(params);
+     if (Array.isArray(data)) {
+       return { exhibitions: data, totalPages: 1 };
+     }
+     const list = data.data || data.exhibitions || data.docs || [];
+     const pages = data.pagination?.pages || data.totalPages || Math.ceil((data.pagination?.total || data.total || 0) / limit) || 1;
+     return { exhibitions: list, totalPages: pages };
+   },
+   staleTime: 5 * 60 * 1000,
+   placeholderData: keepPreviousData,
+ });
 
- useEffect(() => { loadExhibitions(); }, [loadExhibitions]);
+ const exhibitions = queryData?.exhibitions || [];
+ const totalPages = queryData?.totalPages || 1;
 
  return (
  <div className="page-container">

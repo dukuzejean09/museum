@@ -10,6 +10,7 @@ import QRBulkManager from '../../components/admin/QRBulkManager';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const AdminExhibitions = () => {
  const { isAdmin } = useAuth();
  const [exhibitions, setExhibitions] = useState([]);
@@ -21,6 +22,8 @@ const AdminExhibitions = () => {
  const [total, setTotal] = useState(0);
  const [qrExhibition, setQrExhibition] = useState(null);
  const [bulkQrOpen, setBulkQrOpen] = useState(false);
+
+ useRealtimeSync('exhibition', ['admin-exhibitions']);
 
  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
  const imgUrl = (path) => {

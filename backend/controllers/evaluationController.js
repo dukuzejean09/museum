@@ -1,6 +1,7 @@
 import EvaluationResponse from '../models/EvaluationResponse.js';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import { asyncHandler } from '../utils/errors.js';
+import { evaluation as evaluationSocket } from '../utils/socketEmitter.js';
 
 // @desc    Create evaluation response (public)
 // @route   POST /api/evaluations
@@ -11,6 +12,7 @@ export const createEvaluation = asyncHandler(async (req, res) => {
   }
 
   const evaluation = await EvaluationResponse.create(req.body);
+  evaluationSocket.created(evaluation);
   res.status(201).json({ success: true, evaluation });
 });
 

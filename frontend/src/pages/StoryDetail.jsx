@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchStoryById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
 import NarrationPlayer from '../components/ui/NarrationPlayer';
 import toast from 'react-hot-toast';
+import { useRealtimeEntity } from '../hooks/useRealtimeStore';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
 const imgUrl = (path) => {
@@ -22,23 +24,15 @@ const getLocalizedText = (field, lang) => {
 const StoryDetail = () => {
  const { t, lang } = useLanguage();
  const { id } = useParams();
- const [story, setStory] = useState(null);
- const [loading, setLoading] = useState(true);
 
- useEffect(() => {
- const load = async () => {
- setLoading(true);
- try {
- const { data } = await fetchStoryById(id);
- setStory(data);
- } catch {
- toast.error('Failed to load story');
- } finally {
- setLoading(false);
- }
- };
- load();
- }, [id]);
+ useRealtimeEntity('story', id, ['story', id]);
+
+ const { data: story, isLoading: loading } = useQuery({
+   queryKey: ['story', id],
+   queryFn: () => fetchStoryById(id).then(r => r.data),
+   staleTime: 5 * 60 * 1000,
+   enabled: !!id,
+ });
 
  if (loading) {
  return (

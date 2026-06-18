@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchStories } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Search, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 
 const imageUrl = (path) => {
  if (!path) return null;
@@ -21,13 +23,12 @@ const getLocalizedText = (field, lang) => {
 
 const Stories = () => {
  const { t, lang } = useLanguage();
- const [stories, setStories] = useState([]);
- const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [debouncedSearch, setDebouncedSearch] = useState('');
  const [page, setPage] = useState(1);
- const [totalPages, setTotalPages] = useState(1);
  const limit = 9;
+
+ useRealtimeSync('story', ['stories']);
 
  useEffect(() => {
  const timer = setTimeout(() => setDebouncedSearch(search), 400);
@@ -38,28 +39,23 @@ const Stories = () => {
  setPage(1);
  }, [debouncedSearch]);
 
- const loadStories = useCallback(async () => {
- setLoading(true);
- try {
- const params = { page, limit, status: 'published' };
- if (debouncedSearch) params.q = debouncedSearch;
- const { data } = await fetchStories(params);
- if (Array.isArray(data)) {
- setStories(data);
- setTotalPages(1);
- } else {
- setStories(data.data || data.stories || data.docs || []);
- setTotalPages(data.pagination?.pages || data.totalPages || Math.ceil((data.pagination?.total || data.total || 0) / limit) || 1);
- }
- } catch {
- toast.error('Failed to load stories');
- setStories([]);
- } finally {
- setLoading(false);
- }
- }, [page, debouncedSearch]);
+ const { data: queryData, isLoading: loading } = useQuery({
+   queryKey: ['stories', { page, search: debouncedSearch }],
+   queryFn: async () => {
+     const params = { page, limit, status: 'published' };
+     if (debouncedSearch) params.q = debouncedSearch;
+     const { data } = await fetchStories(params);
+     if (Array.isArray(data)) return { stories: data, totalPages: 1 };
+     const list = data.data || data.stories || data.docs || [];
+     const pages = data.pagination?.pages || data.totalPages || Math.ceil((data.pagination?.total || data.total || 0) / limit) || 1;
+     return { stories: list, totalPages: pages };
+   },
+   staleTime: 5 * 60 * 1000,
+   placeholderData: keepPreviousData,
+ });
 
- useEffect(() => { loadStories(); }, [loadStories]);
+ const stories = queryData?.stories || [];
+ const totalPages = queryData?.totalPages || 1;
 
  return (
  <div className="page-container">

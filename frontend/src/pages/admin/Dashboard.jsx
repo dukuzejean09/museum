@@ -1,29 +1,27 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchAnalytics } from '../../api';
 import { useAuth } from '../../context/AuthContext';
-import { Presentation, Gem, MapPin, Users, MessageSquare, CalendarDays, ClipboardList, BookOpen } from 'lucide-react';
+import { useSocket } from '../../context/SocketContext';
+import { useAdminRealtimeSync } from '../../hooks/useRealtimeStore';
+import { Presentation, Gem, MapPin, Users, MessageSquare, CalendarDays, ClipboardList, BookOpen, Wifi, WifiOff } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 import { DashboardSkeleton } from '../../components/ui/LoadingSkeleton';
 
 const Dashboard = () => {
   const { isAdmin, admin } = useAuth();
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { connected, connectionCount } = useSocket() || {};
 
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const { data } = await fetchAnalytics();
-        setStats(data);
-      } catch (err) {
-        toast.error('Failed to load analytics');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadStats();
-  }, []);
+  // Real-time: auto-refresh dashboard when any entity changes
+  useAdminRealtimeSync();
+
+  const { data: stats, isLoading: loading } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: () => fetchAnalytics().then(r => r.data),
+    staleTime: 2 * 60 * 1000, // 2 min stale for dashboard
+    refetchInterval: 5 * 60 * 1000, // fallback polling every 5 min
+  });
 
   if (loading) {
     return <DashboardSkeleton />;
@@ -68,8 +66,15 @@ const Dashboard = () => {
             ? 'Manage museum content, track bookings, and monitor visitor engagement.'
             : 'View your assigned tours, manage content, and connect with visitors.'}
         </p>
-        <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-xs font-semibold uppercase tracking-wider">
-          {isAdmin ? 'Administrator' : 'Museum Guide'}
+        <div className="mt-2 flex items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-xs font-semibold uppercase tracking-wider">
+            {isAdmin ? 'Administrator' : 'Museum Guide'}
+          </span>
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${connected ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400'}`}>
+            {connected ? <Wifi size={12} /> : <WifiOff size={12} />}
+            {connected ? 'Live' : 'Offline'}
+            {connected && connectionCount > 0 && ` · ${connectionCount} connected`}
+          </span>
         </div>
       </div>
 

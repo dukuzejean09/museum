@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
 import { Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin, Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints, Heart, ScanLine } from 'lucide-react';
 import HomeCt from '../assets/HomeCt.jpeg';
@@ -7,6 +8,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { fetchFeaturedTrails, fetchExhibitions, fetchGuides, fetchArtifacts } from '../api';
 import { ImigongoBorder, ImigongoDivider, AgasekeIcon } from '../components/RwandanPatterns';
 import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
+import { useRealtimeSync } from '../hooks/useRealtimeStore';
 
 const quickLinks = [
  { to: '/exhibitions', icon: BookOpen, labelKey: 'nav.exhibitions', descKey: 'home.linkExhibitions' },
@@ -20,10 +22,41 @@ const quickLinks = [
 
 const Home = () => {
  const { t } = useLanguage();
- const [trails, setTrails] = useState([]);
- const [exhibitionCount, setExhibitionCount] = useState(0);
- const [artifactCount, setArtifactCount] = useState(0);
- const [guideCount, setGuideCount] = useState(0);
+
+ // Real-time sync — auto-refresh when content changes via WebSocket
+ useRealtimeSync('trail', ['featured-trails']);
+ useRealtimeSync('exhibition', ['home-exhibitions']);
+ useRealtimeSync('artifact', ['home-artifacts']);
+ useRealtimeSync('guide', ['home-guides']);
+
+ const { data: trailsData } = useQuery({
+   queryKey: ['featured-trails'],
+   queryFn: () => fetchFeaturedTrails().then(r => { const d = r.data; return Array.isArray(d) ? d : d?.data || []; }),
+   staleTime: 5 * 60 * 1000,
+ });
+
+ const { data: artifactsData } = useQuery({
+   queryKey: ['home-artifacts'],
+   queryFn: () => fetchArtifacts({ limit: 1 }).then(r => r.data),
+   staleTime: 5 * 60 * 1000,
+ });
+
+ const { data: exhibitionsData } = useQuery({
+   queryKey: ['home-exhibitions'],
+   queryFn: () => fetchExhibitions().then(r => { const d = r.data; return Array.isArray(d) ? d : d?.data || []; }),
+   staleTime: 5 * 60 * 1000,
+ });
+
+ const { data: guidesData } = useQuery({
+   queryKey: ['home-guides'],
+   queryFn: () => fetchGuides().then(r => { const d = r.data; return Array.isArray(d) ? d : d?.data || []; }),
+   staleTime: 5 * 60 * 1000,
+ });
+
+ const trails = trailsData || [];
+ const exhibitionCount = exhibitionsData?.length || 0;
+ const artifactCount = artifactsData?.pagination?.total || 0;
+ const guideCount = guidesData?.length || 0;
 
  const getLocalizedText = (field) => {
  if (!field) return '';
@@ -36,36 +69,6 @@ const Home = () => {
  const base = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
  return path.startsWith('http') ? path : `${base}${path}`;
  };
-
- useEffect(() => {
- fetchFeaturedTrails()
- .then(res => {
- const data = res.data;
- const list = Array.isArray(data) ? data : data?.data || [];
- setTrails(list);
- })
- .catch(() => {});
- fetchArtifacts({ limit: 1 })
- .then(res => {
- const data = res.data;
- setArtifactCount(data?.pagination?.total || 0);
- })
- .catch(() => {});
- fetchExhibitions()
- .then(res => {
- const data = res.data;
- const list = Array.isArray(data) ? data : data?.data || [];
- setExhibitionCount(list.length);
- })
- .catch(() => {});
- fetchGuides()
- .then(res => {
- const data = res.data;
- const list = Array.isArray(data) ? data : data?.data || [];
- setGuideCount(list.length);
- })
- .catch(() => {});
- }, []);
 
  const stats = [
  { value: exhibitionCount || '—', labelKey: 'home.statExhibitions', icon: BookOpen },

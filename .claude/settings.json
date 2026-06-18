@@ -15,7 +15,8 @@
       "Bash(curl -s \"https://dukj-museum.hf.space/api/exhibitions/6a2bd661a9868ba35a2f4475\")",
       "Bash(node -e ':*)",
       "Bash(curl -s \"https://dukj-museum.hf.space/api/stories?exhibitionId=6a2bd661a9868ba35a2f4475\")",
-      "Bash(curl -s -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMmJkNjVmYTk4NjhiYTM1YTJmNDQ2NCIsImlhdCI6MTc4MTY3NDgwNywiZXhwIjoxNzgyMjc5NjA3fQ.fgROA0AKl7KRwUPxHd86GwHMqbQbE64GY8xNufRoxZY' https://dukj-museum.hf.space/api/admin/guides)"
+      "Bash(curl -s -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMmJkNjVmYTk4NjhiYTM1YTJmNDQ2NCIsImlhdCI6MTc4MTY3NDgwNywiZXhwIjoxNzgyMjc5NjA3fQ.fgROA0AKl7KRwUPxHd86GwHMqbQbE64GY8xNufRoxZY' https://dukj-museum.hf.space/api/admin/guides)",
+      "Bash(wc -l \"d:\\\\final year project\\\\delice\\\\museum\\\\backend\\\\controllers\"/*.js)"
     ]
   }
 }

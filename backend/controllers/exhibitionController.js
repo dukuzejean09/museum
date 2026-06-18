@@ -3,6 +3,7 @@ import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
 import { generateAudioForEntity } from '../jobs/audioGeneration.js';
+import { exhibition as exhibitionSocket } from '../utils/socketEmitter.js';
 
 // @desc    Get exhibitions — paginated, filterable
 // @route   GET /api/exhibitions
@@ -86,6 +87,7 @@ export const createExhibition = asyncHandler(async (req, res) => {
     generateAudioForEntity('exhibition', exhibition._id).catch(() => {});
   }
 
+  exhibitionSocket.created(exhibition);
   res.status(201).json(exhibition);
 });
 
@@ -143,6 +145,7 @@ export const updateExhibition = asyncHandler(async (req, res) => {
     generateAudioForEntity('exhibition', exhibition._id).catch(() => {});
   }
 
+  exhibitionSocket.updated(exhibition);
   res.json(exhibition);
 });
 
@@ -157,6 +160,7 @@ export const deleteExhibition = asyncHandler(async (req, res) => {
   await Story.deleteMany({ exhibitionId: exhibition._id });
 
   await Exhibition.findByIdAndDelete(req.params.id);
+  exhibitionSocket.deleted(req.params.id);
   res.json({ message: 'Exhibition and related stories removed' });
 });
 

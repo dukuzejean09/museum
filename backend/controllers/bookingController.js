@@ -7,6 +7,7 @@ import AccessCode from '../models/AccessCode.js';
 import { asyncHandler, NotFoundError, ValidationError, ConflictError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { sendBookingConfirmation, sendBookingConfirmationWithCode } from '../utils/email.js';
+import { booking as bookingSocket, notification } from '../utils/socketEmitter.js';
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
@@ -78,6 +79,8 @@ export const createBooking = asyncHandler(async (req, res) => {
     });
   }
 
+  bookingSocket.created(booking);
+  notification.toStaff({ type: 'new_booking', message: `New ${type} booking from ${booking.visitorName}`, bookingId: booking._id });
   res.status(201).json(booking);
 });
 
@@ -184,6 +187,7 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
     });
   }
 
+  bookingSocket.updated(response);
   res.json(response);
 });
 
@@ -283,5 +287,6 @@ export const cancelBooking = asyncHandler(async (req, res) => {
 export const deleteBooking = asyncHandler(async (req, res) => {
   const booking = await Booking.findByIdAndDelete(req.params.id);
   if (!booking) throw new NotFoundError('Booking');
+  bookingSocket.deleted(req.params.id);
   res.json({ message: 'Booking removed' });
 });

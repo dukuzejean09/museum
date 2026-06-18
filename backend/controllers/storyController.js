@@ -1,5 +1,6 @@
 import Story from '../models/Story.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
+import { story as storySocket } from '../utils/socketEmitter.js';
 
 // @desc    Get stories — paginated, filterable
 // @route   GET /api/stories
@@ -47,6 +48,7 @@ export const createStory = asyncHandler(async (req, res) => {
   }
   const data = { ...req.body, createdBy: req.admin._id };
   const story = await Story.create(data);
+  storySocket.created(story);
   res.status(201).json(story);
 });
 
@@ -58,6 +60,7 @@ export const updateStory = asyncHandler(async (req, res) => {
 
   Object.assign(story, req.body);
   await story.save();
+  storySocket.updated(story);
   res.json(story);
 });
 
@@ -67,5 +70,6 @@ export const deleteStory = asyncHandler(async (req, res) => {
   const story = await Story.findById(req.params.id);
   if (!story) throw new NotFoundError('Story');
   await Story.findByIdAndDelete(req.params.id);
+  storySocket.deleted(req.params.id);
   res.json({ message: 'Story removed' });
 });

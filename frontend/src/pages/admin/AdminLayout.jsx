@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ErrorBoundary from '../../components/ErrorBoundary';
+import RealtimeNotifications from '../../components/RealtimeNotifications';
 import {
   LayoutDashboard, MapPin, MessageSquare, LogOut,
   CalendarDays, ClipboardList, Menu, X, QrCode,
@@ -103,6 +104,9 @@ const AdminLayout = () => {
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
+
+      {/* Real-time notifications for staff */}
+      <RealtimeNotifications />
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8">

@@ -2,6 +2,7 @@ import Trail from '../models/Trail.js';
 import { asyncHandler, NotFoundError, ValidationError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
+import { trail as trailSocket } from '../utils/socketEmitter.js';
 
 // @desc    Get trails — paginated, filterable
 // @route   GET /api/trails
@@ -150,6 +151,7 @@ export const createTrail = asyncHandler(async (req, res) => {
   }
 
   const trail = await Trail.create(data);
+  trailSocket.created(trail);
   res.status(201).json(trail);
 });
 
@@ -178,6 +180,7 @@ export const updateTrail = asyncHandler(async (req, res) => {
 
   Object.assign(trail, data);
   await trail.save();
+  trailSocket.updated(trail);
   res.json(trail);
 });
 
@@ -187,5 +190,6 @@ export const deleteTrail = asyncHandler(async (req, res) => {
   const trail = await Trail.findById(req.params.id);
   if (!trail) throw new NotFoundError('Trail');
   await Trail.findByIdAndDelete(req.params.id);
+  trailSocket.deleted(req.params.id);
   res.json({ message: 'Trail removed' });
 });

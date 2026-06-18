@@ -2,6 +2,7 @@ import Message from '../models/Message.js';
 import { asyncHandler, NotFoundError, ValidationError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { sendMessageReplyNotification } from '../utils/email.js';
+import { message as messageSocket, notification } from '../utils/socketEmitter.js';
 
 // @desc    Create message (public, optionally linked to exhibition)
 // @route   POST /api/messages
@@ -31,6 +32,8 @@ export const createMessage = asyncHandler(async (req, res) => {
     language: language || 'en',
   });
 
+  messageSocket.created(newMessage);
+  notification.toStaff({ type: 'new_message', message: `New message from ${newMessage.name}`, messageId: newMessage._id });
   res.status(201).json({ success: true, message: 'Message sent!', data: newMessage });
 });
 
@@ -93,6 +96,7 @@ export const replyToMessage = asyncHandler(async (req, res) => {
     console.error('Failed to send reply notification email:', err.message);
   });
 
+  messageSocket.replied(msg);
   res.json(msg);
 });
 
@@ -126,6 +130,7 @@ export const updateMessageStatus = asyncHandler(async (req, res) => {
 
   const msg = await Message.findByIdAndUpdate(req.params.id, { status }, { new: true });
   if (!msg) throw new NotFoundError('Message');
+  messageSocket.updated(msg);
   res.json(msg);
 });
 
@@ -134,5 +139,6 @@ export const updateMessageStatus = asyncHandler(async (req, res) => {
 export const deleteMessage = asyncHandler(async (req, res) => {
   const message = await Message.findByIdAndDelete(req.params.id);
   if (!message) throw new NotFoundError('Message');
+  messageSocket.deleted(req.params.id);
   res.json({ message: 'Message removed' });
 });

@@ -7,11 +7,14 @@ import StatusBadge from '../../components/ui/StatusBadge';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const AdminStories = () => {
  const { isAdmin } = useAuth();
  const [stories, setStories] = useState([]);
  const [loading, setLoading] = useState(true);
  const [statusFilter, setStatusFilter] = useState('all');
+
+ useRealtimeSync('story', ['admin-stories']);
 
  const loadStories = async () => {
  try {

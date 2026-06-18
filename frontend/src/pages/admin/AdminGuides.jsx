@@ -6,10 +6,13 @@ import { Plus, Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const AdminGuides = () => {
   const { isAdmin } = useAuth();
   const [guides, setGuides] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useRealtimeSync('guide', ['admin-guides']);
 
   const loadGuides = async () => {
     try {

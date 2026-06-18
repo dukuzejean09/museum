@@ -3,6 +3,7 @@ import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
 import { generateAudioForEntity } from '../jobs/audioGeneration.js';
+import { artifact as artifactSocket } from '../utils/socketEmitter.js';
 
 // @desc    Get artifacts — paginated, filterable
 // @route   GET /api/artifacts
@@ -71,6 +72,7 @@ export const createArtifact = asyncHandler(async (req, res) => {
   // Auto-generate narration audio in the background
   generateAudioForEntity('artifact', artifact._id).catch(() => {});
 
+  artifactSocket.created(artifact);
   res.status(201).json(artifact);
 });
 
@@ -103,6 +105,7 @@ export const updateArtifact = asyncHandler(async (req, res) => {
   // Re-generate narration audio in the background
   generateAudioForEntity('artifact', artifact._id).catch(() => {});
 
+  artifactSocket.updated(artifact);
   res.json(artifact);
 });
 
@@ -128,5 +131,6 @@ export const deleteArtifact = asyncHandler(async (req, res) => {
   );
 
   await Artifact.findByIdAndDelete(req.params.id);
+  artifactSocket.deleted(req.params.id);
   res.json({ message: 'Artifact removed and references cleaned up' });
 });

@@ -4,6 +4,7 @@ import QRCode from 'qrcode';
 import AccessCode from '../models/AccessCode.js';
 import { asyncHandler, NotFoundError, ValidationError, UnauthorizedError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { accessCode as accessCodeSocket } from '../utils/socketEmitter.js';
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
@@ -34,6 +35,7 @@ export const generateAccessCode = asyncHandler(async (req, res) => {
   const gatewayUrl = `${FRONTEND_URL}/enter?code=${code}`;
   const qrCodeDataUrl = await QRCode.toDataURL(gatewayUrl, { width: 300, margin: 2 });
 
+  accessCodeSocket.created(accessCode);
   res.status(201).json({
     _id: accessCode._id,
     code: accessCode.code,
@@ -149,5 +151,6 @@ export const deactivateAccessCode = asyncHandler(async (req, res) => {
   accessCode.isActive = false;
   await accessCode.save();
 
+  accessCodeSocket.deactivated(accessCode);
   res.json({ message: 'Access code deactivated', accessCode });
 });

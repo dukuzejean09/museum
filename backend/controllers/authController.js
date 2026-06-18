@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin.js';
 import { asyncHandler, NotFoundError, ValidationError, UnauthorizedError, ConflictError } from '../utils/errors.js';
 import { sendCredentialsEmail } from '../utils/email.js';
+import { user as userSocket } from '../utils/socketEmitter.js';
 
 /**
  * Generate a fingerprint hash from the request to bind JWT to client.
@@ -160,6 +161,7 @@ export const registerAdmin = asyncHandler(async (req, res) => {
     console.error('Failed to send credentials email:', err.message);
   });
 
+  userSocket.created(admin);
   res.status(201).json({
     _id: admin._id,
     username: admin.username,
@@ -243,6 +245,7 @@ export const updateUserRole = asyncHandler(async (req, res) => {
   user.role = role;
   await user.save();
 
+  userSocket.updated(user);
   res.json({
     _id: user._id,
     username: user.username,
@@ -269,6 +272,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
   await user.deleteOne();
 
+  userSocket.deleted(req.params.id);
   res.json({ message: 'User deleted successfully' });
 });
 
@@ -290,6 +294,7 @@ export const toggleUserStatus = asyncHandler(async (req, res) => {
   user.isActive = !user.isActive;
   await user.save();
 
+  userSocket.statusChanged(user);
   res.json({
     _id: user._id,
     username: user.username,

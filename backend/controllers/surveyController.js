@@ -1,6 +1,7 @@
 import Survey from '../models/Survey.js';
 import { asyncHandler, NotFoundError, ValidationError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
+import { survey as surveySocket, notification } from '../utils/socketEmitter.js';
 
 // @desc    Submit survey (public)
 // @route   POST /api/surveys
@@ -27,6 +28,8 @@ export const createSurvey = asyncHandler(async (req, res) => {
     language: language || 'en',
   });
 
+  surveySocket.created(survey);
+  notification.toAdmin({ type: 'new_survey', message: `New survey submitted (${overallRating}/5)`, surveyId: survey._id });
   res.status(201).json(survey);
 });
 
@@ -128,5 +131,6 @@ export const getSurveyStats = asyncHandler(async (req, res) => {
 export const deleteSurvey = asyncHandler(async (req, res) => {
   const survey = await Survey.findByIdAndDelete(req.params.id);
   if (!survey) throw new NotFoundError('Survey');
+  surveySocket.deleted(req.params.id);
   res.json({ message: 'Survey removed' });
 });

@@ -8,6 +8,7 @@ import Survey from '../models/Survey.js';
 import Story from '../models/Story.js';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import { asyncHandler } from '../utils/errors.js';
+import { analytics as analyticsSocket } from '../utils/socketEmitter.js';
 
 // @desc    Get comprehensive dashboard stats
 // @route   GET /api/admin/analytics
@@ -126,6 +127,7 @@ export const trackEvent = asyncHandler(async (req, res) => {
     metadata: metadata || {},
   });
 
+  analyticsSocket.eventTracked({ eventType, entityType, entityId });
   res.status(201).json({ success: true, eventId: event._id });
 });
 

@@ -1,4 +1,5 @@
 import express from 'express';
+import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -6,6 +7,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
+import { initSocket } from './socket.js';
 
 // Route files
 import { publicRouter as trailPublic, adminRouter as trailAdmin } from './routes/trailRoutes.js';
@@ -196,10 +198,18 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({ message });
 });
 
-// Graceful shutdown
+// ──────────────────────────────────────────────
+// Create HTTP server and attach Socket.IO
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+const httpServer = createServer(app);
 
+// Initialize WebSocket with same CORS origins
+initSocket(httpServer, allowedOrigins);
+console.log('WebSocket server initialized');
+
+const server = httpServer.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+
+// Graceful shutdown
 const shutdown = (signal) => {
   console.log(`${signal} received. Shutting down gracefully...`);
   server.close(() => {

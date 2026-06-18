@@ -5,6 +5,7 @@ import { UserPlus, Trash2, Shield, UserCheck, UserX, Users, UserCog, Mail, Phone
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 
 /** Validate Rwandan phone: 07[2389]XXXXXXX or +2507[2389]XXXXXXX */
 const isValidRwandanPhone = (phone) => {
@@ -25,6 +26,8 @@ const AdminUsers = () => {
   });
   const [formErrors, setFormErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
+  useRealtimeSync('user', ['admin-users']);
 
   const loadUsers = async () => {
     try {

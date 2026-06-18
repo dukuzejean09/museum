@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchArtifactById } from '../api';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ArrowLeft, Sparkles, X, ChevronLeft, ChevronRight, ExternalLink, MapPin, Calendar } from 'lucide-react';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
 import NarrationPlayer from '../components/ui/NarrationPlayer';
 import toast from 'react-hot-toast';
+import { useRealtimeEntity } from '../hooks/useRealtimeStore';
 
 const getBaseUrl = () => (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
 const imgUrl = (path) => {
@@ -26,25 +28,17 @@ const getLocalizedText = (field, lang) => {
 const ArtifactDetail = () => {
  const { t, lang } = useLanguage();
  const { id } = useParams();
- const [artifact, setArtifact] = useState(null);
- const [loading, setLoading] = useState(true);
  const [lightboxOpen, setLightboxOpen] = useState(false);
  const [lightboxIndex, setLightboxIndex] = useState(0);
 
- useEffect(() => {
- const load = async () => {
- setLoading(true);
- try {
- const { data } = await fetchArtifactById(id);
- setArtifact(data);
- } catch {
- toast.error('Failed to load artifact');
- } finally {
- setLoading(false);
- }
- };
- load();
- }, [id]);
+ useRealtimeEntity('artifact', id, ['artifact', id]);
+
+ const { data: artifact, isLoading: loading } = useQuery({
+   queryKey: ['artifact', id],
+   queryFn: () => fetchArtifactById(id).then(r => r.data),
+   staleTime: 5 * 60 * 1000,
+   enabled: !!id,
+ });
 
  if (loading) {
  return (

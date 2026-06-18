@@ -10,6 +10,7 @@ import QRBulkManager from '../../components/admin/QRBulkManager';
 import toast from 'react-hot-toast';
 
 import { TableSkeleton } from '../../components/ui/LoadingSkeleton';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 const imgUrl = (path) => {
  if (!path) return null;
  if (path.startsWith('http')) return path;
@@ -28,6 +29,8 @@ const AdminArtifacts = () => {
  const [total, setTotal] = useState(0);
  const [qrArtifact, setQrArtifact] = useState(null);
  const [bulkQrOpen, setBulkQrOpen] = useState(false);
+
+ useRealtimeSync('artifact', ['admin-artifacts']);
 
  const loadArtifacts = useCallback(async () => {
  try {

@@ -5,6 +5,7 @@ import { Star, TrendingUp, Users, ThumbsUp, Brain, Headphones, Download, Trash2,
 import toast from 'react-hot-toast';
 import { DashboardSkeleton } from '../../components/ui/LoadingSkeleton';
 import Pagination from '../../components/ui/Pagination';
+import { useRealtimeSync } from '../../hooks/useRealtimeStore';
 
 const COLORS = ['#d97706', '#059669', '#7c3aed', '#0284c7', '#dc2626', '#db2777'];
 
@@ -40,6 +41,8 @@ const EvaluationDashboard = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [showResponses, setShowResponses] = useState(false);
+
+  useRealtimeSync('evaluation', ['admin-evaluations']);
 
   useEffect(() => {
     loadStats();
