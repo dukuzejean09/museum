@@ -160,7 +160,7 @@ app.use('/api/exhibitions', visitorProtect, exhibitionPublic);
 app.use('/api/artifacts', visitorProtect, artifactPublic);
 app.use('/api/stories', visitorProtect, storyPublic);
 app.use('/api/trails', visitorProtect, trailPublic);
-app.use('/api/guides', visitorProtect, guidePublic);
+app.use('/api/guides', guidePublic);               // public — needed for booking guide selection
 app.use('/api/bookings', bookingPublic);           // public — visitors book before getting a code
 app.use('/api/surveys', visitorProtect, surveyPublic);
 app.use('/api/search', visitorProtect, searchPublic);

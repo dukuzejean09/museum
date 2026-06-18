@@ -10,10 +10,12 @@ import {
 } from 'lucide-react';
 import HomeCt from '../assets/HomeCt.jpeg';
 import { useLanguage } from '../i18n/LanguageContext';
-import { fetchFeaturedTrails, fetchExhibitions, fetchGuides, fetchArtifacts } from '../api';
+import { fetchFeaturedTrails, fetchExhibitions, fetchArtifacts } from '../api';
 import { ImigongoBorder, ImigongoDivider, AgasekeIcon } from '../components/RwandanPatterns';
 import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import { useRealtimeSync } from '../hooks/useRealtimeStore';
+import { useVisitor } from '../context/VisitorContext';
+import { useAuth } from '../context/AuthContext';
 
 /* ═══════════════════════════════════════════════════════════════
    FLOATING GOLDEN PARTICLES — Layer 3
@@ -210,16 +212,27 @@ const ScrollReveal = ({ children, className = '', delay = 0 }) => {
    Interactive horizontal historical timeline
    ═══════════════════════════════════════════════════════════════ */
 const timelineEras = [
-  { key: 'ancient', icon: AgasekeIcon, isCustom: true, year: '< 1400', color: 'from-amber-600 to-amber-800' },
-  { key: 'kingdom', icon: Crown, year: '1400–1897', color: 'from-yellow-600 to-amber-700' },
-  { key: 'colonial', icon: Landmark, year: '1897–1962', color: 'from-orange-600 to-red-700' },
-  { key: 'independence', icon: Flag, year: '1962–1994', color: 'from-emerald-600 to-emerald-800' },
-  { key: 'modern', icon: Star, year: '1994–Present', color: 'from-blue-600 to-indigo-700' },
+  { key: 'ancient', icon: AgasekeIcon, isCustom: true, year: '< 1400', color: 'from-amber-700 to-amber-900' },
+  { key: 'kingdom', icon: Crown, year: '1400–1897', color: 'from-amber-600 to-amber-800' },
+  { key: 'colonial', icon: Landmark, year: '1897–1962', color: 'from-amber-500 to-amber-700' },
+  { key: 'independence', icon: Flag, year: '1962–1994', color: 'from-amber-600 to-amber-800' },
+  { key: 'modern', icon: Star, year: '1994–Present', color: 'from-amber-500 to-amber-700' },
 ];
 
 const TimelineSection = ({ t }) => {
   const [activeIdx, setActiveIdx] = useState(0);
   const scrollRef = useRef(null);
+  const isPaused = useRef(false);
+
+  // Auto-advance every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isPaused.current) {
+        setActiveIdx(prev => (prev + 1) % timelineEras.length);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative bg-slate-950 py-20 overflow-hidden">
@@ -257,7 +270,7 @@ const TimelineSection = ({ t }) => {
               return (
                 <ScrollReveal key={era.key} delay={idx * 100}>
                   <button
-                    onClick={() => setActiveIdx(idx)}
+                    onClick={() => { setActiveIdx(idx); isPaused.current = true; setTimeout(() => { isPaused.current = false; }, 10000); }}
                     className={`group relative w-full text-left md:text-center transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-2xl p-4 ${
                       isActive ? 'glass-gold scale-[1.02]' : 'hover:bg-white/5'
                     }`}
@@ -315,42 +328,37 @@ const TimelineSection = ({ t }) => {
    ═══════════════════════════════════════════════════════════════ */
 const Home = () => {
   const { t } = useLanguage();
+  const { isAuthenticated } = useVisitor();
+  const { admin } = useAuth();
+  const hasAuth = isAuthenticated || !!admin;
 
   // Real-time sync
   useRealtimeSync('trail', ['featured-trails']);
   useRealtimeSync('exhibition', ['home-exhibitions']);
   useRealtimeSync('artifact', ['home-artifacts']);
-  useRealtimeSync('guide', ['home-guides']);
 
   const { data: trailsData } = useQuery({
     queryKey: ['featured-trails'],
     queryFn: () => fetchFeaturedTrails().then(r => { const d = r.data; return Array.isArray(d) ? d : d?.data || []; }),
     staleTime: 5 * 60 * 1000,
-    retry: (count, error) => error?.response?.status !== 401 && count < 2,
+    enabled: hasAuth,
   });
   const { data: artifactsData } = useQuery({
     queryKey: ['home-artifacts'],
     queryFn: () => fetchArtifacts({ limit: 1 }).then(r => r.data),
     staleTime: 5 * 60 * 1000,
-    retry: (count, error) => error?.response?.status !== 401 && count < 2,
+    enabled: hasAuth,
   });
   const { data: exhibitionsData } = useQuery({
     queryKey: ['home-exhibitions'],
     queryFn: () => fetchExhibitions().then(r => { const d = r.data; return Array.isArray(d) ? d : d?.data || []; }),
     staleTime: 5 * 60 * 1000,
-    retry: (count, error) => error?.response?.status !== 401 && count < 2,
-  });
-  const { data: guidesData } = useQuery({
-    queryKey: ['home-guides'],
-    queryFn: () => fetchGuides().then(r => { const d = r.data; return Array.isArray(d) ? d : d?.data || []; }),
-    staleTime: 5 * 60 * 1000,
-    retry: (count, error) => error?.response?.status !== 401 && count < 2,
+    enabled: hasAuth,
   });
 
   const trails = trailsData || [];
   const exhibitionCount = exhibitionsData?.length || 0;
   const artifactCount = artifactsData?.pagination?.total || 0;
-  const guideCount = guidesData?.length || 0;
 
   const getLocalizedText = (field) => {
     if (!field) return '';
@@ -367,15 +375,15 @@ const Home = () => {
   const stats = [
     { value: artifactCount || 120, labelKey: 'home.statArtifacts', icon: Gem, suffix: '+' },
     { value: exhibitionCount || 8, labelKey: 'home.statExhibitions', icon: BookOpen, suffix: '' },
-    { value: guideCount || 5, labelKey: 'nav.guides', icon: Users, suffix: '' },
+    { value: 5, labelKey: 'nav.guides', icon: Users, suffix: '' },
     { value: 3, labelKey: 'home.statLanguages', icon: Globe, suffix: '' },
   ];
 
   const experiences = [
-    { icon: Camera, titleKey: 'home.expAR', descKey: 'home.expARDesc', to: '/ar', gradient: 'from-violet-600 to-purple-700' },
-    { icon: Compass, titleKey: 'home.expTours', descKey: 'home.expToursDesc', to: '/trails', gradient: 'from-amber-600 to-orange-700' },
-    { icon: BookOpen, titleKey: 'home.expExhibitions', descKey: 'home.expExhibitionsDesc', to: '/exhibitions', gradient: 'from-emerald-600 to-teal-700' },
-    { icon: Gem, titleKey: 'home.expArchives', descKey: 'home.expArchivesDesc', to: '/artifacts', gradient: 'from-blue-600 to-indigo-700' },
+    { icon: Camera, titleKey: 'home.expAR', descKey: 'home.expARDesc', to: '/ar', gradient: 'from-amber-700 to-amber-900' },
+    { icon: Compass, titleKey: 'home.expTours', descKey: 'home.expToursDesc', to: '/trails', gradient: 'from-amber-600 to-amber-800' },
+    { icon: BookOpen, titleKey: 'home.expExhibitions', descKey: 'home.expExhibitionsDesc', to: '/exhibitions', gradient: 'from-amber-500 to-amber-700' },
+    { icon: Gem, titleKey: 'home.expArchives', descKey: 'home.expArchivesDesc', to: '/artifacts', gradient: 'from-amber-600 to-amber-800' },
   ];
 
   const culturalHighlights = [
@@ -453,6 +461,23 @@ const Home = () => {
                 <span className="flex items-center gap-1.5"><Shield size={12} className="text-amber-500" /> {t('home.trustFree')}</span>
                 <span className="flex items-center gap-1.5"><Globe size={12} className="text-amber-500" /> {t('home.trustMultilingual')}</span>
                 <span className="flex items-center gap-1.5"><Camera size={12} className="text-amber-500" /> {t('home.trustAR')}</span>
+              </div>
+
+              {/* Compact QR Code */}
+              <div className="flex items-center gap-3 justify-center lg:justify-start">
+                <div className="p-1.5 rounded-lg bg-white shadow-md">
+                  <QRCodeSVG
+                    value={window.location.origin + '/enter'}
+                    size={48}
+                    level="M"
+                    bgColor="#ffffff"
+                    fgColor="#0f172a"
+                  />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-amber-300">{t('home.entryScan') || 'Scan to Enter'}</p>
+                  <p className="text-[10px] text-slate-500">{t('home.entryLabel') || 'Museum Access'}</p>
+                </div>
               </div>
             </div>
 
@@ -574,66 +599,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          4. ENTRY PORTAL — Museum Access QR
-          ═══════════════════════════════════════════════════════════ */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-[#0f172a] to-slate-950" />
-        <GoldenParticles />
-        <div className="container relative z-10 mx-auto px-4">
-          <ScrollReveal>
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="glass-gold rounded-3xl p-8 md:p-12 relative overflow-hidden">
-                {/* Decorative scan lines */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
-                </div>
-
-                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-widest mb-6">
-                  {t('home.entryLabel')}
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
-                  {t('home.entryTitle')}
-                </h2>
-                <p className="text-slate-400 mb-8 max-w-md mx-auto">
-                  {t('home.entryDesc')}
-                </p>
-
-                {/* QR Code with glow */}
-                <div className="inline-flex flex-col items-center">
-                  <div className="relative p-4 rounded-2xl bg-white shadow-xl shadow-amber-500/10">
-                    <QRCodeSVG
-                      value={window.location.origin + '/exhibitions'}
-                      size={140}
-                      level="M"
-                      bgColor="#ffffff"
-                      fgColor="#0f172a"
-                    />
-                    <div className="absolute inset-0 rounded-2xl ring-1 ring-amber-500/20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-4 flex items-center gap-1.5">
-                    <ScanLine size={12} className="text-amber-500" />
-                    {t('home.entryScan')}
-                  </p>
-                </div>
-
-                {/* AR feature pills */}
-                <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
-                  {['home.entryFeature1', 'home.entryFeature2', 'home.entryFeature3'].map(key => (
-                    <span key={key} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 text-xs text-slate-300 border border-white/10">
-                      <Sparkles size={10} className="text-amber-400" />
-                      {t(key)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          5. HISTORICAL PERIODS — Interactive collection cards
+          4. HISTORICAL PERIODS — Collection cards
           ═══════════════════════════════════════════════════════════ */}
       <section className="bg-[#0a0f1f] py-20">
         <ImigongoBorder />
@@ -655,12 +621,12 @@ const Home = () => {
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-10">
             {[
-              { icon: AgasekeIcon, isCustom: true, titleKey: 'home.collPreColonial', descKey: 'home.collPreColonialDesc', gradient: 'from-amber-600 to-yellow-700' },
-              { icon: Crown, titleKey: 'home.collKingdom', descKey: 'home.collKingdomDesc', gradient: 'from-yellow-600 to-amber-700' },
-              { icon: Landmark, titleKey: 'home.collGerman', descKey: 'home.collGermanDesc', gradient: 'from-orange-600 to-red-700' },
-              { icon: Scroll, titleKey: 'home.collBelgian', descKey: 'home.collBelgianDesc', gradient: 'from-red-600 to-rose-800' },
-              { icon: TreePine, titleKey: 'home.collNature', descKey: 'home.collNatureDesc', gradient: 'from-emerald-600 to-green-800' },
-              { icon: Flag, titleKey: 'home.collModern', descKey: 'home.collModernDesc', gradient: 'from-blue-600 to-indigo-700' },
+              { icon: AgasekeIcon, isCustom: true, titleKey: 'home.collPreColonial', descKey: 'home.collPreColonialDesc', gradient: 'from-amber-700 to-amber-900' },
+              { icon: Crown, titleKey: 'home.collKingdom', descKey: 'home.collKingdomDesc', gradient: 'from-amber-600 to-amber-800' },
+              { icon: Landmark, titleKey: 'home.collGerman', descKey: 'home.collGermanDesc', gradient: 'from-amber-500 to-amber-700' },
+              { icon: Scroll, titleKey: 'home.collBelgian', descKey: 'home.collBelgianDesc', gradient: 'from-amber-600 to-amber-800' },
+              { icon: TreePine, titleKey: 'home.collNature', descKey: 'home.collNatureDesc', gradient: 'from-amber-500 to-amber-700' },
+              { icon: Flag, titleKey: 'home.collModern', descKey: 'home.collModernDesc', gradient: 'from-amber-600 to-amber-800' },
             ].map((item, i) => {
               const IconComp = item.icon;
               return (
@@ -878,7 +844,6 @@ const Home = () => {
               { to: '/trails', icon: Compass, labelKey: 'nav.trails', descKey: 'home.linkTrails' },
               { to: '/ar', icon: ScanLine, labelKey: 'nav.ar', descKey: 'home.linkAR' },
               { to: '/search', icon: Search, labelKey: 'nav.search', descKey: 'home.linkScanner' },
-              { to: '/guides', icon: Users, labelKey: 'nav.guides', descKey: 'home.linkGuides' },
               { to: '/feedback', icon: MessageSquare, labelKey: 'nav.feedback', descKey: 'home.linkFeedback' },
             ].map((link, i) => {
               const Icon = link.icon;

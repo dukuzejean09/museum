@@ -15,13 +15,17 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+const PUBLIC_PATHS = ['/', '/book', '/book-tour', '/feedback', '/enter'];
+
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('visitorToken');
-      localStorage.removeItem('visitorExpiresAt');
-      if (!window.location.pathname.startsWith('/admin') && window.location.pathname !== '/enter') {
+      const path = window.location.pathname;
+      const isPublicPage = PUBLIC_PATHS.includes(path) || path.startsWith('/admin');
+      if (!isPublicPage) {
+        localStorage.removeItem('visitorToken');
+        localStorage.removeItem('visitorExpiresAt');
         window.location.href = '/enter';
       }
     }

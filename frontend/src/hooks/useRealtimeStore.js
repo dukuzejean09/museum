@@ -134,7 +134,7 @@ export function useBackgroundPreloader(api) {
   const hasRun = useRef(false);
 
   useEffect(() => {
-    if (hasRun.current) return;
+    if (hasRun.current || !api) return;
     hasRun.current = true;
 
     // Preload public data in background with low priority
