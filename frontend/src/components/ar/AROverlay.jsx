@@ -14,19 +14,13 @@ const imgUrl = (path) => {
  * AR Overlay — floating content card displayed over the camera feed.
  */
 const AROverlay = ({ entity, entityType, method, audioUrl, onDismiss }) => {
-  const { t } = useLanguage();
+  const { t, getLocalized } = useLanguage();
 
   if (!entity) return null;
 
-  const getLocalizedText = (field) => {
-    if (!field) return '';
-    if (typeof field === 'string') return field;
-    return field.en || field.fr || field.rw || '';
-  };
-
   const isExhibition = entityType === 'exhibition';
-  const title = getLocalizedText(isExhibition ? entity.title : entity.name);
-  const description = getLocalizedText(
+  const title = getLocalized(isExhibition ? entity.title : entity.name);
+  const description = getLocalized(
     isExhibition
       ? (entity.shortDescription || entity.fullDescription)
       : entity.description
@@ -86,7 +80,7 @@ const AROverlay = ({ entity, entityType, method, audioUrl, onDismiss }) => {
                 {!isExhibition && entity.originLocation && (
                   <span className="inline-flex items-center gap-1 text-xs text-white/50">
                     <MapPin size={10} />
-                    {getLocalizedText(entity.originLocation)}
+                    {getLocalized(entity.originLocation)}
                   </span>
                 )}
                 {!isExhibition && entity.dateCreated && (

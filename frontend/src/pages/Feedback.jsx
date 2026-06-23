@@ -7,12 +7,6 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-const getLocalizedText = (field, lang = 'en') => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const StarRating = ({ value, onChange }) => (
  <div className="flex gap-1">
  {[1, 2, 3, 4, 5].map(star => (
@@ -24,7 +18,7 @@ const StarRating = ({ value, onChange }) => (
 );
 
 const Feedback = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const [tab, setTab] = useState('survey');
  const [exhibitions, setExhibitions] = useState([]);
  const [surveySubmitted, setSurveySubmitted] = useState(false);
@@ -155,7 +149,7 @@ const Feedback = () => {
  <label className="form-label">{t('survey.favorite')}</label>
  <select name="favoriteExhibition" value={surveyForm.favoriteExhibition} onChange={handleSurveyChange} className={inputClass}>
  <option value="">{t('survey.selectExhibit')}</option>
- {exhibitions.map(e => <option key={e._id} value={getLocalizedText(e.title, lang)}>{getLocalizedText(e.title, lang)}</option>)}
+ {exhibitions.map(e => <option key={e._id} value={getLocalized(e.title)}>{getLocalized(e.title)}</option>)}
  </select>
  </div>
 
@@ -201,7 +195,7 @@ const Feedback = () => {
  <input type="email" name="email" placeholder={t('chat.email')} value={msgForm.email} onChange={handleMsgChange} required className={inputClass} />
  <select name="exhibitionId" value={msgForm.exhibitionId} onChange={handleMsgChange} className={inputClass}>
  <option value="">General question (no specific exhibition)</option>
- {exhibitions.map(e => <option key={e._id} value={e._id}>{getLocalizedText(e.title, lang)}</option>)}
+ {exhibitions.map(e => <option key={e._id} value={e._id}>{getLocalized(e.title)}</option>)}
  </select>
  <textarea name="message" rows="5" placeholder={t('chat.message')} value={msgForm.message} onChange={handleMsgChange} required className={inputClass}></textarea>
  <button type="submit" disabled={submitting} className="w-full bg-amber-600 text-white px-6 py-3 rounded-xl hover:bg-amber-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed">

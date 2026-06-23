@@ -171,6 +171,8 @@
   "gateway.secureFooter": "Musée Maison Kandt — Kigali, Rwanda — Accès Sécurisé",
 
   "home.viewExhibitions": "Voir les Expositions",
+  "home.watchVideo": "Découvrir le Musée",
+  "home.watchVideoTitle": "Musée Maison Kandt — Introduction",
   "home.scanQr": "SCANNER POUR EN SAVOIR PLUS",
   "home.aboutTitle": "À Propos du Musée",
   "home.aboutText": "Le Musée Maison Kandt, situé à Kigali au Rwanda, est abrité dans l'ancienne résidence du Dr Richard Kandt — le premier gouverneur colonial allemand du Rwanda. Aujourd'hui, il sert de musée d'histoire naturelle présentant la riche biodiversité du Rwanda, le patrimoine géologique et l'histoire de la fondation de Kigali. Le musée conserve des collections de faune, flore, minéraux et artefacts historiques qui racontent l'évolution naturelle et culturelle du Rwanda.",
@@ -436,5 +438,31 @@
   "bookVisit.onlineAccessDesc": "Remplissez vos coordonnées pour obtenir un accès virtuel au musée",
 
   "error.notFound": "Page Non Trouvée",
-  "error.notFoundDesc": "La page que vous recherchez n'existe pas ou a été déplacée."
+  "error.notFoundDesc": "La page que vous recherchez n'existe pas ou a été déplacée.",
+
+  "narration.audioNarration": "Narration Audio",
+  "narration.play": "Lecture",
+  "narration.pause": "Pause",
+  "narration.stop": "Arrêter",
+  "narration.restart": "Recommencer",
+  "narration.progress": "Progression de la narration",
+  "narration.speed": "Vitesse de lecture",
+  "narration.volume": "Volume",
+  "narration.mute": "Couper le son",
+  "narration.unmute": "Rétablir le son",
+  "narration.selectVoice": "Sélectionner la voix",
+  "narration.tts": "Synthèse vocale",
+  "narration.listenToThis": "Écouter ceci",
+  "narration.generating": "Génération de l'audio...",
+
+  "language.select": "Sélectionner la langue",
+  "language.current": "Langue actuelle",
+  "language.en": "Anglais",
+  "language.fr": "Français",
+  "language.rw": "Kinyarwanda",
+  "language.switchedTo": "Langue changée en",
+
+  "translation.translating": "Traduction en cours...",
+  "translation.failed": "Traduction indisponible",
+  "translation.original": "Affichage du contenu original"
 }

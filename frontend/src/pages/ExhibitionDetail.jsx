@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchExhibitionById, fetchStories, fetchExhibitions, trackEvent } from '../api';
-import { useLanguage } from '../i18n/LanguageContext';
+import { useLanguage, getLocalizedText } from '../i18n/LanguageContext';
 import { DetailPageSkeleton } from '../components/ui/LoadingSkeleton';
 import {
  ArrowLeft, BookOpen, Image as ImageIcon, Clock, Tag, Share2,
@@ -23,16 +23,10 @@ const audioUrl = (path) => {
  return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const tabs = ['overview', 'artifacts', 'stories', 'gallery'];
 
 const ExhibitionDetail = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const { id } = useParams();
  const [activeTab, setActiveTab] = useState('overview');
  const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -96,8 +90,9 @@ const ExhibitionDetail = () => {
  const narrationSrc = audioUrl(
  getLocalizedText(exhibition.narration?.full, lang) || exhibition.narration?.full?.en || exhibition.narrationAudioUrl
  );
+ const narrationText = [getLocalized(exhibition.title), getLocalized(exhibition.fullDescription || exhibition.description), getLocalized(exhibition.historicalSignificance)].filter(Boolean).join('. ');
  const shareUrl = window.location.href;
- const shareText = `Check out "${getLocalizedText(exhibition.title, lang)}" exhibition!`;
+ const shareText = `Check out "${getLocalized(exhibition.title)}" exhibition!`;
 
  return (
  <div>
@@ -114,10 +109,10 @@ const ExhibitionDetail = () => {
  <ArrowLeft size={16} /> {t('common.back')}
  </Link>
  <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
- {getLocalizedText(exhibition.title, lang)}
+ {getLocalized(exhibition.title)}
  </h1>
  <p className="text-slate-300 mt-2 max-w-2xl line-clamp-2">
- {getLocalizedText(exhibition.shortDescription, lang)}
+ {getLocalized(exhibition.shortDescription)}
  </p>
  </div>
  </div>
@@ -147,20 +142,20 @@ const ExhibitionDetail = () => {
  {/* Overview Tab */}
  {activeTab === 'overview' && (
  <div className="space-y-8">
- {getLocalizedText(exhibition.fullDescription || exhibition.description, lang) && (
+ {getLocalized(exhibition.fullDescription || exhibition.description) && (
  <div>
  <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.description')}</h2>
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
- {getLocalizedText(exhibition.fullDescription || exhibition.description, lang)}
+ {getLocalized(exhibition.fullDescription || exhibition.description)}
  </p>
  </div>
  )}
 
- {getLocalizedText(exhibition.historicalSignificance, lang) && (
+ {getLocalized(exhibition.historicalSignificance) && (
  <div>
  <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext')}</h2>
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
- {getLocalizedText(exhibition.historicalSignificance, lang)}
+ {getLocalized(exhibition.historicalSignificance)}
  </p>
  </div>
  )}
@@ -175,7 +170,7 @@ const ExhibitionDetail = () => {
  <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-600 border-2 border-white dark:border-slate-900" />
  <span className="text-sm font-bold text-amber-600 dark:text-amber-400">{entry.year}</span>
  <p className="text-slate-700 dark:text-slate-300 mt-1">
- {getLocalizedText(entry.event, lang)}
+ {getLocalized(entry.event)}
  </p>
  </div>
  ))}
@@ -209,7 +204,7 @@ const ExhibitionDetail = () => {
  >
  <div className="h-40 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {artifact.image ? (
- <img src={imgUrl(artifact.image)} alt={getLocalizedText(artifact.name, lang)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+ <img src={imgUrl(artifact.image)} alt={getLocalized(artifact.name)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
  ) : (
  <div className="w-full h-full flex items-center justify-center text-slate-400"><Sparkles size={32} /></div>
  )}
@@ -219,10 +214,10 @@ const ExhibitionDetail = () => {
  <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
  )}
  <h3 className="font-bold dark:text-white mt-1 group-hover:text-amber-600 transition-colors">
- {getLocalizedText(artifact.name, lang)}
+ {getLocalized(artifact.name)}
  </h3>
  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
- {getLocalizedText(artifact.description, lang)}
+ {getLocalized(artifact.description)}
  </p>
  </div>
  </Link>
@@ -244,9 +239,9 @@ const ExhibitionDetail = () => {
  <div className="space-y-6">
  {stories.map(story => (
  <div key={story._id} className="card">
- <h3 className="text-lg font-bold dark:text-white">{getLocalizedText(story.title, lang)}</h3>
+ <h3 className="text-lg font-bold dark:text-white">{getLocalized(story.title)}</h3>
  <p className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">
- {getLocalizedText(story.content, lang)}
+ {getLocalized(story.content)}
  </p>
  </div>
  ))}
@@ -290,7 +285,7 @@ const ExhibitionDetail = () => {
  {/* Audio Narration */}
  <NarrationPlayer
  audioSrc={narrationSrc}
- text={[getLocalizedText(exhibition.title, lang), getLocalizedText(exhibition.fullDescription || exhibition.description, lang), getLocalizedText(exhibition.historicalSignificance, lang)].filter(Boolean).join('. ')}
+ text={narrationText}
  title={t('exhibits.audioNarration')}
  lang={lang}
  />
@@ -336,7 +331,7 @@ const ExhibitionDetail = () => {
  </div>
  <div className="min-w-0 flex-1">
  <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
- {getLocalizedText(rel.title, lang)}
+ {getLocalized(rel.title)}
  </p>
  </div>
  <ExternalLink size={14} className="text-slate-400 flex-shrink-0" />

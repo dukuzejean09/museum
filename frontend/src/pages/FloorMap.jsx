@@ -7,14 +7,8 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const FloorMap = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const [exhibitions, setExhibitions] = useState([]);
  const [loading, setLoading] = useState(true);
 
@@ -63,7 +57,7 @@ const FloorMap = () => {
  >
  <div className="h-40 overflow-hidden bg-slate-100 dark:bg-slate-800">
  {coverSrc ? (
- <img src={coverSrc} alt={getLocalizedText(ex.title, lang)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+ <img src={coverSrc} alt={getLocalized(ex.title)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
  ) : (
  <div className="w-full h-full flex items-center justify-center text-slate-400">
  <Sparkles size={40} />
@@ -76,11 +70,11 @@ const FloorMap = () => {
  {i + 1}
  </span>
  <h3 className="font-semibold dark:text-white group-hover:text-amber-600 transition-colors">
- {getLocalizedText(ex.title, lang)}
+ {getLocalized(ex.title)}
  </h3>
  </div>
  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
- {getLocalizedText(ex.shortDescription, lang)}
+ {getLocalized(ex.shortDescription)}
  </p>
  </div>
  </Link>

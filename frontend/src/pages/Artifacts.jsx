@@ -15,14 +15,8 @@ const imageUrl = (path) => {
  return `${base}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const Artifacts = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const [search, setSearch] = useState('');
  const [debouncedSearch, setDebouncedSearch] = useState('');
  const [page, setPage] = useState(1);
@@ -93,7 +87,7 @@ const Artifacts = () => {
  {artifact.image ? (
  <img
  src={imageUrl(artifact.image)}
- alt={getLocalizedText(artifact.name, lang)}
+ alt={getLocalized(artifact.name)}
  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
  />
  ) : (
@@ -109,10 +103,10 @@ const Artifacts = () => {
  </div>
  <div className="p-4">
  <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
- {getLocalizedText(artifact.name, lang)}
+ {getLocalized(artifact.name)}
  </h3>
  <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
- {getLocalizedText(artifact.description, lang)}
+ {getLocalized(artifact.description)}
  </p>
  </div>
  </Link>

@@ -6,7 +6,7 @@ import {
   Compass, Users, MessageSquare, BookOpen, Search, Clock, MapPin,
   Globe, Crown, Landmark, TreePine, Flag, Scroll, Gem, Footprints,
   Heart, ScanLine, ChevronDown, ArrowRight, Sparkles, Eye,
-  Camera, Map, Star, Shield
+  Camera, Map, Star, Shield, Play,
 } from 'lucide-react';
 import HomeCt from '../assets/HomeCt.jpeg';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -16,6 +16,7 @@ import { ArtifactSlideshowCard } from '../components/ArtifactSlideshow';
 import { useRealtimeSync } from '../hooks/useRealtimeStore';
 import { useVisitor } from '../context/VisitorContext';
 import { useAuth } from '../context/AuthContext';
+import { VideoModal } from '../components/VideoModal';
 
 /* ═══════════════════════════════════════════════════════════════
    FLOATING GOLDEN PARTICLES — Layer 3
@@ -327,10 +328,11 @@ const TimelineSection = ({ t }) => {
    MAIN HOME COMPONENT
    ═══════════════════════════════════════════════════════════════ */
 const Home = () => {
-  const { t } = useLanguage();
+  const { t, getLocalized } = useLanguage();
   const { isAuthenticated } = useVisitor();
   const { admin } = useAuth();
   const hasAuth = isAuthenticated || !!admin;
+  const [showVideo, setShowVideo] = useState(false);
 
   // Real-time sync
   useRealtimeSync('trail', ['featured-trails']);
@@ -359,12 +361,6 @@ const Home = () => {
   const trails = trailsData || [];
   const exhibitionCount = exhibitionsData?.length || 0;
   const artifactCount = artifactsData?.pagination?.total || 0;
-
-  const getLocalizedText = (field) => {
-    if (!field) return '';
-    if (typeof field === 'string') return field;
-    return field.en || field.fr || field.rw || '';
-  };
 
   const imgUrl = (path) => {
     if (!path) return null;
@@ -454,6 +450,15 @@ const Home = () => {
                   <Eye size={16} />
                   {t('home.viewExhibitions')}
                 </Link>
+                <button
+                  onClick={() => setShowVideo(true)}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/30 px-6 py-3.5 text-amber-300/90 font-semibold hover:bg-amber-500/10 hover:border-amber-500/50 transition-all duration-300 group"
+                >
+                  <span className="w-7 h-7 rounded-full bg-amber-600/80 flex items-center justify-center group-hover:bg-amber-600 transition-colors">
+                    <Play size={12} className="text-white ml-0.5" fill="white" />
+                  </span>
+                  {t('home.watchVideo') || 'Discover the Museum'}
+                </button>
               </div>
 
               {/* Quick trust indicators */}
@@ -709,8 +714,8 @@ const Home = () => {
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {trails.slice(0, 8).map((trail, idx) => {
-                const title = getLocalizedText(trail.title);
-                const desc = getLocalizedText(trail.description || trail.introduction);
+                const title = getLocalized(trail.title);
+                const desc = getLocalized(trail.description || trail.introduction);
                 const cover = imgUrl(trail.coverImage);
                 const difficulty = trail.difficulty || 'easy';
                 return (
@@ -976,6 +981,14 @@ const Home = () => {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={showVideo}
+        onClose={() => setShowVideo(false)}
+        src="/museum-intro.mp4"
+        title={t('home.watchVideoTitle') || 'Kandt House Museum — Introduction'}
+      />
     </main>
   );
 };

@@ -16,12 +16,6 @@ const imageUrl = (path) => {
  return `${base}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const difficultyColors = {
  easy: 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
  moderate: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
@@ -29,7 +23,7 @@ const difficultyColors = {
 };
 
 const Trails = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
 
  useRealtimeSync('trail', ['trails']);
 
@@ -77,7 +71,7 @@ const Trails = () => {
  ) : trail.coverImage ? (
  <img
  src={imageUrl(trail.coverImage)}
- alt={getLocalizedText(trail.title, lang)}
+ alt={getLocalized(trail.title)}
  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
  />
  ) : (
@@ -102,10 +96,10 @@ const Trails = () => {
  </span>
  </div>
  <h2 className="text-xl font-bold dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
- {getLocalizedText(trail.title, lang)}
+ {getLocalized(trail.title)}
  </h2>
  <p className="mt-2 text-slate-600 dark:text-slate-400 line-clamp-2">
- {getLocalizedText(trail.description || trail.introduction, lang)}
+ {getLocalized(trail.description || trail.introduction)}
  </p>
  </div>
 

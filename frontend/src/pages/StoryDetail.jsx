@@ -15,14 +15,8 @@ const imgUrl = (path) => {
  return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const StoryDetail = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const { id } = useParams();
 
  useRealtimeEntity('story', id, ['story', id]);
@@ -49,7 +43,7 @@ const StoryDetail = () => {
  );
  }
 
- const contentText = getLocalizedText(story.content, lang);
+ const contentText = getLocalized(story.content);
 
  return (
  <div>
@@ -65,7 +59,7 @@ const StoryDetail = () => {
  <ArrowLeft size={16} /> {t('common.back') || 'Back'}
  </Link>
  <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
- {getLocalizedText(story.title, lang)}
+ {getLocalized(story.title)}
  </h1>
  </div>
  </div>
@@ -93,7 +87,7 @@ const StoryDetail = () => {
  <div className="space-y-6">
  {/* Audio Narration */}
  <NarrationPlayer
- text={[getLocalizedText(story.title, lang), getLocalizedText(story.content, lang)].filter(Boolean).join('. ')}
+ text={[getLocalized(story.title), getLocalized(story.content)].filter(Boolean).join('. ')}
  title={t('exhibits.audioNarration') || 'Audio Narration'}
  lang={lang}
  />
@@ -115,7 +109,7 @@ const StoryDetail = () => {
  </div>
  <div className="min-w-0 flex-1">
  <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
- {getLocalizedText(story.exhibitionId.title, lang) || t('story.viewExhibition') || 'View Exhibition'}
+ {getLocalized(story.exhibitionId.title) || t('story.viewExhibition') || 'View Exhibition'}
  </p>
  </div>
  <ExternalLink size={14} className="text-slate-400 flex-shrink-0" />

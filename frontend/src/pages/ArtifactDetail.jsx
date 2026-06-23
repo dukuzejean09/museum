@@ -19,14 +19,8 @@ const mediaUrl = (path) => {
  return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const ArtifactDetail = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const { id } = useParams();
  const [lightboxOpen, setLightboxOpen] = useState(false);
  const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -65,7 +59,7 @@ const ArtifactDetail = () => {
  {/* Hero */}
  <div className="relative h-72 sm:h-96 overflow-hidden bg-slate-800">
  {allImages[0] ? (
- <img src={imgUrl(allImages[0])} alt={getLocalizedText(artifact.name, lang)} className="w-full h-full object-cover" />
+ <img src={imgUrl(allImages[0])} alt={getLocalized(artifact.name)} className="w-full h-full object-cover" />
  ) : (
  <div className="w-full h-full flex items-center justify-center text-slate-500">
  <Sparkles size={60} />
@@ -86,7 +80,7 @@ const ArtifactDetail = () => {
  )}
  </div>
  <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
- {getLocalizedText(artifact.name, lang)}
+ {getLocalized(artifact.name)}
  </h1>
  </div>
  </div>
@@ -97,21 +91,21 @@ const ArtifactDetail = () => {
  {/* Main */}
  <div className="space-y-8">
  {/* Description */}
- {getLocalizedText(artifact.description, lang) && (
+ {getLocalized(artifact.description) && (
  <div>
  <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.description') || 'Description'}</h2>
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
- {getLocalizedText(artifact.description, lang)}
+ {getLocalized(artifact.description)}
  </p>
  </div>
  )}
 
  {/* Historical Story */}
- {getLocalizedText(artifact.historicalStory, lang) && (
+ {getLocalized(artifact.historicalStory) && (
  <div>
  <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext') || 'Historical Story'}</h2>
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
- {getLocalizedText(artifact.historicalStory, lang)}
+ {getLocalized(artifact.historicalStory)}
  </p>
  </div>
  )}
@@ -128,12 +122,12 @@ const ArtifactDetail = () => {
  </div>
  )}
 
- {getLocalizedText(artifact.originLocation, lang) && (
+ {getLocalized(artifact.originLocation) && (
  <div className="flex items-start gap-2">
  <MapPin size={18} className="text-amber-600 mt-1 flex-shrink-0" />
  <div>
  <h3 className="font-semibold dark:text-white">Origin / Location</h3>
- <p className="text-slate-600 dark:text-slate-400">{getLocalizedText(artifact.originLocation, lang)}</p>
+ <p className="text-slate-600 dark:text-slate-400">{getLocalized(artifact.originLocation)}</p>
  </div>
  </div>
  )}
@@ -163,7 +157,7 @@ const ArtifactDetail = () => {
  {/* Audio Narration */}
  <NarrationPlayer
  audioSrc={mediaUrl(artifact.narrationAudioUrl)}
- text={[getLocalizedText(artifact.name, lang), getLocalizedText(artifact.description, lang), getLocalizedText(artifact.historicalStory, lang)].filter(Boolean).join('. ')}
+ text={[getLocalized(artifact.name), getLocalized(artifact.description), getLocalized(artifact.historicalStory)].filter(Boolean).join('. ')}
  title={t('exhibits.audioNarration') || 'Audio Narration'}
  lang={lang}
  />
@@ -188,7 +182,7 @@ const ArtifactDetail = () => {
  </div>
  <div className="min-w-0 flex-1">
  <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
- {getLocalizedText(ex.title, lang)}
+ {getLocalized(ex.title)}
  </p>
  </div>
  <ExternalLink size={14} className="text-slate-400 flex-shrink-0" />
@@ -218,7 +212,7 @@ const ArtifactDetail = () => {
  </div>
  <div className="min-w-0 flex-1">
  <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
- {getLocalizedText(trail.title, lang)}
+ {getLocalized(trail.title)}
  </p>
  </div>
  <ExternalLink size={14} className="text-slate-400 flex-shrink-0" />

@@ -171,6 +171,8 @@
   "gateway.secureFooter": "Kandt House Museum — Kigali, Rwanda — Secure Access",
 
   "home.viewExhibitions": "View Exhibitions",
+  "home.watchVideo": "Discover the Museum",
+  "home.watchVideoTitle": "Kandt House Museum — Introduction",
   "home.scanQr": "SCAN TO LEARN MORE",
   "home.aboutTitle": "About the Museum",
   "home.aboutText": "The Kandt House Museum, located in Kigali, Rwanda, is housed in the former residence of Dr. Richard Kandt — the first German colonial governor of Rwanda. Today it serves as a natural history museum showcasing Rwanda's rich biodiversity, geological heritage, and the story of Kigali's founding. The museum preserves collections of fauna, flora, minerals, and historical artifacts that tell the story of Rwanda's natural and cultural evolution.",
@@ -439,5 +441,31 @@
   "bookVisit.onlineAccessDesc": "Fill in your details to get virtual access to the museum",
 
   "error.notFound": "Page Not Found",
-  "error.notFoundDesc": "The page you're looking for doesn't exist or has been moved."
+  "error.notFoundDesc": "The page you're looking for doesn't exist or has been moved.",
+
+  "narration.audioNarration": "Audio Narration",
+  "narration.play": "Play",
+  "narration.pause": "Pause",
+  "narration.stop": "Stop",
+  "narration.restart": "Restart",
+  "narration.progress": "Narration progress",
+  "narration.speed": "Playback speed",
+  "narration.volume": "Volume",
+  "narration.mute": "Mute",
+  "narration.unmute": "Unmute",
+  "narration.selectVoice": "Select voice",
+  "narration.tts": "Text-to-Speech",
+  "narration.listenToThis": "Listen to this",
+  "narration.generating": "Generating audio...",
+
+  "language.select": "Select language",
+  "language.current": "Current language",
+  "language.en": "English",
+  "language.fr": "French",
+  "language.rw": "Kinyarwanda",
+  "language.switchedTo": "Language switched to",
+
+  "translation.translating": "Translating...",
+  "translation.failed": "Translation unavailable",
+  "translation.original": "Showing original content"
 }

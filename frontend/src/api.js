@@ -148,12 +148,13 @@ export const aiNarrateStream = async (data) => {
   if (contentType.includes('application/json')) {
     const json = await resp.json();
     if (json.fallback && json.text && 'speechSynthesis' in window) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
+        const langMap = { en: 'en-US', fr: 'fr-FR', rw: 'sw-KE' };
+        const rateMap = { en: 0.95, fr: 0.90, rw: 0.82 };
         const utterance = new SpeechSynthesisUtterance(json.text);
-        utterance.lang = data.lang === 'fr' ? 'fr-FR' : data.lang === 'rw' ? 'sw-KE' : 'en-US';
-        utterance.rate = 0.9;
+        utterance.lang = langMap[data.lang] || 'en-US';
+        utterance.rate = rateMap[data.lang] || 0.9;
         speechSynthesis.speak(utterance);
-        // Return a special marker so the audio controls know it's browser TTS
         resolve('__browser_tts__');
       });
     }
@@ -249,6 +250,11 @@ export const adminDeleteEvaluation = (id) => AdminAPI.delete(`/admin/evaluations
 // Advanced Analytics
 export const fetchAnalyticsInsights = (params) => AdminAPI.get('/admin/analytics/insights', { params });
 export const fetchHeatmapData = (params) => AdminAPI.get('/admin/analytics/heatmap', { params });
+
+// Translation
+export const translateText = (data) => API.post('/translate', data);
+export const translateBatch = (data) => API.post('/translate/batch', data);
+export const detectLanguage = (data) => API.post('/translate/detect', data);
 
 // Visitor Auth
 export const validateVisitorCode = (code) => axios.post(`${API_BASE}/visitor/validate`, { code });

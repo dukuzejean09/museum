@@ -11,6 +11,7 @@ import {
   Camera, ScanLine, Mountain, Sparkles,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import GatewayBackgroundVideo from '../components/GatewayBackgroundVideo';
 
 /* ───────────────────────────────────────────
    Inline SVG: Rwandan hills silhouette
@@ -281,6 +282,9 @@ const Gateway = () => {
      ══════════════════════════════════════ */
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col relative overflow-hidden">
+      {/* ── Cinematic background video layer ── */}
+      <GatewayBackgroundVideo overlayOpacity={0.6} />
+
       {/* ── Floating Imigongo tiles (decorative background) ── */}
       <FloatingTile x={5} y={15} delay={0} />
       <FloatingTile x={85} y={10} delay={1.2} />

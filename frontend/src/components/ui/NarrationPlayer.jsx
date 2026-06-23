@@ -1,40 +1,27 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Play, Pause, Square, Volume2, VolumeX } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import {
+  Play, Pause, Square, Volume2, VolumeX, Volume1,
+  RotateCcw, Settings, ChevronDown, Gauge
+} from 'lucide-react';
+import { useLanguage } from '../../i18n/LanguageContext';
+import {
+  createNarrationController,
+  getVoicesForLanguage,
+  waitForVoices,
+  estimateDuration,
+  LANG_CONFIG,
+} from '../../services/narrationService';
 
-/**
- * NarrationPlayer – plays pre-recorded audio when available,
- * falls back to the browser Web Speech API (SpeechSynthesis) for TTS.
- *
- * Props:
- *  - audioSrc   : URL to pre-recorded mp3/audio (optional)
- *  - text       : text to narrate via browser TTS when no audioSrc
- *  - title      : label shown above the player (optional)
- *  - lang       : BCP-47 language hint for TTS (default 'en')
- */
+const SPEED_OPTIONS = [
+  { value: 0.5, label: '0.5x' },
+  { value: 0.75, label: '0.75x' },
+  { value: 1, label: '1x' },
+  { value: 1.25, label: '1.25x' },
+  { value: 1.5, label: '1.5x' },
+  { value: 2, label: '2x' },
+];
 
-// Kinyarwanda has no browser TTS engine. We use Swahili (sw) as primary fallback
-// because it shares the Bantu language family with Kinyarwanda — similar vowel system,
-// syllable structure, and consonant clusters. English is the secondary fallback since
-// Rwandan speakers are more familiar with English pronunciation than European French.
-const LANG_MAP = { en: 'en-US', fr: 'fr-FR', rw: 'sw-KE' };
-const LANG_LABELS = { en: 'English', fr: 'French', rw: 'Kinyarwanda' };
-
-// Phonetic adjustments so Swahili/English TTS reads Kinyarwanda more naturally
-const adaptKinyarwandaForTTS = (text) => {
-  let adapted = text;
-  // 'cy' as in 'icyizere' → 'chi' (approximation of /tʃ/)
-  adapted = adapted.replace(/cy/gi, 'chi');
-  // 'ny' → Swahili 'ny' is the same /ɲ/ sound — keep as-is
-  // 'sh' stays as-is — Swahili has the same /ʃ/
-  // 'rw' at start of word → split for clarity
-  adapted = adapted.replace(/\brw/gi, 'ru');
-  // Add slight pauses between long compound words for better pacing
-  adapted = adapted.replace(/([a-z]{10,})/gi, (match) => {
-    // Insert a thin pause hint via comma for very long words
-    return match;
-  });
-  return adapted;
-};
+const LANG_LABELS = { en: 'English', fr: 'Fran\u00E7ais', rw: 'Kinyarwanda' };
 
 const formatTime = (s) => {
   if (!s || isNaN(s)) return '0:00';
@@ -43,90 +30,132 @@ const formatTime = (s) => {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 };
 
-// Pick the best available voice for a given BCP-47 language tag
-const pickVoice = (voices, bcp47, langKey) => {
-  const langPrefix = bcp47.split('-')[0];
+/**
+ * NarrationPlayer — comprehensive audio narration player
+ *
+ * Props:
+ *  - audioSrc     : URL to pre-recorded audio (optional)
+ *  - text         : text to narrate via browser TTS when no audioSrc
+ *  - title        : label shown above the player (optional)
+ *  - lang         : language key ('en', 'fr', 'rw') — defaults to current language
+ *  - compact      : show compact version (optional)
+ *  - autoPlay     : start playing automatically (optional)
+ *  - onPlayStateChange : callback(playing: boolean) (optional)
+ */
+const NarrationPlayer = ({
+  audioSrc,
+  text,
+  title,
+  lang: langProp,
+  compact = false,
+  autoPlay = false,
+  onPlayStateChange,
+}) => {
+  const { t, lang: contextLang } = useLanguage();
+  const lang = langProp || contextLang;
 
-  // Quality ranking for voice selection
-  const byQuality = (v) => {
-    const n = v.name.toLowerCase();
-    if (n.includes('google')) return 4;
-    if (n.includes('natural')) return 3;
-    if (n.includes('enhanced')) return 2;
-    if (n.includes('microsoft')) return 1;
-    return 0;
-  };
+  // Mode: pre-recorded audio vs TTS
+  const mode = audioSrc ? 'audio' : 'tts';
 
-  // Exact match — prefer premium/natural voices
-  const exact = voices.filter(v => v.lang.startsWith(langPrefix));
-  if (exact.length > 0) {
-    exact.sort((a, b) => byQuality(b) - byQuality(a));
-    return exact[0];
-  }
-
-  // Kinyarwanda fallback chain: Swahili → English → any
-  // Swahili shares Bantu roots; English is more familiar to Rwandans than European French
-  if (langKey === 'rw') {
-    const sw = voices.filter(v => v.lang.startsWith('sw'));
-    if (sw.length > 0) { sw.sort((a, b) => byQuality(b) - byQuality(a)); return sw[0]; }
-    const en = voices.filter(v => v.lang.startsWith('en'));
-    if (en.length > 0) { en.sort((a, b) => byQuality(b) - byQuality(a)); return en[0]; }
-  }
-
-  return voices[0] || null;
-};
-
-const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
-  /* ── shared state ── */
+  // Shared state
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [mode, setMode] = useState(audioSrc ? 'audio' : 'tts'); // 'audio' | 'tts'
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [showVoiceSelector, setShowVoiceSelector] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState([]);
+  const [selectedVoiceIdx, setSelectedVoiceIdx] = useState(0);
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
-  /* ── audio-element refs ── */
+  // Refs
   const audioRef = useRef(null);
+  const controllerRef = useRef(null);
+  const speedMenuRef = useRef(null);
+  const volumeRef = useRef(null);
+  const voiceRef = useRef(null);
 
-  /* ── TTS refs ── */
-  const utterRef = useRef(null);
-  const ttsTimerRef = useRef(null);
-  const ttsStartRef = useRef(0);
-  const ttsPausedAtRef = useRef(0);
-  const [voicesReady, setVoicesReady] = useState(false);
-
-  // Switch mode if audioSrc changes
+  // Initialize TTS controller
   useEffect(() => {
-    setMode(audioSrc ? 'audio' : 'tts');
-  }, [audioSrc]);
+    if (mode === 'tts') {
+      const ctrl = createNarrationController();
 
-  // Pre-load voices (they load asynchronously in most browsers)
+      ctrl.onStateChange = (state) => {
+        const isPlaying = state === 'playing';
+        setPlaying(isPlaying);
+        onPlayStateChange?.(isPlaying);
+      };
+
+      ctrl.onProgress = ({ elapsed, duration: dur, progress: prog }) => {
+        setCurrentTime(elapsed);
+        setDuration(dur);
+        setProgress(prog);
+      };
+
+      ctrl.onEnd = () => {
+        setPlaying(false);
+        setProgress(100);
+        setCurrentTime(0);
+        onPlayStateChange?.(false);
+      };
+
+      controllerRef.current = ctrl;
+
+      return () => {
+        ctrl.destroy();
+        controllerRef.current = null;
+      };
+    }
+  }, [mode, onPlayStateChange]);
+
+  // Load voices
   useEffect(() => {
-    const synth = window.speechSynthesis;
-    if (!synth) return;
-    const loadVoices = () => {
-      const v = synth.getVoices();
-      if (v.length > 0) setVoicesReady(true);
-    };
-    loadVoices();
-    synth.addEventListener?.('voiceschanged', loadVoices);
-    return () => synth.removeEventListener?.('voiceschanged', loadVoices);
-  }, []);
+    if (mode !== 'tts') return;
+    waitForVoices().then(() => {
+      const voices = getVoicesForLanguage(lang);
+      setAvailableVoices(voices);
+      setVoicesLoaded(true);
+    });
+  }, [mode, lang]);
 
-  // Cleanup on unmount
+  // Clean up on unmount
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.src = '';
       }
+      controllerRef.current?.destroy();
       window.speechSynthesis?.cancel();
-      clearInterval(ttsTimerRef.current);
     };
   }, []);
 
-  /* ═══════════════════════════════
-     Audio element handlers
-  ═══════════════════════════════ */
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (speedMenuRef.current && !speedMenuRef.current.contains(e.target)) setShowSpeedMenu(false);
+      if (volumeRef.current && !volumeRef.current.contains(e.target)) setShowVolumeSlider(false);
+      if (voiceRef.current && !voiceRef.current.contains(e.target)) setShowVoiceSelector(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Auto-play
+  useEffect(() => {
+    if (autoPlay && (audioSrc || text)) {
+      const timer = setTimeout(() => play(), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay]);
+
+  // ═══════════════════════════════════════════════════════════
+  // Audio element handlers
+  // ═══════════════════════════════════════════════════════════
   const onTimeUpdate = useCallback(() => {
     const a = audioRef.current;
     if (!a) return;
@@ -139,98 +168,59 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
     setPlaying(false);
     setProgress(0);
     setCurrentTime(0);
-  }, []);
+    onPlayStateChange?.(false);
+  }, [onPlayStateChange]);
 
   const handleSeek = (e) => {
-    const a = audioRef.current;
-    if (!a || !a.duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    a.currentTime = ratio * a.duration;
+
+    if (mode === 'audio' && audioRef.current?.duration) {
+      audioRef.current.currentTime = ratio * audioRef.current.duration;
+    }
+    // TTS seeking not supported — just update visual
   };
 
-  /* ═══════════════════════════════
-     TTS helpers
-  ═══════════════════════════════ */
-  const estimateTTSDuration = (t) => {
-    // rough: ~150 words/min
-    const words = (t || '').split(/\s+/).length;
-    return Math.max(5, (words / 150) * 60);
-  };
-
-  const startTTSTimer = () => {
-    const est = estimateTTSDuration(text);
-    setDuration(est);
-    ttsStartRef.current = Date.now() - ttsPausedAtRef.current * 1000;
-    ttsTimerRef.current = setInterval(() => {
-      const elapsed = (Date.now() - ttsStartRef.current) / 1000;
-      setCurrentTime(Math.min(elapsed, est));
-      setProgress(Math.min((elapsed / est) * 100, 100));
-    }, 250);
-  };
-
-  const stopTTSTimer = () => {
-    clearInterval(ttsTimerRef.current);
-  };
-
-  /* ═══════════════════════════════
-     Play / Pause / Stop
-  ═══════════════════════════════ */
+  // ═══════════════════════════════════════════════════════════
+  // Playback controls
+  // ═══════════════════════════════════════════════════════════
   const play = () => {
     if (mode === 'audio') {
-      audioRef.current?.play();
-      setPlaying(true);
-    } else {
-      // TTS
-      const synth = window.speechSynthesis;
-      if (!synth) return;
-
-      if (synth.paused) {
-        synth.resume();
-        startTTSTimer();
+      const a = audioRef.current;
+      if (a) {
+        a.playbackRate = speedMultiplier;
+        a.volume = muted ? 0 : volume;
+        a.play().catch(() => {});
         setPlaying(true);
-        return;
+        onPlayStateChange?.(true);
       }
+    } else {
+      const ctrl = controllerRef.current;
+      if (!ctrl) return;
 
-      synth.cancel();
-      // For Kinyarwanda, adapt text so TTS engine pronounces it better
-      const spokenText = lang === 'rw' ? adaptKinyarwandaForTTS(text) : text;
-      const bcp47 = LANG_MAP[lang] || lang;
-      const utter = new SpeechSynthesisUtterance(spokenText);
-      utter.lang = bcp47;
-      // Slower rate for Kinyarwanda and French for clearer pronunciation
-      utter.rate = lang === 'rw' ? 0.85 : lang === 'fr' ? 0.9 : 0.95;
-      utter.pitch = 1;
-
-      // Pick the best available voice for this language
-      const voices = synth.getVoices();
-      const preferred = pickVoice(voices, bcp47, lang);
-      if (preferred) utter.voice = preferred;
-
-      utter.onend = () => {
-        setPlaying(false);
-        setProgress(100);
-        stopTTSTimer();
-        ttsPausedAtRef.current = 0;
-      };
-
-      utterRef.current = utter;
-      ttsPausedAtRef.current = 0;
-      synth.speak(utter);
-      startTTSTimer();
-      setPlaying(true);
+      if (ctrl.state === 'paused') {
+        ctrl.resume();
+      } else {
+        const config = LANG_CONFIG[lang] || LANG_CONFIG.en;
+        const voice = availableVoices[selectedVoiceIdx] || undefined;
+        ctrl.speak(text, lang, {
+          rate: config.rate * speedMultiplier,
+          pitch: config.pitch,
+          volume: muted ? 0 : volume,
+          voice,
+        });
+      }
     }
   };
 
   const pause = () => {
     if (mode === 'audio') {
       audioRef.current?.pause();
+      setPlaying(false);
+      onPlayStateChange?.(false);
     } else {
-      window.speechSynthesis?.pause();
-      ttsPausedAtRef.current = (Date.now() - ttsStartRef.current) / 1000;
-      stopTTSTimer();
+      controllerRef.current?.pause();
     }
-    setPlaying(false);
   };
 
   const stop = () => {
@@ -238,27 +228,98 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
       const a = audioRef.current;
       if (a) { a.pause(); a.currentTime = 0; }
     } else {
-      window.speechSynthesis?.cancel();
-      stopTTSTimer();
-      ttsPausedAtRef.current = 0;
+      controllerRef.current?.stop();
     }
     setPlaying(false);
     setProgress(0);
     setCurrentTime(0);
+    onPlayStateChange?.(false);
+  };
+
+  const restart = () => {
+    stop();
+    setTimeout(() => play(), 100);
   };
 
   const toggleMute = () => {
+    const newMuted = !muted;
+    setMuted(newMuted);
     if (mode === 'audio' && audioRef.current) {
-      audioRef.current.muted = !muted;
+      audioRef.current.muted = newMuted;
     }
-    setMuted(!muted);
   };
+
+  const changeSpeed = (speed) => {
+    setSpeedMultiplier(speed);
+    setShowSpeedMenu(false);
+    if (mode === 'audio' && audioRef.current) {
+      audioRef.current.playbackRate = speed;
+    }
+    // For TTS, speed change takes effect on next play
+  };
+
+  const changeVolume = (newVol) => {
+    setVolume(newVol);
+    if (mode === 'audio' && audioRef.current) {
+      audioRef.current.volume = newVol;
+    }
+  };
+
+  const VolumeIcon = muted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   // Nothing to narrate
   if (!audioSrc && !text) return null;
 
+  // ═══════════════════════════════════════════════════════════
+  // Compact variant
+  // ═══════════════════════════════════════════════════════════
+  if (compact) {
+    return (
+      <div className="flex items-center gap-2">
+        {mode === 'audio' && (
+          <audio
+            ref={audioRef}
+            src={audioSrc}
+            preload="metadata"
+            onTimeUpdate={onTimeUpdate}
+            onLoadedMetadata={onTimeUpdate}
+            onEnded={onAudioEnded}
+          />
+        )}
+        <button
+          onClick={playing ? pause : play}
+          className="w-8 h-8 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 text-white transition-colors"
+          aria-label={playing ? t('narration.pause') || 'Pause' : t('narration.play') || 'Play'}
+        >
+          {playing ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
+        </button>
+        <div className="flex-1 min-w-0">
+          <div
+            className="h-1.5 rounded-full bg-amber-200 dark:bg-amber-800/40 cursor-pointer"
+            onClick={mode === 'audio' ? handleSeek : undefined}
+          >
+            <div
+              className="h-full rounded-full bg-amber-600 transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums">
+          {formatTime(currentTime)}
+        </span>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Full variant
+  // ═══════════════════════════════════════════════════════════
   return (
-    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-4">
+    <div
+      className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-4"
+      role="region"
+      aria-label={title || t('narration.audioNarration') || 'Audio Narration'}
+    >
       {/* Hidden audio element */}
       {mode === 'audio' && (
         <audio
@@ -275,69 +336,200 @@ const NarrationPlayer = ({ audioSrc, text, title, lang = 'en' }) => {
       <div className="flex items-center gap-2 mb-3">
         <Volume2 size={18} className="text-amber-600 dark:text-amber-400" />
         <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-          {title || 'Audio Narration'}
+          {title || t('narration.audioNarration') || 'Audio Narration'}
         </span>
-        {mode === 'tts' && (
-          <div className="ml-auto flex items-center gap-1.5">
-            <span className="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">
-              {LANG_LABELS[lang] || lang}
-            </span>
+        <div className="ml-auto flex items-center gap-1.5">
+          <span className="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">
+            {LANG_LABELS[lang] || lang}
+          </span>
+          {mode === 'tts' && (
             <span className="text-[10px] bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full font-medium">
               TTS
             </span>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Controls */}
+      {/* Main controls row */}
       <div className="flex items-center gap-3">
+        {/* Play/Pause button */}
         <button
           onClick={playing ? pause : play}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 text-white transition-colors"
-          aria-label={playing ? 'Pause' : 'Play narration'}
+          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+          aria-label={playing ? t('narration.pause') || 'Pause' : t('narration.play') || 'Play narration'}
         >
           {playing ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
         </button>
 
-        {playing && (
+        {/* Stop button */}
+        {(playing || progress > 0) && (
           <button
             onClick={stop}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-colors"
-            aria-label="Stop"
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+            aria-label={t('narration.stop') || 'Stop'}
           >
             <Square size={14} />
           </button>
         )}
 
+        {/* Restart button */}
+        {progress > 0 && (
+          <button
+            onClick={restart}
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+            aria-label={t('narration.restart') || 'Restart'}
+          >
+            <RotateCcw size={14} />
+          </button>
+        )}
+
+        {/* Progress bar */}
         <div className="flex-1 min-w-0">
-          {/* Progress bar */}
           <div
-            className="h-2 rounded-full bg-amber-200 dark:bg-amber-800/40 cursor-pointer"
-            onClick={mode === 'audio' ? handleSeek : undefined}
+            className="h-2 rounded-full bg-amber-200 dark:bg-amber-800/40 cursor-pointer relative group"
+            onClick={handleSeek}
+            role="slider"
+            aria-label={t('narration.progress') || 'Narration progress'}
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (mode !== 'audio' || !audioRef.current?.duration) return;
+              const step = audioRef.current.duration * 0.05;
+              if (e.key === 'ArrowRight') audioRef.current.currentTime = Math.min(audioRef.current.currentTime + step, audioRef.current.duration);
+              if (e.key === 'ArrowLeft') audioRef.current.currentTime = Math.max(audioRef.current.currentTime - step, 0);
+            }}
           >
             <div
-              className="h-full rounded-full bg-amber-600 transition-all"
+              className="h-full rounded-full bg-amber-600 transition-all relative"
               style={{ width: `${progress}%` }}
-            />
+            >
+              {/* Scrubber handle */}
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-500 opacity-0 group-hover:opacity-100 transition-opacity shadow" />
+            </div>
           </div>
           <div className="flex justify-between mt-1">
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums">
               {formatTime(currentTime)}
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
-              {formatTime(duration)}
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums">
+              {formatTime(duration || estimateDuration(text, lang))}
             </span>
           </div>
         </div>
+      </div>
 
-        {mode === 'audio' && (
+      {/* Secondary controls row */}
+      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-800/30">
+        {/* Volume control */}
+        <div className="relative" ref={volumeRef}>
           <button
-            onClick={toggleMute}
-            className="flex-shrink-0 text-slate-500 dark:text-slate-400 hover:text-amber-600 transition-colors"
-            aria-label={muted ? 'Unmute' : 'Mute'}
+            onClick={() => setShowVolumeSlider(!showVolumeSlider)}
+            className="flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors p-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+            aria-label={muted ? t('narration.unmute') || 'Unmute' : t('narration.mute') || 'Mute'}
           >
-            {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            <VolumeIcon size={16} />
           </button>
+          {showVolumeSlider && (
+            <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 p-3 z-20 w-36">
+              <div className="flex items-center gap-2">
+                <button onClick={toggleMute} className="text-slate-500 hover:text-amber-600">
+                  <VolumeIcon size={14} />
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={muted ? 0 : volume}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value);
+                    changeVolume(v);
+                    if (v > 0 && muted) setMuted(false);
+                  }}
+                  className="flex-1 h-1.5 accent-amber-600 cursor-pointer"
+                  aria-label={t('narration.volume') || 'Volume'}
+                />
+                <span className="text-[10px] text-slate-500 w-7 text-right tabular-nums">
+                  {Math.round((muted ? 0 : volume) * 100)}%
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Speed control */}
+        <div className="relative" ref={speedMenuRef}>
+          <button
+            onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+            className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+            aria-label={t('narration.speed') || 'Playback speed'}
+          >
+            <Gauge size={14} />
+            <span className="tabular-nums">{speedMultiplier}x</span>
+            <ChevronDown size={12} />
+          </button>
+          {showSpeedMenu && (
+            <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-20 min-w-[80px]">
+              {SPEED_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => changeSpeed(opt.value)}
+                  className={`w-full text-left px-3 py-1.5 text-xs hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors ${
+                    speedMultiplier === opt.value
+                      ? 'text-amber-600 font-semibold bg-amber-50/50 dark:bg-amber-900/20'
+                      : 'text-slate-600 dark:text-slate-300'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Voice selector (TTS only) */}
+        {mode === 'tts' && availableVoices.length > 1 && (
+          <div className="relative ml-auto" ref={voiceRef}>
+            <button
+              onClick={() => setShowVoiceSelector(!showVoiceSelector)}
+              className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+              aria-label={t('narration.selectVoice') || 'Select voice'}
+            >
+              <Settings size={14} />
+              <span className="hidden sm:inline truncate max-w-[100px]">
+                {availableVoices[selectedVoiceIdx]?.name.split(' ').slice(0, 2).join(' ') || 'Voice'}
+              </span>
+              <ChevronDown size={12} />
+            </button>
+            {showVoiceSelector && (
+              <div className="absolute bottom-full right-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-20 max-h-48 overflow-y-auto min-w-[180px]">
+                {availableVoices.map((voice, idx) => (
+                  <button
+                    key={voice.name + voice.lang}
+                    onClick={() => {
+                      setSelectedVoiceIdx(idx);
+                      setShowVoiceSelector(false);
+                      // If currently playing, restart with new voice
+                      if (playing) {
+                        controllerRef.current?.stop();
+                        setTimeout(() => play(), 100);
+                      }
+                    }}
+                    className={`w-full text-left px-3 py-1.5 text-xs hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors ${
+                      selectedVoiceIdx === idx
+                        ? 'text-amber-600 font-semibold bg-amber-50/50 dark:bg-amber-900/20'
+                        : 'text-slate-600 dark:text-slate-300'
+                    }`}
+                  >
+                    <div className="truncate">{voice.name}</div>
+                    <div className="text-[10px] text-slate-400">{voice.lang}</div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

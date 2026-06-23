@@ -20,14 +20,8 @@ const mediaUrl = (path) => {
  return path.startsWith('http') ? path : `${getBaseUrl()}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const TrailDetail = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const { id } = useParams();
  const [currentStop, setCurrentStop] = useState(-1);
  const [visitedStops, setVisitedStops] = useState(new Set());
@@ -86,7 +80,7 @@ const TrailDetail = () => {
  <ArrowLeft size={16} /> {t('common.back') || 'Back'}
  </Link>
  <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
- {getLocalizedText(trail.title, lang)}
+ {getLocalized(trail.title)}
  </h1>
  <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
  <span className="flex items-center gap-1"><MapPin size={14} /> {totalStops} stops</span>
@@ -100,7 +94,7 @@ const TrailDetail = () => {
  {artifact?.image ? (
  <img
  src={imgUrl(artifact.image)}
- alt={getLocalizedText(artifact.name, lang)}
+ alt={getLocalized(artifact.name)}
  className="w-full h-full object-cover transition-all duration-500"
  />
  ) : (
@@ -115,7 +109,7 @@ const TrailDetail = () => {
  <ArrowLeft size={16} /> {t('common.back') || 'Back'}
  </Link>
  <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
- {getLocalizedText(trail.title, lang)}
+ {getLocalized(trail.title)}
  </h1>
  <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
  <span className="flex items-center gap-1"><MapPin size={14} /> {totalStops} stops</span>
@@ -181,12 +175,12 @@ const TrailDetail = () => {
  <div className="card">
  <h2 className="text-xl font-bold dark:text-white mb-3">{t('trail.introduction') || 'Introduction'}</h2>
  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
- {getLocalizedText(trail.introduction || trail.description, lang)}
+ {getLocalized(trail.introduction || trail.description)}
  </p>
  <div className="mt-4">
  <NarrationPlayer
  audioSrc={mediaUrl(trail.audio)}
- text={[getLocalizedText(trail.title, lang), getLocalizedText(trail.introduction || trail.description, lang)].filter(Boolean).join('. ')}
+ text={[getLocalized(trail.title), getLocalized(trail.introduction || trail.description)].filter(Boolean).join('. ')}
  title={t('exhibits.audioNarration') || 'Audio Narration'}
  lang={lang}
  />
@@ -204,7 +198,7 @@ const TrailDetail = () => {
  </span>
  <div className="flex-1 min-w-0">
  <p className="font-medium dark:text-white truncate">
- {getLocalizedText(s.artifact?.title, lang) || `Stop ${s.order}`}
+ {getLocalized(s.artifact?.title) || `Stop ${s.order}`}
  </p>
  </div>
  </div>
@@ -230,7 +224,7 @@ const TrailDetail = () => {
  {artifact.image && (
  <img
  src={imgUrl(artifact.image)}
- alt={getLocalizedText(artifact.name, lang)}
+ alt={getLocalized(artifact.name)}
  className="w-full h-64 object-cover"
  />
  )}
@@ -239,17 +233,17 @@ const TrailDetail = () => {
  <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
  )}
  <h2 className="text-xl font-bold dark:text-white mt-1">
- {getLocalizedText(artifact.name, lang)}
+ {getLocalized(artifact.name)}
  </h2>
  <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed">
- {getLocalizedText(artifact.description, lang)}
+ {getLocalized(artifact.description)}
  </p>
 
  {/* Stop-specific description */}
- {getLocalizedText(stop.description, lang) && (
+ {getLocalized(stop.description) && (
  <div className="mt-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
  <p className="text-amber-800 dark:text-amber-300 text-sm italic">
- {getLocalizedText(stop.description, lang)}
+ {getLocalized(stop.description)}
  </p>
  </div>
  )}
@@ -258,7 +252,7 @@ const TrailDetail = () => {
  <div className="mt-4">
  <NarrationPlayer
  audioSrc={mediaUrl(artifact.narrationAudioUrl)}
- text={[getLocalizedText(artifact.name, lang), getLocalizedText(artifact.description, lang), getLocalizedText(stop.description, lang)].filter(Boolean).join('. ')}
+ text={[getLocalized(artifact.name), getLocalized(artifact.description), getLocalized(stop.description)].filter(Boolean).join('. ')}
  title={t('exhibits.audioNarration') || 'Audio Narration'}
  lang={lang}
  />

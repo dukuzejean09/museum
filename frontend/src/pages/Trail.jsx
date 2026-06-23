@@ -12,14 +12,8 @@ const getImageUrl = (path) => {
  return `${base}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const Trail = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const [trails, setTrails] = useState([]);
  const [loading, setLoading] = useState(true);
  const [error, setError] = useState(null);
@@ -75,11 +69,11 @@ const Trail = () => {
  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
  {trails.map((trail) => {
  const cover = getImageUrl(trail.previewImage || trail.imageUrl || trail.exhibition?.coverImage);
- const title = getLocalizedText(trail.title, lang);
- const hook = getLocalizedText(trail.hookSentence, lang);
- const teaser = getLocalizedText(trail.teaserDescription, lang);
- const cta = getLocalizedText(trail.callToAction, lang) || t('trail.discoverMore');
- const exhibitionTitle = trail.exhibition ? getLocalizedText(trail.exhibition.title, lang) : '';
+ const title = getLocalized(trail.title);
+ const hook = getLocalized(trail.hookSentence);
+ const teaser = getLocalized(trail.teaserDescription);
+ const cta = getLocalized(trail.callToAction) || t('trail.discoverMore');
+ const exhibitionTitle = trail.exhibition ? getLocalized(trail.exhibition.title) : '';
  const linkTo = trail.exhibition ? `/exhibitions/${trail.exhibition._id || trail.parentId}` : `/exhibitions`;
 
  return (

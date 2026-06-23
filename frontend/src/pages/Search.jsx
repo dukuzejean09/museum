@@ -16,12 +16,6 @@ const API_BASE = (() => {
   return url.replace('/api', '');
 })();
 
-const getLocalizedText = (field, lang) => {
-  if (!field) return '';
-  if (typeof field === 'string') return field;
-  return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const typeConfig = {
   exhibition: { icon: Sparkles, color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', path: '/exhibitions' },
   trail: { icon: Compass, color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', path: '/trails' },
@@ -42,7 +36,7 @@ const suggestedSearches = [
 ];
 
 const SearchPage = () => {
-  const { t, lang } = useLanguage();
+  const { t, lang, getLocalized } = useLanguage();
 
   // Real-time sync — search results refresh when content changes
   useRealtimeSync('exhibition', ['search']);
@@ -354,11 +348,11 @@ const SearchPage = () => {
                           </span>
                           <div className="flex-1 min-w-0">
                             <h4 className="font-semibold dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                              {getLocalizedText(result.title || result.name, lang)}
+                              {getLocalized(result.title || result.name)}
                             </h4>
                             {(result.description || result.shortDescription) && (
                               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                                {getLocalizedText(result.shortDescription || result.description, lang)}
+                                {getLocalized(result.shortDescription || result.description)}
                               </p>
                             )}
                           </div>
@@ -636,7 +630,7 @@ const SearchPage = () => {
                           const img = scanResult.entity.coverImage || scanResult.entity.images?.[0]?.url || scanResult.entity.images?.[0];
                           return img?.startsWith?.('http') ? img : `${API_BASE}${img}`;
                         })()}
-                        alt={getLocalizedText(scanResult.entity.title || scanResult.entity.name, lang)}
+                        alt={getLocalized(scanResult.entity.title || scanResult.entity.name)}
                         className="w-24 h-24 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition-transform"
                       />
                     )}
@@ -649,10 +643,10 @@ const SearchPage = () => {
                         {scanResult.entityType}
                       </span>
                       <h4 className="font-bold dark:text-white group-hover:text-amber-600 transition">
-                        {getLocalizedText(scanResult.entity.title || scanResult.entity.name, lang)}
+                        {getLocalized(scanResult.entity.title || scanResult.entity.name)}
                       </h4>
                       <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
-                        {getLocalizedText(scanResult.entity.shortDescription || scanResult.entity.description, lang)}
+                        {getLocalized(scanResult.entity.shortDescription || scanResult.entity.description)}
                       </p>
                       {scanResult.entity.tags?.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">

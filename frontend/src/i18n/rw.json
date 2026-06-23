@@ -171,6 +171,8 @@
   "gateway.secureFooter": "Inzu Ndangamurage ya Kandt — Kigali, Rwanda — Kwinjira Kwizewe",
 
   "home.viewExhibitions": "Reba Amamurikiro",
+  "home.watchVideo": "Menya Inzu Ndangamurage",
+  "home.watchVideoTitle": "Inzu Ndangamurage ya Kandt — Intangiriro",
   "home.scanQr": "SOMA KUGIRA NGO UMENYE BYINSHI",
   "home.aboutTitle": "Ibyerekeye Inzu Ndangamurage",
   "home.aboutText": "Inzu Ndangamurage ya Kandt, iri i Kigali mu Rwanda, iri mu nzu yahoze ari iy'umuganga Richard Kandt — umutegetsi wa mbere w'Abadage mu Rwanda. Ubu ikora nk'inzu ndangamurage y'amateka kamere igaragaza ubudasa bw'ibinyabuzima bya Rwanda, umurage w'isi, n'inkuru y'uko Kigali yashinzwe. Inzu ndangamurage ibika ikusanyirizo ry'inyamaswa, ibimera, amabuye y'agaciro, n'ibikoresho by'amateka bivuga inkuru y'ihindagurika ry'umuco n'ibidukikije bya Rwanda.",
@@ -436,5 +438,31 @@
   "bookVisit.onlineAccessDesc": "Uzuza amakuru yawe kugira ngo ubone kwinjira kuri interineti mu nzu ndangamurage",
 
   "error.notFound": "Paji Ntiyabonetse",
-  "error.notFoundDesc": "Paji ushaka ntibaho cyangwa yimurwe ahandi."
+  "error.notFoundDesc": "Paji ushaka ntibaho cyangwa yimurwe ahandi.",
+
+  "narration.audioNarration": "Inkuru y'Amajwi",
+  "narration.play": "Gukina",
+  "narration.pause": "Guhagarika",
+  "narration.stop": "Guhagarika byose",
+  "narration.restart": "Gutangira bundi bushya",
+  "narration.progress": "Aho inkuru igeze",
+  "narration.speed": "Umuvuduko w'amajwi",
+  "narration.volume": "Ijwi",
+  "narration.mute": "Kuzimya ijwi",
+  "narration.unmute": "Gufungura ijwi",
+  "narration.selectVoice": "Guhitamo ijwi",
+  "narration.tts": "Guhindura inyandiko mu majwi",
+  "narration.listenToThis": "Kumva ibi",
+  "narration.generating": "Gutunganya amajwi...",
+
+  "language.select": "Guhitamo ururimi",
+  "language.current": "Ururimi rw'ubu",
+  "language.en": "Icyongereza",
+  "language.fr": "Igifaransa",
+  "language.rw": "Ikinyarwanda",
+  "language.switchedTo": "Ururimi rwahinduwe ruba",
+
+  "translation.translating": "Guhindura...",
+  "translation.failed": "Ubuhinduzi ntibubashije",
+  "translation.original": "Kwerekana ibiri mu rurimi rw'umwimerere"
 }

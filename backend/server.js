@@ -30,6 +30,7 @@ import visitorProtect from './middleware/visitorMiddleware.js';
 import { publicRouter as arPublic, adminRouter as arAdmin } from './routes/arRoutes.js';
 import { publicRouter as evaluationPublic, adminRouter as evaluationAdmin } from './routes/evaluationRoutes.js';
 import yoloProxyRoutes from './routes/yoloProxyRoutes.js';
+import translationRoutes from './routes/translationRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -99,7 +100,14 @@ const arLimiter = rateLimit({
   message: { message: 'AR scan limit reached, please try again later' },
 });
 
+const translationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { message: 'Translation request limit reached, please try again later' },
+});
+
 app.use('/api', apiLimiter);
+app.use('/api/translate', translationLimiter);
 app.use('/api/auth', authLimiter);
 app.use('/api/visitor/validate', authLimiter);
 app.use('/api/ai', aiLimiter);
@@ -167,6 +175,7 @@ app.use('/api/search', visitorProtect, searchPublic);
 app.use('/api/analytics', analyticsPublic);         // public — analytics collection
 app.use('/api/ar', visitorProtect, arPublic);
 app.use('/api/evaluations', visitorProtect, evaluationPublic);
+app.use('/api/translate', translationRoutes);
 
 // ──────────────────────────────────────────────
 // Admin API routes (protected by auth middleware in each route file)

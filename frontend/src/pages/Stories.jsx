@@ -16,14 +16,8 @@ const imageUrl = (path) => {
  return `${base}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const Stories = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const [search, setSearch] = useState('');
  const [debouncedSearch, setDebouncedSearch] = useState('');
  const [page, setPage] = useState(1);
@@ -104,7 +98,7 @@ const Stories = () => {
  ) : story.exhibitionId?.coverImage ? (
    <img
      src={imageUrl(story.exhibitionId.coverImage)}
-     alt={getLocalizedText(story.title, lang)}
+     alt={getLocalized(story.title)}
      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
    />
  ) : (
@@ -115,14 +109,14 @@ const Stories = () => {
  </div>
  <div className="p-5">
  <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
- {getLocalizedText(story.title, lang)}
+ {getLocalized(story.title)}
  </h3>
  <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
- {getLocalizedText(story.content, lang)}
+ {getLocalized(story.content)}
  </p>
  {story.exhibitionId && (
  <p className="mt-3 text-xs text-amber-600 dark:text-amber-400 font-medium truncate">
- {getLocalizedText(story.exhibitionId.title, lang) || t('story.linkedExhibition') || 'View Exhibition'}
+ {getLocalized(story.exhibitionId.title) || t('story.linkedExhibition') || 'View Exhibition'}
  </p>
  )}
  </div>

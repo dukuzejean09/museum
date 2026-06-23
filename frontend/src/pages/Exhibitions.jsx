@@ -17,14 +17,8 @@ const imageUrl = (path) => {
  return `${base}${path}`;
 };
 
-const getLocalizedText = (field, lang) => {
- if (!field) return '';
- if (typeof field === 'string') return field;
- return field[lang] || field.en || field.fr || field.rw || '';
-};
-
 const Exhibitions = () => {
- const { t, lang } = useLanguage();
+ const { t, lang, getLocalized } = useLanguage();
  const { isAdmin } = useAuth();
  const [search, setSearch] = useState('');
  const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -110,7 +104,7 @@ const Exhibitions = () => {
  ) : ex.coverImage ? (
  <img
  src={imageUrl(ex.coverImage)}
- alt={getLocalizedText(ex.title, lang)}
+ alt={getLocalized(ex.title)}
  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
  />
  ) : (
@@ -135,10 +129,10 @@ const Exhibitions = () => {
  </div>
  <div className="p-5">
  <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
- {getLocalizedText(ex.title, lang)}
+ {getLocalized(ex.title)}
  </h3>
  <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
- {getLocalizedText(ex.shortDescription || ex.description, lang)}
+ {getLocalized(ex.shortDescription || ex.description)}
  </p>
  {ex.tags?.length > 0 && (
  <div className="mt-3 flex flex-wrap gap-1.5">
