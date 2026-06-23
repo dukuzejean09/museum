@@ -20,16 +20,16 @@ const HillsSilhouette = () => (
   <svg viewBox="0 0 800 340" className="w-full h-auto" preserveAspectRatio="none">
     {/* Far hills — faint */}
     <path d="M0 340 L0 160 Q100 60 200 130 Q300 50 400 110 Q500 30 600 100 Q700 50 800 120 L800 340Z"
-      fill="url(#hillFar)" opacity="0.25" />
+      fill="url(#hillFar)" opacity="0.15" />
     {/* Mid hills */}
     <path d="M0 340 L0 190 Q80 110 180 160 Q280 90 380 150 Q480 80 560 140 Q680 70 800 150 L800 340Z"
-      fill="url(#hillMid)" opacity="0.4" />
+      fill="url(#hillMid)" opacity="0.25" />
     {/* Near hills */}
     <path d="M0 340 L0 220 Q120 160 240 210 Q360 150 480 200 Q600 140 720 195 Q780 175 800 200 L800 340Z"
-      fill="url(#hillNear)" opacity="0.55" />
+      fill="url(#hillNear)" opacity="0.35" />
     {/* Closest hill */}
     <path d="M0 340 L0 260 Q200 210 400 250 Q600 210 800 260 L800 340Z"
-      fill="url(#hillClose)" opacity="0.7" />
+      fill="url(#hillClose)" opacity="0.45" />
 
     {/* ── Intore warrior silhouette on the hill ── */}
     <g transform="translate(540, 145)" opacity="0.6" fill="#fbbf24">
@@ -281,9 +281,9 @@ const Gateway = () => {
      RENDER
      ══════════════════════════════════════ */
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950/80 flex flex-col relative overflow-hidden">
       {/* ── Cinematic background video layer ── */}
-      <GatewayBackgroundVideo overlayOpacity={0.6} />
+      <GatewayBackgroundVideo overlayOpacity={0.4} />
 
       {/* ── Floating Imigongo tiles (decorative background) ── */}
       <FloatingTile x={5} y={15} delay={0} />
@@ -303,7 +303,7 @@ const Gateway = () => {
               key={l.code}
               onClick={() => setLang(l.code)}
               className={`px-2 py-0.5 rounded-md text-xs font-medium transition ${
-                lang === l.code ? 'bg-amber-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800'
+                lang === l.code ? 'bg-amber-600/80 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'
               }`}
             >
               {l.flag} {l.code.toUpperCase()}
@@ -312,7 +312,7 @@ const Gateway = () => {
         </div>
         <button
           onClick={() => setShowLogin(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-400 hover:bg-amber-500/15 hover:border-amber-500/40 transition text-sm font-medium"
         >
           <ShieldCheck size={16} />
           <span>{t('gateway.staffLogin')}</span>
@@ -327,14 +327,14 @@ const Gateway = () => {
 
         {/* ════ LEFT COLUMN — Cultural branding with hills ════ */}
         <div className="lg:w-1/2 flex flex-col justify-end relative overflow-hidden">
-          {/* Radial glow */}
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-transparent" />
+          {/* Radial glow — subtle, transparent */}
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-900/5 via-transparent to-transparent" />
 
           {/* Branding content */}
           <div className="relative z-10 px-6 sm:px-10 lg:px-14 pt-8 lg:pt-0 lg:pb-0 flex flex-col justify-center flex-1">
             <div className="max-w-md mx-auto lg:mx-0">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-amber-500/15 rounded-3xl flex items-center justify-center border border-amber-500/20 shrink-0">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-amber-500/5 rounded-3xl flex items-center justify-center border border-amber-500/15 shrink-0">
                   <Landmark size={44} className="text-amber-400 sm:hidden" />
                   <Landmark size={52} className="text-amber-400 hidden sm:block" />
                 </div>
@@ -350,18 +350,18 @@ const Gateway = () => {
 
               {/* Cultural highlights */}
               <div className="hidden lg:grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-white/5 border border-slate-800 rounded-xl p-3 flex items-center gap-3">
+                <div className="bg-transparent border border-white/10 rounded-xl p-3 flex items-center gap-3">
                   <Mountain size={20} className="text-amber-500 shrink-0" />
                   <div>
                     <p className="text-white text-xs font-semibold">Land of a Thousand Hills</p>
-                    <p className="text-slate-500 text-[11px]">Rwanda's natural heritage</p>
+                    <p className="text-slate-400 text-[11px]">Rwanda's natural heritage</p>
                   </div>
                 </div>
-                <div className="bg-white/5 border border-slate-800 rounded-xl p-3 flex items-center gap-3">
+                <div className="bg-transparent border border-white/10 rounded-xl p-3 flex items-center gap-3">
                   <Sparkles size={20} className="text-amber-500 shrink-0" />
                   <div>
                     <p className="text-white text-xs font-semibold">Imigongo Art</p>
-                    <p className="text-slate-500 text-[11px]">Traditional geometric patterns</p>
+                    <p className="text-slate-400 text-[11px]">Traditional geometric patterns</p>
                   </div>
                 </div>
               </div>
@@ -391,7 +391,7 @@ const Gateway = () => {
             {/* Already authenticated */}
             {!loading && isAuthenticated && !admin ? (
               <div className="space-y-4">
-                <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 text-center">
+                <div className="bg-green-500/5 border border-green-500/20 rounded-2xl p-5 text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500/20 rounded-full mb-3">
                     <ShieldCheck size={24} className="text-green-400" />
                   </div>
@@ -407,7 +407,7 @@ const Gateway = () => {
                 </button>
                 <button
                   onClick={() => { clearAccess(); setCode(''); setError(''); }}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl transition font-medium border border-slate-700 flex items-center justify-center gap-2 text-sm"
+                  className="w-full bg-white/5 hover:bg-white/10 text-slate-300 py-2.5 rounded-xl transition font-medium border border-white/15 flex items-center justify-center gap-2 text-sm"
                 >
                   <KeyRound size={14} />
                   {t('gateway.useNewCode') || 'Enter a Different Code'}
@@ -416,7 +416,7 @@ const Gateway = () => {
             ) : (
               <>
                 {/* Hook message */}
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mb-5 text-center">
+                <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 mb-5 text-center">
                   <p className="text-amber-300 text-xs sm:text-sm font-medium leading-relaxed">
                     {t('gateway.hookMessage')}
                   </p>
@@ -442,7 +442,7 @@ const Gateway = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
 
                       {/* ── Code Entry Card ── */}
-                      <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-xl p-4">
+                      <div className="bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-xl p-4">
                         <div className="flex items-center gap-2 mb-3">
                           <KeyRound size={16} className="text-amber-400" />
                           <h2 className="text-white text-sm font-semibold">{t('gateway.accessTitle')}</h2>
@@ -456,7 +456,7 @@ const Gateway = () => {
                             value={code}
                             onChange={(e) => setCode(e.target.value.toUpperCase())}
                             placeholder={t('gateway.codePlaceholder')}
-                            className="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-center text-sm tracking-widest font-mono"
+                            className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-center text-sm tracking-widest font-mono"
                             disabled={validating}
                             autoFocus
                             autoComplete="off"
@@ -476,7 +476,7 @@ const Gateway = () => {
                       </div>
 
                       {/* ── QR Scanner Card ── */}
-                      <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-xl p-4">
+                      <div className="bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-xl p-4">
                         <div className="flex items-center gap-2 mb-3">
                           <Camera size={16} className="text-amber-400" />
                           <h2 className="text-white text-sm font-semibold">
@@ -494,7 +494,7 @@ const Gateway = () => {
                         )}
                         <button
                           onClick={startScanner}
-                          className="w-full flex items-center justify-center gap-2 bg-slate-700/60 hover:bg-slate-700 text-white py-2.5 rounded-lg transition font-semibold border border-slate-600/50 text-sm"
+                          className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white py-2.5 rounded-lg transition font-semibold border border-white/15 text-sm"
                         >
                           <QrCode size={16} />
                           {t('gateway.openScanner') || 'Open Scanner'}
@@ -503,7 +503,7 @@ const Gateway = () => {
                     </div>
 
                     {/* ── Book a Visit (full width below) ── */}
-                    <div className="bg-white/5 backdrop-blur border border-slate-700/50 rounded-xl p-4 flex items-center gap-4">
+                    <div className="bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-xl p-4 flex items-center gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <Calendar size={14} className="text-amber-400 shrink-0" />
@@ -515,7 +515,7 @@ const Gateway = () => {
                       </div>
                       <button
                         onClick={() => navigate('/book')}
-                        className="shrink-0 bg-slate-700/60 hover:bg-slate-700 text-white px-4 py-2.5 rounded-lg transition font-medium border border-slate-600/50 flex items-center gap-1.5 text-sm"
+                        className="shrink-0 bg-white/5 hover:bg-white/10 text-white px-4 py-2.5 rounded-lg transition font-medium border border-white/15 flex items-center gap-1.5 text-sm"
                       >
                         {t('gateway.bookTitle')}
                         <ArrowRight size={14} />
@@ -597,7 +597,7 @@ const Gateway = () => {
          ═══════════════════════════════════ */}
       {showLogin && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowLogin(false)}>
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-slate-900/90 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-slate-700/50">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-amber-500/15 flex items-center justify-center">
@@ -628,7 +628,7 @@ const Gateway = () => {
                   onChange={(e) => setLoginEmail(e.target.value)}
                   required
                   autoComplete="email"
-                  className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                  className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
                   placeholder="staff@museum.rw"
                 />
               </div>
@@ -641,7 +641,7 @@ const Gateway = () => {
                     onChange={(e) => setLoginPassword(e.target.value)}
                     required
                     autoComplete="current-password"
-                    className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition pr-10"
+                    className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition pr-10"
                     placeholder="••••••••"
                   />
                   <button
