@@ -17,6 +17,7 @@ import { useRealtimeSync } from '../hooks/useRealtimeStore';
 import { useVisitor } from '../context/VisitorContext';
 import { useAuth } from '../context/AuthContext';
 import { VideoModal } from '../components/VideoModal';
+import GatewayBackgroundVideo from '../components/GatewayBackgroundVideo';
 
 /* ═══════════════════════════════════════════════════════════════
    FLOATING GOLDEN PARTICLES — Layer 3
@@ -395,8 +396,9 @@ const Home = () => {
           1. HERO SECTION — Full-screen immersive
           ═══════════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background layers */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-[#0c1629] to-slate-950" />
+        {/* Background video layer */}
+        <GatewayBackgroundVideo overlayOpacity={0.45} />
+        {/* Decorative overlays */}
         <ImigongoOverlay />
         <GoldenParticles />
         <HolographicOverlay />
