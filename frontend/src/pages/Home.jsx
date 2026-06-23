@@ -67,18 +67,18 @@ const RwandaHills = () => (
       {/* Far hills — golden tint */}
       <path
         d="M0,180 C120,100 240,70 360,110 C480,150 540,50 720,80 C900,120 1020,40 1140,70 C1260,110 1380,60 1440,90 L1440,250 L0,250Z"
-        fill="rgba(217,119,6,0.08)"
+        fill="rgba(217,119,6,0.06)"
         className="animate-drift-slow"
       />
       {/* Mid hills */}
       <path
         d="M0,190 C180,130 300,155 480,140 C660,125 780,170 960,150 C1140,130 1320,160 1440,145 L1440,250 L0,250Z"
-        fill="rgba(15,23,42,0.6)"
+        fill="rgba(15,23,42,0.35)"
       />
       {/* Near hills */}
       <path
         d="M0,210 C200,185 400,200 600,190 C800,180 1000,195 1200,185 C1350,180 1440,190 1440,195 L1440,250 L0,250Z"
-        fill="rgb(15,23,42)"
+        fill="rgba(15,23,42,0.5)"
       />
     </svg>
   </div>
@@ -472,7 +472,7 @@ const Home = () => {
 
               {/* Compact QR Code */}
               <div className="flex items-center gap-3 justify-center lg:justify-start">
-                <div className="p-1.5 rounded-lg bg-white shadow-md">
+                <div className="p-1.5 rounded-lg bg-white/90 shadow-md">
                   <QRCodeSVG
                     value={window.location.origin + '/enter'}
                     size={48}
@@ -490,16 +490,16 @@ const Home = () => {
 
             {/* Right — hero image with premium frame */}
             <div className="relative mx-auto w-full max-w-md animate-hero-fade-up" style={{ animationDelay: '0.4s' }}>
-              <div className="relative rounded-[24px] overflow-hidden border border-amber-500/20 shadow-2xl shadow-amber-900/20">
+              <div className="relative rounded-[24px] overflow-hidden border border-amber-500/15 shadow-2xl shadow-amber-900/20">
                 {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-br from-amber-500/20 via-transparent to-amber-600/10 rounded-[28px] blur-xl" />
+                <div className="absolute -inset-1 bg-gradient-to-br from-amber-500/10 via-transparent to-amber-600/5 rounded-[28px] blur-xl" />
                 <img
                   src={HomeCt}
                   alt="Kandt House Museum — Kigali, Rwanda"
                   className="relative w-full h-full object-cover aspect-[4/5]"
                 />
                 {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
                 {/* Bottom label */}
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="glass rounded-xl px-4 py-3">
