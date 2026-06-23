@@ -2,14 +2,16 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 
 const MUSEUM_VIDEO = '/museum-intro.mp4';
 
-const START_TIME = 130; // 2:10
-const END_TIME = 150;   // 2:30
+const PREFERRED_START = 130; // 2:10
+const PREFERRED_END = 150;   // 2:30
+const LOOP_DURATION = 20;    // seconds
 
 const GatewayBackgroundVideo = ({ overlayOpacity = 0.55, className = '' }) => {
   const videoRef = useRef(null);
+  const startTimeRef = useRef(0);
+  const endTimeRef = useRef(20);
   const [ready, setReady] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [posterUrl, setPosterUrl] = useState(null);
   const [failed, setFailed] = useState(false);
 
   // Check reduced motion preference
@@ -21,60 +23,55 @@ const GatewayBackgroundVideo = ({ overlayOpacity = 0.55, className = '' }) => {
     return () => mql.removeEventListener('change', handler);
   }, []);
 
-  // Extract a poster frame from the video at START_TIME
-  useEffect(() => {
-    if (!prefersReducedMotion && !failed) return;
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
-    video.muted = true;
-    video.preload = 'metadata';
-    video.src = MUSEUM_VIDEO;
-    video.currentTime = START_TIME;
-    video.addEventListener('seeked', () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 1280;
-        canvas.height = video.videoHeight || 720;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        setPosterUrl(canvas.toDataURL('image/jpeg', 0.8));
-      } catch {
-        // CORS or other error — fallback to no poster
-      }
-      video.remove();
-    }, { once: true });
-    video.addEventListener('error', () => video.remove(), { once: true });
-  }, [prefersReducedMotion, failed]);
-
-  // Loop the segment 2:10 → 2:30
+  // Loop the selected segment
   const handleTimeUpdate = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (video.currentTime >= END_TIME || video.currentTime < START_TIME) {
-      video.currentTime = START_TIME;
+    if (video.currentTime >= endTimeRef.current || video.currentTime < startTimeRef.current) {
+      video.currentTime = startTimeRef.current;
     }
   }, []);
 
-  const handleLoadedData = useCallback(() => {
+  const handleLoadedMetadata = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
-    video.currentTime = START_TIME;
-    video.play().then(() => setReady(true)).catch(() => setFailed(true));
+
+    const dur = video.duration;
+    console.log('[GatewayVideo] duration:', dur);
+
+    // If video is long enough, use preferred segment (2:10–2:30)
+    // Otherwise loop from start or a reasonable portion
+    if (dur >= PREFERRED_END) {
+      startTimeRef.current = PREFERRED_START;
+      endTimeRef.current = PREFERRED_END;
+    } else if (dur >= LOOP_DURATION) {
+      // Use last 20 seconds or middle portion
+      startTimeRef.current = Math.max(0, dur - LOOP_DURATION);
+      endTimeRef.current = dur - 0.5;
+    } else {
+      // Short video — loop entire thing
+      startTimeRef.current = 0;
+      endTimeRef.current = dur - 0.5;
+    }
+
+    video.currentTime = startTimeRef.current;
+    video.play()
+      .then(() => setReady(true))
+      .catch((err) => {
+        console.warn('[GatewayVideo] autoplay failed:', err);
+        setFailed(true);
+      });
   }, []);
 
-  const handleError = useCallback(() => setFailed(true), []);
+  const handleError = useCallback((e) => {
+    console.error('[GatewayVideo] video error:', e?.target?.error);
+    setFailed(true);
+  }, []);
 
-  // If reduced motion or failed, show static poster
+  // If reduced motion or failed, show dark background only
   if (prefersReducedMotion || failed) {
     return (
       <div className={`absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
-        {posterUrl && (
-          <img
-            src={posterUrl}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
         <div
           className="absolute inset-0"
           style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})` }}
@@ -91,7 +88,7 @@ const GatewayBackgroundVideo = ({ overlayOpacity = 0.55, className = '' }) => {
         muted
         playsInline
         preload="auto"
-        onLoadedData={handleLoadedData}
+        onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onError={handleError}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${

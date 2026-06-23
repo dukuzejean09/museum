@@ -204,11 +204,11 @@ const MuseumVideoPlayer = ({ src, onClose, autoPlay = false }) => {
         src={src}
         muted={muted}
         playsInline
-        preload="metadata"
+        preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
-        onError={handleError}
+        onError={(e) => { console.error('[VideoModal] error:', e.target.error); handleError(); }}
         onWaiting={handleWaiting}
         onCanPlay={handleCanPlay}
         className="w-full aspect-video object-contain cursor-pointer"
