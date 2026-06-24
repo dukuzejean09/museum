@@ -63,6 +63,7 @@ export async function generateAudioForEntity(entityType, entityId) {
       voice: 'nova',
       input: narrationText,
       response_format: 'mp3',
+      speed: 0.78,  // human museum-guide pace (~115 WPM)
     });
 
     const buffer = Buffer.from(await mp3Response.arrayBuffer());

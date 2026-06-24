@@ -105,23 +105,23 @@ services:
       timeout: 10s
       retries: 3
 
-  # Seed service - runs once to populate the database
-  seed:
-    image: museum-seed
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: museum_seed
-    command: ["node", "seed.js"]
-    environment:
-      MONGO_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    networks:
-      - museum_network
-    restart: "no"
+  # Seed service - DISABLED to preserve real data
+  # seed:
+  #   image: museum-seed
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: museum_seed
+  #   command: ["node", "seed.js"]
+  #   environment:
+  #     MONGO_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
+  #     JWT_SECRET: ${JWT_SECRET}
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
+  #   networks:
+  #     - museum_network
+  #   restart: "no"
 
 volumes:
   mongodb_data:

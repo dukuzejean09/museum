@@ -289,6 +289,7 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
         voice,
         input: narrationText,
         response_format: 'mp3',
+        speed: 0.78,  // human museum-guide pace (~115 WPM)
       });
 
       res.setHeader('Content-Type', 'audio/mpeg');

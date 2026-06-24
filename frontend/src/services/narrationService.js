@@ -16,7 +16,7 @@ const LANG_CONFIG = {
   en: {
     bcp47: 'en-US',
     fallbacks: ['en-GB', 'en-AU', 'en'],
-    rate: 0.95,
+    rate: 0.75,
     pitch: 1.0,
     volume: 1.0,
     label: 'English',
@@ -24,7 +24,7 @@ const LANG_CONFIG = {
   fr: {
     bcp47: 'fr-FR',
     fallbacks: ['fr-CA', 'fr-BE', 'fr'],
-    rate: 0.90,
+    rate: 0.70,
     pitch: 1.0,
     volume: 1.0,
     label: 'French',
@@ -34,7 +34,7 @@ const LANG_CONFIG = {
     // Swahili (sw) is the closest Bantu-family language available.
     bcp47: 'sw-KE',
     fallbacks: ['sw-TZ', 'sw', 'en-US', 'en'],
-    rate: 0.82,
+    rate: 0.65,
     pitch: 1.0,
     volume: 1.0,
     label: 'Kinyarwanda',

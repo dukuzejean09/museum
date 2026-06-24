@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { translate } from '../services/translationService';
 import en from './en.json';
 import fr from './fr.json';
 import rw from './rw.json';
@@ -34,23 +35,28 @@ const getLocalizedText = (field, lang) => {
 
 export const LanguageProvider = ({ children }) => {
   const [lang, setLangState] = useState(detectLanguage);
+  // Stores live-translated content: key → translated string
+  const [liveTranslations, setLiveTranslations] = useState({});
+  // Track in-flight translation requests to avoid duplicates
+  const pendingRef = useRef(new Set());
 
   const setLang = useCallback((newLang) => {
     if (translations[newLang]) {
       setLangState(newLang);
+      // Clear live translations when language changes — they'll be re-fetched
+      setLiveTranslations({});
+      pendingRef.current.clear();
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
-    // Dispatch custom event so non-React code can respond to language changes
     window.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
   }, [lang]);
 
   /**
    * UI string translation — looks up static translation keys from JSON files.
-   * For labels, buttons, navigation, and other static UI text.
    */
   const t = useCallback((key) => {
     return translations[lang]?.[key] || translations.en[key] || key;
@@ -59,11 +65,45 @@ export const LanguageProvider = ({ children }) => {
   /**
    * Content localization — extracts the correct language from a
    * multilingual database object like { en: "...", fr: "...", rw: "..." }.
-   * For dynamic content from the API (artifacts, exhibitions, etc.)
+   *
+   * If the current language is missing, it immediately returns the best
+   * available fallback AND fires an async HF API translation in the
+   * background. Once the translation arrives, a re-render shows the
+   * real translated text.
    */
   const getLocalized = useCallback((field) => {
-    return getLocalizedText(field, lang);
-  }, [lang]);
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+
+    // If the target language exists in the DB object, use it directly
+    if (field[lang] && field[lang].trim()) return field[lang];
+
+    // Find best available source text
+    const srcLang = field.en ? 'en' : field.fr ? 'fr' : field.rw ? 'rw' : null;
+    if (!srcLang) return '';
+    const srcText = field[srcLang];
+    if (!srcText || !srcText.trim()) return '';
+
+    // If we already have a live translation for this text, return it
+    const cacheKey = `${srcLang}|${lang}|${srcText}`;
+    if (liveTranslations[cacheKey]) return liveTranslations[cacheKey];
+
+    // Fire async translation (only once per unique text)
+    if (!pendingRef.current.has(cacheKey)) {
+      pendingRef.current.add(cacheKey);
+      translate(srcText, srcLang, lang, 'content').then((translated) => {
+        if (translated && translated !== srcText) {
+          setLiveTranslations((prev) => ({ ...prev, [cacheKey]: translated }));
+        }
+        pendingRef.current.delete(cacheKey);
+      }).catch(() => {
+        pendingRef.current.delete(cacheKey);
+      });
+    }
+
+    // Return fallback immediately while translation loads
+    return srcText;
+  }, [lang, liveTranslations]);
 
   return (
     <LanguageContext.Provider value={{

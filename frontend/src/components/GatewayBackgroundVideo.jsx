@@ -52,10 +52,16 @@ const GatewayBackgroundVideo = ({ overlayOpacity = 0.55, className = '' }) => {
         preload="auto"
         onCanPlay={handleCanPlay}
         onError={handleError}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+        className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
           ready ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ filter: 'brightness(0.9)' }}
+        style={{
+          filter: 'brightness(0.9)',
+          top: '-5%',
+          left: '-2%',
+          width: '110%',
+          height: '110%',
+        }}
       />
       {/* Dark overlay */}
       <div
@@ -64,6 +70,10 @@ const GatewayBackgroundVideo = ({ overlayOpacity = 0.55, className = '' }) => {
       />
       {/* Subtle blend gradient for bottom content */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+      {/* Kandt Museum badge — covers watermark area */}
+      <div className="absolute top-4 right-4 z-20 bg-amber-700/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 tracking-widest rounded shadow-lg border border-amber-600/30">
+        KANDT MUSEUM
+      </div>
     </div>
   );
 };
