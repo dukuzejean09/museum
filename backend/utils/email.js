@@ -1,9 +1,61 @@
 /**
- * Email utility — uses nodemailer with Brevo SMTP.
- * Falls back to console logging if SMTP is not configured.
+ * Email utility — uses Brevo HTTP API (port 443, works on all platforms).
+ * Falls back to SMTP if BREVO_API_KEY is not set, then to console logging.
+ *
+ * Required env vars (Brevo HTTP API — recommended):
+ *   BREVO_API_KEY  — your Brevo v3 API key (starts with xkeysib-)
+ *   SMTP_FROM      — sender address, e.g. "Kandt House Museum" <you@example.com>
+ *
+ * Fallback env vars (SMTP — blocked on some hosts like HuggingFace):
+ *   SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM
  */
 import nodemailer from 'nodemailer';
 
+/* ─────────────────────────────────────────────
+   Brevo HTTP API sender (works on HuggingFace)
+   ───────────────────────────────────────────── */
+const sendViaBrevoAPI = async ({ to, subject, html, text }) => {
+  const apiKey = process.env.BREVO_API_KEY;
+  const fromRaw = process.env.SMTP_FROM || '"Kandt House Museum" <noreply@museum.com>';
+
+  // Parse "Name" <email> format
+  const fromMatch = fromRaw.match(/^"?([^"<]*)"?\s*<([^>]+)>/);
+  const senderName = fromMatch ? fromMatch[1].trim() : 'Kandt House Museum';
+  const senderEmail = fromMatch ? fromMatch[2].trim() : fromRaw.trim();
+
+  const body = {
+    sender: { name: senderName, email: senderEmail },
+    to: [{ email: to }],
+    subject,
+    htmlContent: html || undefined,
+    textContent: text || undefined,
+  };
+
+  console.log(`[EMAIL] Sending via Brevo API to: ${to} | Subject: ${subject}`);
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': apiKey,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error(`Brevo API ${res.status}: ${errBody}`);
+  }
+
+  const result = await res.json();
+  console.log(`[EMAIL] Sent successfully via Brevo API — messageId: ${result.messageId}`);
+  return { messageId: result.messageId };
+};
+
+/* ─────────────────────────────────────────────
+   SMTP fallback sender (for local dev)
+   ───────────────────────────────────────────── */
 let transporter = null;
 
 function getTransporter() {
@@ -17,48 +69,67 @@ function getTransporter() {
     const port = parseInt(process.env.SMTP_PORT) || 587;
     const secure = process.env.SMTP_SECURE === 'true';
 
-    console.log(`[EMAIL] Creating SMTP transporter → ${host}:${port} (secure: ${secure}, user: ${smtpUser.substring(0, 6)}...)`);
+    console.log(`[EMAIL] Creating SMTP transporter → ${host}:${port} (user: ${smtpUser.substring(0, 6)}...)`);
 
     transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure,
+      host, port, secure,
       auth: { user: smtpUser, pass: smtpPass },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
-
-    // Verify connection on first use
-    transporter.verify()
-      .then(() => console.log('[EMAIL] SMTP connection verified successfully'))
-      .catch((err) => console.error('[EMAIL] SMTP connection verification FAILED:', err.message));
-
     return transporter;
   }
 
-  console.warn('[EMAIL] SMTP credentials not found — emails will be logged to console only');
   return null;
 }
 
-const sendEmail = async ({ to, subject, html, text }) => {
+const sendViaSMTP = async ({ to, subject, html, text }) => {
   const transport = getTransporter();
+  if (!transport) return null; // signal: no SMTP available
 
-  if (transport) {
-    const from = process.env.SMTP_FROM || `"Kandt House Museum" <${process.env.SMTP_USER}>`;
-    console.log(`[EMAIL] Sending to: ${to} | Subject: ${subject} | From: ${from}`);
+  const from = process.env.SMTP_FROM || `"Kandt House Museum" <${process.env.SMTP_USER}>`;
+  console.log(`[EMAIL] Sending via SMTP to: ${to} | Subject: ${subject}`);
+
+  const info = await transport.sendMail({ from, to, subject, html, text });
+  console.log(`[EMAIL] Sent successfully via SMTP — messageId: ${info.messageId}`);
+  return info;
+};
+
+/* ─────────────────────────────────────────────
+   Main sendEmail — tries Brevo API → SMTP → console
+   ───────────────────────────────────────────── */
+const sendEmail = async ({ to, subject, html, text }) => {
+  // 1. Brevo HTTP API (preferred — works everywhere)
+  if (process.env.BREVO_API_KEY) {
     try {
-      const info = await transport.sendMail({ from, to, subject, html, text });
-      console.log(`[EMAIL] Sent successfully — messageId: ${info.messageId}`);
-      return info;
+      return await sendViaBrevoAPI({ to, subject, html, text });
     } catch (err) {
-      console.error(`[EMAIL] SEND FAILED to ${to}:`, err.message);
-      throw err; // Re-throw so callers know it failed
+      console.error(`[EMAIL] Brevo API FAILED to ${to}:`, err.message);
+      // Fall through to SMTP
     }
   }
 
-  // Development fallback — just log
-  console.log(`[EMAIL] (no SMTP) To: ${to} | Subject: ${subject}`);
+  // 2. SMTP fallback (works on local dev, blocked on some hosts)
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+    try {
+      const result = await sendViaSMTP({ to, subject, html, text });
+      if (result) return result;
+    } catch (err) {
+      console.error(`[EMAIL] SMTP FAILED to ${to}:`, err.message);
+      // Fall through to console
+    }
+  }
+
+  // 3. Console fallback
+  console.log(`[EMAIL] (no provider available) To: ${to} | Subject: ${subject}`);
   if (text) console.log(`[EMAIL] Body: ${text.substring(0, 200)}...`);
   return { messageId: `dev-${Date.now()}` };
 };
+
+/* ═════════════════════════════════════════════
+   Email templates
+   ═════════════════════════════════════════════ */
 
 export const sendBookingConfirmation = async (booking, guide) => {
   const isPhysical = booking.visitType === 'physical';
