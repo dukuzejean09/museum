@@ -8,21 +8,21 @@ import { useLanguage } from '../i18n/LanguageContext';
 /* ─── Bilingual narration segments (EN / FR) ─── */
 const SEGMENTS = {
   en: [
-    "Kandt House Museum is not just a building, it is a living story of Rwanda's identity, from ancient geological origins to the vibrant culture of today.",
+    "Kandt House Museum is not just a building, it is a living story of Rwanda's identity, from its rich history to the vibrant culture of today.",
     "Ever wondered what Kigali looked like over a hundred years ago? Doctor Richard Kandt was the first European to settle here, and his story is only the beginning of what this museum holds.",
     "To explore this digital museum, you have two options. Book a visit to get your access code, or if you already have a code, enter it to unlock the full experience right away.",
-    "Once inside, dive into curated exhibitions and follow guided trails that take you through Rwanda's wildlife, history, and cultural heritage, step by step.",
+    "Once inside, dive into curated exhibitions and follow guided trails that take you through Rwanda's history and cultural heritage, step by step.",
     "Point your camera at museum artifacts and watch them come alive through our image-based Augmented Reality experience, bringing history closer than ever before.",
-    "Take quizzes to test what you have learned, read the untold stories behind each exhibition, and let our intelligent multilingual assistant guide you in your own language.",
+    "Discover the untold stories behind each exhibition and explore rich details about every artifact, all presented in your preferred language.",
     "This is not your typical museum visit. Whether you are a student, a curious traveler, or someone discovering Rwanda for the first time, this experience was built for you. Start exploring now.",
   ],
   fr: [
-    "Le Musée de la Maison Kandt n'est pas qu'un simple bâtiment, c'est une histoire vivante de l'identité du Rwanda, depuis ses origines géologiques anciennes jusqu'à la culture vibrante d'aujourd'hui.",
+    "Le Musée de la Maison Kandt n'est pas qu'un simple bâtiment, c'est une histoire vivante de l'identité du Rwanda, depuis son riche passé jusqu'à la culture vibrante d'aujourd'hui.",
     "Vous êtes-vous déjà demandé à quoi ressemblait Kigali il y a plus de cent ans ? Le Docteur Richard Kandt fut le premier Européen à s'y installer, et son histoire n'est que le début de ce que ce musée renferme.",
     "Pour explorer ce musée numérique, vous avez deux options. Réservez une visite pour obtenir votre code d'accès, ou si vous avez déjà un code, saisissez-le pour débloquer l'expérience complète immédiatement.",
-    "Une fois à l'intérieur, plongez dans des expositions organisées et suivez des parcours guidés qui vous emmènent à travers la faune, l'histoire et le patrimoine culturel du Rwanda, étape par étape.",
+    "Une fois à l'intérieur, plongez dans des expositions organisées et suivez des parcours guidés qui vous emmènent à travers l'histoire et le patrimoine culturel du Rwanda, étape par étape.",
     "Pointez votre caméra sur les artefacts du musée et regardez-les prendre vie grâce à notre expérience de Réalité Augmentée basée sur l'image, rapprochant l'histoire comme jamais auparavant.",
-    "Testez vos connaissances avec des quiz, lisez les histoires méconnues derrière chaque exposition, et laissez notre assistant multilingue intelligent vous guider dans votre propre langue.",
+    "Découvrez les histoires méconnues derrière chaque exposition et explorez les détails riches de chaque artefact, le tout présenté dans votre langue préférée.",
     "Ce n'est pas une visite de musée ordinaire. Que vous soyez étudiant, voyageur curieux, ou que vous découvriez le Rwanda pour la première fois, cette expérience a été conçue pour vous. Commencez à explorer maintenant.",
   ],
 };
