@@ -40,13 +40,15 @@ const Trails = () => {
 
  return (
  <div className="page-container">
- <div className="flex items-center gap-3 mb-8">
- <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
- <MapPin size={24} className="text-amber-600" />
+ <div className="page-header">
+ <div className="page-header-left">
+ <div className="page-header-icon">
+ <MapPin size={24} />
  </div>
  <div>
- <h1 className="text-2xl font-bold dark:text-white">{t('trail.title')}</h1>
- <p className="text-slate-500 dark:text-slate-400 text-sm">{t('trail.subtitle')}</p>
+ <h1 className="page-title">{t('trail.title')}</h1>
+ <p className="page-subtitle">{t('trail.subtitle')}</p>
+ </div>
  </div>
  </div>
 
@@ -111,9 +113,9 @@ const Trails = () => {
  ))}
  </div>
  ) : (
- <div className="text-center py-20">
- <Sparkles size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
- <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('common.noData') || 'No trails available'}</p>
+ <div className="empty-state">
+ <Sparkles size={48} className="empty-state-icon" />
+ <p className="empty-state-title">{t('common.noData') || 'No trails available'}</p>
  </div>
  )}
  </div>

@@ -78,12 +78,12 @@ const AdminMessages = () => {
 
  return (
  <div>
- <h1 className="text-2xl font-bold dark:text-white mb-6">Messages</h1>
+ <h1 className="admin-header-title mb-6">Messages</h1>
 
  {messages.length === 0 ? (
- <div className="text-center py-16 text-slate-500 dark:text-slate-400">
- <MessageSquare size={48} className="mx-auto mb-4 opacity-50" />
- <p>No messages yet.</p>
+ <div className="empty-state">
+ <MessageSquare size={48} className="empty-state-icon" />
+ <p className="empty-state-title">No messages yet.</p>
  </div>
  ) : (
  <div className="space-y-4">

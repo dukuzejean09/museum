@@ -76,10 +76,10 @@ const TrailDetail = () => {
  >
  <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
  <div className="container mx-auto">
- <Link to="/trails" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-2 transition">
+ <Link to="/trails" className="back-link">
  <ArrowLeft size={16} /> {t('common.back') || 'Back'}
  </Link>
- <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+ <h1>
  {getLocalized(trail.title)}
  </h1>
  <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
@@ -90,7 +90,7 @@ const TrailDetail = () => {
  </div>
  </ArtifactSlideshow>
  ) : (
- <div className="relative h-64 sm:h-80 overflow-hidden bg-slate-800">
+ <div className="detail-hero">
  {artifact?.image ? (
  <img
  src={imgUrl(artifact.image)}
@@ -102,13 +102,13 @@ const TrailDetail = () => {
  <Sparkles size={60} />
  </div>
  )}
- <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
- <div className="absolute bottom-0 left-0 right-0 p-6">
+ <div className="detail-hero-overlay" />
+ <div className="detail-hero-content">
  <div className="container mx-auto">
- <Link to="/trails" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-2 transition">
+ <Link to="/trails" className="back-link">
  <ArrowLeft size={16} /> {t('common.back') || 'Back'}
  </Link>
- <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+ <h1>
  {getLocalized(trail.title)}
  </h1>
  <div className="flex items-center gap-4 mt-2 text-white/70 text-sm">
@@ -173,8 +173,8 @@ const TrailDetail = () => {
  {isIntro && (
  <div className="max-w-2xl mx-auto space-y-6">
  <div className="card">
- <h2 className="text-xl font-bold dark:text-white mb-3">{t('trail.introduction') || 'Introduction'}</h2>
- <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+ <h2 className="detail-section-title">{t('trail.introduction') || 'Introduction'}</h2>
+ <p className="detail-text">
  {getLocalized(trail.introduction || trail.description)}
  </p>
  <div className="mt-4">
@@ -208,7 +208,7 @@ const TrailDetail = () => {
 
  <button
  onClick={() => goToStop(0)}
- className="w-full py-4 bg-amber-600 text-white rounded-xl font-bold text-lg hover:bg-amber-700 transition flex items-center justify-center gap-2"
+ className="btn-submit flex items-center justify-center gap-2"
  >
  {t('trail.startTrail') || 'Start Trail'} <ChevronRight size={20} />
  </button>
@@ -230,12 +230,12 @@ const TrailDetail = () => {
  )}
  <div className="p-6">
  {artifact.category && (
- <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
+ <span className="tag" style={{ textTransform: 'uppercase' }}>{artifact.category}</span>
  )}
- <h2 className="text-xl font-bold dark:text-white mt-1">
+ <h2 className="detail-section-title mt-1">
  {getLocalized(artifact.name)}
  </h2>
- <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed">
+ <p className="mt-3 detail-text">
  {getLocalized(artifact.description)}
  </p>
 
@@ -272,7 +272,7 @@ const TrailDetail = () => {
  <div className="flex items-center justify-between gap-4">
  <button
  onClick={() => goToStop(currentStop - 1)}
- className="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition font-medium"
+ className="btn btn-secondary btn-md"
  >
  <ChevronLeft size={18} /> {currentStop === 0 ? 'Intro' : `Stop ${currentStop}`}
  </button>
@@ -280,7 +280,7 @@ const TrailDetail = () => {
  {currentStop < totalStops - 1 ? (
  <button
  onClick={() => goToStop(currentStop + 1)}
- className="flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition font-medium"
+ className="btn btn-primary btn-md"
  >
  Stop {currentStop + 2} <ChevronRight size={18} />
  </button>

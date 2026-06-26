@@ -44,31 +44,31 @@ const AdminGuides = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Guides</h1>
+      <div className="admin-header">
+        <h1 className="admin-header-title">Guides</h1>
         <Link
           to="/admin/guides/new"
-          className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition font-medium"
+          className="btn btn-primary btn-md"
         >
           <Plus size={20} /> Add Guide
         </Link>
       </div>
 
       <div className="card overflow-hidden !p-0">
-        <table className="w-full">
-          <thead className="bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-700">
+        <table className="admin-table">
+          <thead>
             <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Image</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Name</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Bio</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Languages</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Bio</th>
+              <th>Languages</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+          <tbody>
             {guides.map((guide) => (
-              <tr key={guide._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
-                <td className="px-6 py-4">
+              <tr key={guide._id}>
+                <td>
                   {guide.imageUrl ? (
                     <img
                       src={guide.imageUrl?.startsWith('http') ? guide.imageUrl : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${guide.imageUrl}`}
@@ -81,22 +81,22 @@ const AdminGuides = () => {
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">{guide.name}</td>
-                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 max-w-xs truncate">{guide.bio}</td>
-                <td className="px-6 py-4">
+                <td className="td-bold">{guide.name}</td>
+                <td className="td-muted max-w-xs truncate">{guide.bio}</td>
+                <td>
                   <div className="flex flex-wrap gap-1">
                     {guide.languages?.map((lang) => (
-                      <span key={lang} className="px-2 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">
+                      <span key={lang} className="tag">
                         {lang}
                       </span>
                     ))}
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
+                <td>
+                  <div className="flex items-center gap-1">
                     <Link
                       to={`/admin/guides/edit/${guide._id}`}
-                      className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
+                      className="action-btn action-btn-edit"
                       title="Edit"
                     >
                       <Edit size={18} />
@@ -104,7 +104,7 @@ const AdminGuides = () => {
                     {isAdmin && (
                       <button
                         onClick={() => handleDelete(guide._id, guide.name)}
-                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+                        className="action-btn action-btn-delete"
                         title="Delete"
                       >
                         <Trash2 size={18} />
@@ -116,7 +116,7 @@ const AdminGuides = () => {
             ))}
             {guides.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
+                <td colSpan="5" className="td-empty">
                   No guides found. Add your first guide!
                 </td>
               </tr>

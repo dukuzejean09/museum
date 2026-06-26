@@ -49,24 +49,24 @@ const Artifacts = () => {
 
  return (
  <div className="page-container">
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
- <div className="flex items-center gap-3">
- <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
- <Sparkles size={24} className="text-amber-600" />
+ <div className="page-header">
+ <div className="page-header-left">
+ <div className="page-header-icon">
+ <Sparkles size={24} />
  </div>
  <div>
- <h1 className="text-2xl font-bold dark:text-white">{t('artifact.title')}</h1>
- <p className="text-slate-500 dark:text-slate-400 text-sm">{t('artifact.subtitle')}</p>
+ <h1 className="page-title">{t('artifact.title')}</h1>
+ <p className="page-subtitle">{t('artifact.subtitle')}</p>
  </div>
  </div>
- <div className="relative w-full sm:w-72">
- <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+ <div className="search-wrap">
+ <Search size={18} className="search-icon" />
  <input
  type="text"
  placeholder={t('common.search') + '...'}
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="form-input pl-10"
+ className="form-input"
  />
  </div>
  </div>
@@ -76,14 +76,14 @@ const Artifacts = () => {
  <CardGridSkeleton />
  ) : artifacts.length > 0 ? (
  <>
- <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+ <div className="grid-cards-4">
  {artifacts.map((artifact) => (
  <Link
  key={artifact._id}
  to={`/artifacts/${artifact._id}`}
  className="card-flush group hover:shadow-lg transition-all duration-300"
  >
- <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-800">
+ <div className="card-image">
  {artifact.image ? (
  <img
  src={imageUrl(artifact.image)}
@@ -96,16 +96,16 @@ const Artifacts = () => {
  </div>
  )}
  {artifact.category && (
- <span className="absolute top-3 left-3 bg-amber-600 text-white px-2 py-0.5 rounded text-xs font-semibold uppercase">
+ <span className="badge badge-primary" style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', textTransform: 'uppercase' }}>
  {artifact.category}
  </span>
  )}
  </div>
- <div className="p-4">
- <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
+ <div className="card-body">
+ <h3 className="card-title">
  {getLocalized(artifact.name)}
  </h3>
- <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+ <p className="card-desc">
  {getLocalized(artifact.description)}
  </p>
  </div>
@@ -115,12 +115,8 @@ const Artifacts = () => {
 
  {/* Pagination */}
  {totalPages > 1 && (
- <div className="flex items-center justify-center gap-2 mt-10">
- <button
- onClick={() => setPage(p => Math.max(1, p - 1))}
- disabled={page === 1}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
- >
+ <div className="pagination">
+ <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="pagination-btn">
  <ChevronLeft size={18} />
  </button>
  {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -128,32 +124,21 @@ const Artifacts = () => {
  .map((p, i, arr) => (
  <span key={p}>
  {i > 0 && arr[i - 1] < p - 1 && <span className="px-1 text-slate-400">...</span>}
- <button
- onClick={() => setPage(p)}
- className={`w-9 h-9 rounded-lg text-sm font-medium transition ${
- p === page
- ? 'bg-amber-600 text-white'
- : 'border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
- }`}
- >
+ <button onClick={() => setPage(p)} className={`pagination-num ${p === page ? 'active' : ''}`}>
  {p}
  </button>
  </span>
  ))}
- <button
- onClick={() => setPage(p => Math.min(totalPages, p + 1))}
- disabled={page === totalPages}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
- >
+ <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="pagination-btn">
  <ChevronRight size={18} />
  </button>
  </div>
  )}
  </>
  ) : (
- <div className="text-center py-20">
- <Sparkles size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
- <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('search.noResults') || 'No results found'}</p>
+ <div className="empty-state">
+ <Sparkles size={48} className="empty-state-icon" />
+ <p className="empty-state-title">{t('search.noResults') || 'No results found'}</p>
  </div>
  )}
  </div>

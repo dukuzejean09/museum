@@ -48,17 +48,17 @@ const StoryDetail = () => {
  return (
  <div>
  {/* Hero */}
- <div className="relative h-72 sm:h-96 overflow-hidden bg-slate-800">
+ <div className="detail-hero">
  <div className="w-full h-full flex items-center justify-center text-slate-500">
  <BookOpen size={60} />
  </div>
- <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
- <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+ <div className="detail-hero-overlay" />
+ <div className="detail-hero-content">
  <div className="container mx-auto">
- <Link to="/stories" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-3 transition">
+ <Link to="/stories" className="back-link">
  <ArrowLeft size={16} /> {t('common.back') || 'Back'}
  </Link>
- <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+ <h1>
  {getLocalized(story.title)}
  </h1>
  </div>
@@ -66,14 +66,14 @@ const StoryDetail = () => {
  </div>
 
  <div className="page-container">
- <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+ <div className="detail-layout">
  {/* Main Content */}
  <div className="space-y-8">
  {/* Story Content */}
  {contentText && (
  <div>
- <h2 className="text-xl font-bold mb-3 dark:text-white">{t('story.content') || 'Story'}</h2>
- <div className="text-slate-700 dark:text-slate-300 leading-relaxed space-y-4">
+ <h2 className="detail-section-title">{t('story.content') || 'Story'}</h2>
+ <div className="detail-text space-y-4">
  {contentText.split('\n').filter(p => p.trim()).map((paragraph, i) => (
  <p key={i}>{paragraph}</p>
  ))}
@@ -94,13 +94,13 @@ const StoryDetail = () => {
 
  {/* Linked Exhibition */}
  {story.exhibitionId && (
- <div className="card p-5">
- <h3 className="font-semibold mb-4 dark:text-white">{t('story.exhibition') || 'Exhibition'}</h3>
+ <div className="sidebar-card">
+ <h3 className="sidebar-card-title">{t('story.exhibition') || 'Exhibition'}</h3>
  <Link
  to={`/exhibitions/${story.exhibitionId._id || story.exhibitionId}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
+ className="sidebar-link"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
+ <div className="sidebar-thumb">
  {story.exhibitionId.coverImage ? (
  <img src={imgUrl(story.exhibitionId.coverImage)} alt="" className="w-full h-full object-cover" />
  ) : (

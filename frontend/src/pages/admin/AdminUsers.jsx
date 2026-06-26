@@ -112,11 +112,11 @@ const AdminUsers = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">User Management</h1>
+      <div className="admin-header">
+        <h1 className="admin-header-title">User Management</h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition font-medium"
+          className="btn btn-primary btn-md"
         >
           <UserPlus size={20} /> Add User
         </button>
@@ -260,14 +260,14 @@ const AdminUsers = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition font-medium disabled:opacity-50"
+                className="btn btn-primary btn-md"
               >
                 {submitting ? 'Creating...' : 'Create User'}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowAddForm(false); setFormErrors({}); }}
-                className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-6 py-2 rounded-lg transition font-medium"
+                className="btn btn-secondary btn-md"
               >
                 Cancel
               </button>

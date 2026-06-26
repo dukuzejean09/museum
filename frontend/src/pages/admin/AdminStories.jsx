@@ -53,11 +53,11 @@ const AdminStories = () => {
 
  return (
  <div>
- <div className="flex justify-between items-center mb-6">
- <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Stories</h1>
+ <div className="admin-header">
+ <h1 className="admin-header-title">Stories</h1>
  <Link
  to="/admin/stories/new"
- className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition font-medium"
+ className="btn btn-primary btn-md"
  >
  <Plus size={20} /> Create Story
  </Link>

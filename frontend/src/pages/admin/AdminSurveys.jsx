@@ -55,7 +55,7 @@ const AdminSurveys = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6">Visitor Surveys</h1>
+      <h1 className="admin-header-title mb-6">Visitor Surveys</h1>
 
       {/* Stats Cards */}
       {stats && (

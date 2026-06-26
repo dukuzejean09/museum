@@ -133,9 +133,9 @@ const EvaluationDashboard = () => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Research Evaluation</h1>
-        <button onClick={handleExport} className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl transition font-medium text-sm">
+      <div className="admin-header">
+        <h1 className="admin-header-title">Research Evaluation</h1>
+        <button onClick={handleExport} className="btn btn-md" style={{ background: '#059669', color: '#fff' }}>
           <Download size={16} /> Export CSV
         </button>
       </div>

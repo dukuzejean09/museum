@@ -151,7 +151,7 @@ const GuideProfile = () => {
 
  return (
  <div className="max-w-3xl mx-auto">
- <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
+ <h1 className="admin-header-title mb-6 flex items-center gap-3">
  <User size={28} />
  My Guide Profile
  </h1>
@@ -287,7 +287,7 @@ const GuideProfile = () => {
  <button
  type="submit"
  disabled={saving}
- className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-6 py-2.5 rounded-xl transition font-medium disabled:opacity-50"
+ className="btn btn-primary btn-lg"
  >
  <Save size={18} />
  {saving ? 'Saving...' : 'Save Profile'}

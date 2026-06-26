@@ -17,13 +17,13 @@ const NotFound = () => {
       <div className="flex items-center justify-center gap-4">
         <button
           onClick={() => window.history.back()}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition font-medium"
+          className="btn btn-outline btn-md"
         >
           <ArrowLeft size={18} /> {t('common.back') || 'Go Back'}
         </button>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white transition font-medium"
+          className="btn btn-primary btn-md"
         >
           <Home size={18} /> {t('nav.home') || 'Home'}
         </Link>

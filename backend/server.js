@@ -218,6 +218,7 @@ console.log('WebSocket server initialized');
 
 const server = httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`[CONFIG] BREVO_API_KEY: ${process.env.BREVO_API_KEY ? '****set****' : '⚠ NOT SET — emails will fall back to SMTP'}`);
   console.log(`[CONFIG] SMTP_HOST: ${process.env.SMTP_HOST || '(not set)'}`);
   console.log(`[CONFIG] SMTP_USER: ${process.env.SMTP_USER ? process.env.SMTP_USER.substring(0, 8) + '...' : '(not set)'}`);
   console.log(`[CONFIG] SMTP_PASS: ${process.env.SMTP_PASS ? '****set****' : '(not set)'}`);

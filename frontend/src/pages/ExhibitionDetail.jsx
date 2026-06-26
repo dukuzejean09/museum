@@ -103,12 +103,12 @@ const ExhibitionDetail = () => {
  interval={5000}
  overlay="bg-gradient-to-t from-black/80 via-black/30 to-transparent"
  >
- <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 z-10">
+ <div className="detail-hero-content">
  <div className="container mx-auto">
- <Link to="/exhibitions" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-3 transition">
+ <Link to="/exhibitions" className="back-link">
  <ArrowLeft size={16} /> {t('common.back')}
  </Link>
- <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+ <h1>
  {getLocalized(exhibition.title)}
  </h1>
  <p className="text-slate-300 mt-2 max-w-2xl line-clamp-2">
@@ -136,7 +136,7 @@ const ExhibitionDetail = () => {
  ))}
  </div>
 
- <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+ <div className="detail-layout">
  {/* Main Content */}
  <div>
  {/* Overview Tab */}
@@ -144,8 +144,8 @@ const ExhibitionDetail = () => {
  <div className="space-y-8">
  {getLocalized(exhibition.fullDescription || exhibition.description) && (
  <div>
- <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.description')}</h2>
- <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+ <h2 className="detail-section-title">{t('exhibits.description')}</h2>
+ <p className="detail-text whitespace-pre-line">
  {getLocalized(exhibition.fullDescription || exhibition.description)}
  </p>
  </div>
@@ -153,8 +153,8 @@ const ExhibitionDetail = () => {
 
  {getLocalized(exhibition.historicalSignificance) && (
  <div>
- <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext')}</h2>
- <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+ <h2 className="detail-section-title">{t('exhibits.historicalContext')}</h2>
+ <p className="detail-text whitespace-pre-line">
  {getLocalized(exhibition.historicalSignificance)}
  </p>
  </div>
@@ -163,7 +163,7 @@ const ExhibitionDetail = () => {
  {/* Timeline */}
  {exhibition.timeline?.length > 0 && (
  <div>
- <h2 className="text-xl font-bold mb-4 dark:text-white">{t('exhibition.timeline')}</h2>
+ <h2 className="detail-section-title">{t('exhibition.timeline')}</h2>
  <div className="relative border-l-2 border-amber-300 dark:border-amber-700 ml-4 space-y-6">
  {exhibition.timeline.map((entry, i) => (
  <div key={i} className="relative pl-8">
@@ -182,7 +182,7 @@ const ExhibitionDetail = () => {
  {exhibition.tags?.length > 0 && (
  <div className="flex flex-wrap gap-2">
  {exhibition.tags.map((tag, i) => (
- <span key={i} className="inline-flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-sm">
+ <span key={i} className="tag inline-flex items-center gap-1">
  <Tag size={12} /> {tag}
  </span>
  ))}
@@ -202,21 +202,21 @@ const ExhibitionDetail = () => {
  to={`/artifacts/${artifact._id}`}
  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition group"
  >
- <div className="h-40 overflow-hidden bg-slate-100 dark:bg-slate-800">
+ <div className="card-image" style={{ height: '10rem' }}>
  {artifact.image ? (
  <img src={imgUrl(artifact.image)} alt={getLocalized(artifact.name)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
  ) : (
- <div className="w-full h-full flex items-center justify-center text-slate-400"><Sparkles size={32} /></div>
+ <div className="card-image-placeholder"><Sparkles size={32} /></div>
  )}
  </div>
- <div className="p-4">
+ <div className="card-body">
  {artifact.category && (
- <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">{artifact.category}</span>
+ <span className="tag" style={{ textTransform: 'uppercase' }}>{artifact.category}</span>
  )}
- <h3 className="font-bold dark:text-white mt-1 group-hover:text-amber-600 transition-colors">
+ <h3 className="card-title mt-1">
  {getLocalized(artifact.name)}
  </h3>
- <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
+ <p className="card-desc">
  {getLocalized(artifact.description)}
  </p>
  </div>
@@ -224,9 +224,9 @@ const ExhibitionDetail = () => {
  ))}
  </div>
  ) : (
- <div className="text-center py-16 text-slate-500 dark:text-slate-400">
- <Sparkles size={40} className="mx-auto mb-3 opacity-40" />
- <p>{t('common.noData')}</p>
+ <div className="empty-state">
+ <Sparkles size={40} className="empty-state-icon" />
+ <p className="empty-state-title">{t('common.noData')}</p>
  </div>
  )}
  </div>
@@ -247,9 +247,9 @@ const ExhibitionDetail = () => {
  ))}
  </div>
  ) : (
- <div className="text-center py-16 text-slate-500 dark:text-slate-400">
- <BookOpen size={40} className="mx-auto mb-3 opacity-40" />
- <p>{t('common.noData')}</p>
+ <div className="empty-state">
+ <BookOpen size={40} className="empty-state-icon" />
+ <p className="empty-state-title">{t('common.noData')}</p>
  </div>
  )}
  </div>
@@ -259,11 +259,11 @@ const ExhibitionDetail = () => {
  {activeTab === 'gallery' && (
  <div>
  {allImages.length > 0 ? (
- <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+ <div className="gallery-grid">
  {allImages.map((img, i) => (
  <div
  key={i}
- className="aspect-square rounded-xl overflow-hidden cursor-pointer group bg-slate-100 dark:bg-slate-800"
+ className="gallery-item"
  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
  >
  <img src={imgUrl(img)} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -271,9 +271,9 @@ const ExhibitionDetail = () => {
  ))}
  </div>
  ) : (
- <div className="text-center py-16 text-slate-500 dark:text-slate-400">
- <ImageIcon size={40} className="mx-auto mb-3 opacity-40" />
- <p>{t('common.noData')}</p>
+ <div className="empty-state">
+ <ImageIcon size={40} className="empty-state-icon" />
+ <p className="empty-state-title">{t('common.noData')}</p>
  </div>
  )}
  </div>
@@ -294,7 +294,7 @@ const ExhibitionDetail = () => {
  <div className="relative">
  <button
  onClick={() => setShowShare(!showShare)}
- className="w-full flex items-center justify-center gap-2 bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-700 transition font-semibold"
+ className="btn btn-primary btn-lg w-full"
  >
  <Share2 size={18} />
  {t('exhibits.share')}
@@ -313,16 +313,16 @@ const ExhibitionDetail = () => {
 
  {/* Related Exhibitions */}
  {relatedExhibitions.length > 0 && (
- <div className="card p-5">
- <h3 className="font-semibold mb-4 dark:text-white">{t('exhibition.related')}</h3>
+ <div className="sidebar-card">
+ <h3 className="sidebar-card-title">{t('exhibition.related')}</h3>
  <div className="space-y-3">
  {relatedExhibitions.map(rel => (
  <Link
  key={rel._id}
  to={`/exhibitions/${rel._id}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
+ className="sidebar-link"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
+ <div className="sidebar-thumb">
  {(rel.coverImage || rel.media?.images?.[0]) ? (
  <img src={imgUrl(rel.coverImage || rel.media?.images?.[0])} alt="" className="w-full h-full object-cover" />
  ) : (

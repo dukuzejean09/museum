@@ -60,24 +60,24 @@ const Exhibitions = () => {
 
  return (
  <div className="page-container">
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
- <div className="flex items-center gap-3">
- <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
- <Sparkles size={24} className="text-amber-600" />
+ <div className="page-header">
+ <div className="page-header-left">
+ <div className="page-header-icon">
+ <Sparkles size={24} />
  </div>
  <div>
- <h1 className="text-2xl font-bold dark:text-white">{t('exhibition.title')}</h1>
- <p className="text-slate-500 dark:text-slate-400 text-sm">{t('exhibition.subtitle')}</p>
+ <h1 className="page-title">{t('exhibition.title')}</h1>
+ <p className="page-subtitle">{t('exhibition.subtitle')}</p>
  </div>
  </div>
- <div className="relative w-full sm:w-72">
- <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+ <div className="search-wrap">
+ <Search size={18} className="search-icon" />
  <input
  type="text"
  placeholder={t('common.search') + '...'}
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="form-input pl-10"
+ className="form-input"
  />
  </div>
  </div>
@@ -87,14 +87,14 @@ const Exhibitions = () => {
  <CardGridSkeleton count={6} />
  ) : exhibitions.length > 0 ? (
  <>
- <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+ <div className="grid-cards">
  {exhibitions.map((ex) => (
  <Link
  key={ex._id}
  to={`/exhibitions/${ex._id}`}
  className="card-flush group hover:shadow-lg transition-all duration-300"
  >
- <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+ <div className="card-image">
  {ex.artifacts?.length > 0 ? (
  <ArtifactSlideshowCard
  artifacts={ex.artifacts}
@@ -113,33 +113,31 @@ const Exhibitions = () => {
  </div>
  )}
  {ex.artifacts?.length > 0 && (
- <span className="absolute top-3 right-3 bg-amber-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow">
+ <span className="badge badge-primary" style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}>
  {ex.artifacts.length} {t('exhibition.artifacts')}
  </span>
  )}
  {ex.status && ex.status !== 'published' && isAdmin && (
- <span className={`absolute top-3 left-3 px-2 py-0.5 rounded text-xs font-medium ${
- ex.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
- ex.status === 'archived' ? 'bg-slate-200 text-slate-700' :
- 'bg-blue-100 text-blue-800'
- }`}>
+ <span className={`badge ${
+ ex.status === 'draft' ? 'status-draft' :
+ ex.status === 'archived' ? 'status-archived' :
+ 'status-published'
+ }`} style={{ position: 'absolute', top: '0.75rem', left: '0.75rem' }}>
  {t(`common.${ex.status}`) || ex.status}
  </span>
  )}
  </div>
- <div className="p-5">
- <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
+ <div className="card-body">
+ <h3 className="card-title">
  {getLocalized(ex.title)}
  </h3>
- <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+ <p className="card-desc">
  {getLocalized(ex.shortDescription || ex.description)}
  </p>
  {ex.tags?.length > 0 && (
  <div className="mt-3 flex flex-wrap gap-1.5">
  {ex.tags.slice(0, 3).map((tag, i) => (
- <span key={i} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-xs">
- {tag}
- </span>
+ <span key={i} className="tag">{tag}</span>
  ))}
  </div>
  )}
@@ -150,11 +148,11 @@ const Exhibitions = () => {
 
  {/* Pagination */}
  {totalPages > 1 && (
- <div className="flex items-center justify-center gap-2 mt-10">
+ <div className="pagination">
  <button
  onClick={() => setPage(p => Math.max(1, p - 1))}
  disabled={page === 1}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
+ className="pagination-btn"
  >
  <ChevronLeft size={18} />
  </button>
@@ -165,11 +163,7 @@ const Exhibitions = () => {
  {i > 0 && arr[i - 1] < p - 1 && <span className="px-1 text-slate-400">...</span>}
  <button
  onClick={() => setPage(p)}
- className={`w-9 h-9 rounded-lg text-sm font-medium transition ${
- p === page
- ? 'bg-amber-600 text-white'
- : 'border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
- }`}
+ className={`pagination-num ${p === page ? 'active' : ''}`}
  >
  {p}
  </button>
@@ -178,7 +172,7 @@ const Exhibitions = () => {
  <button
  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
  disabled={page === totalPages}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
+ className="pagination-btn"
  >
  <ChevronRight size={18} />
  </button>
@@ -186,10 +180,10 @@ const Exhibitions = () => {
  )}
  </>
  ) : (
- <div className="text-center py-20">
- <Sparkles size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
- <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('search.noResults')}</p>
- <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">{t('common.noData')}</p>
+ <div className="empty-state">
+ <Sparkles size={48} className="empty-state-icon" />
+ <p className="empty-state-title">{t('search.noResults')}</p>
+ <p className="empty-state-desc">{t('common.noData')}</p>
  </div>
  )}
  </div>

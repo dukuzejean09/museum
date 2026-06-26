@@ -70,8 +70,8 @@ const AnalyticsInsights = () => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Analytics Insights</h1>
+      <div className="admin-header">
+        <h1 className="admin-header-title">Analytics Insights</h1>
         <div className="flex items-center gap-2">
           <Calendar size={16} className="text-slate-400" />
           <select

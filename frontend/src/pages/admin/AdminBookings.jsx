@@ -130,8 +130,8 @@ const AdminBookings = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bookings & Access Requests</h1>
+      <div className="admin-header">
+        <h1 className="admin-header-title">Bookings & Access Requests</h1>
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
           {[
             { key: 'all', label: 'All' },

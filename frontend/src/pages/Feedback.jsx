@@ -88,11 +88,11 @@ const Feedback = () => {
  <h2 className="text-2xl font-bold dark:text-white mb-2">{t('survey.thanks')}</h2>
  <p className="text-slate-600 dark:text-slate-400 mb-6">{t('survey.thanksMsg')}</p>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
- <Link to="/exhibitions" className="inline-flex items-center justify-center gap-2 bg-amber-600 text-white px-6 py-2 rounded-xl hover:bg-amber-700 transition font-semibold">
+ <Link to="/exhibitions" className="btn btn-primary btn-md">
  <Sparkles size={16} /> {t('nav.exhibitions')}
  </Link>
- <Link to="/map" className="inline-flex items-center justify-center gap-2 border border-amber-600 text-amber-700 dark:text-amber-400 px-6 py-2 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition font-semibold">
- <MapPin size={16} /> {t('nav.map')}
+ <Link to="/artifacts" className="btn btn-outline-primary btn-md">
+ <MapPin size={16} /> {t('nav.artifacts')}
  </Link>
  </div>
  </div>
@@ -108,11 +108,11 @@ const Feedback = () => {
  return (
  <div className="page-container max-w-2xl">
  <div className="text-center mb-8">
- <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-4">
- <ClipboardList size={32} className="text-amber-600" />
+ <div className="page-header-icon mx-auto mb-4" style={{ width: '4rem', height: '4rem' }}>
+ <ClipboardList size={32} />
  </div>
- <h1 className="text-3xl font-bold dark:text-white">{t('feedback.title')}</h1>
- <p className="text-slate-600 dark:text-slate-400 mt-2">{t('feedback.subtitle')}</p>
+ <h1 className="page-title">{t('feedback.title')}</h1>
+ <p className="page-subtitle mt-2">{t('feedback.subtitle')}</p>
  </div>
 
  {/* Tabs */}
@@ -176,7 +176,7 @@ const Feedback = () => {
  placeholder={t('survey.commentsPlaceholder')} className={inputClass} />
  </div>
 
- <button type="submit" disabled={submitting} className="w-full bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+ <button type="submit" disabled={submitting} className="btn-submit">
  {submitting ? t('common.submitting') : t('survey.submit')}
  </button>
  </form>
@@ -198,7 +198,7 @@ const Feedback = () => {
  {exhibitions.map(e => <option key={e._id} value={e._id}>{getLocalized(e.title)}</option>)}
  </select>
  <textarea name="message" rows="5" placeholder={t('chat.message')} value={msgForm.message} onChange={handleMsgChange} required className={inputClass}></textarea>
- <button type="submit" disabled={submitting} className="w-full bg-amber-600 text-white px-6 py-3 rounded-xl hover:bg-amber-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+ <button type="submit" disabled={submitting} className="btn-submit">
  {submitting ? t('common.submitting') : t('chat.send')}
  </button>
  </form>

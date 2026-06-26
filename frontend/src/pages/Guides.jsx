@@ -68,13 +68,15 @@ const Guides = () => {
 
  return (
  <div className="page-container">
- <div className="flex items-center gap-3 mb-8">
- <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
- <Users size={24} className="text-amber-600" />
+ <div className="page-header">
+ <div className="page-header-left">
+ <div className="page-header-icon">
+ <Users size={24} />
  </div>
  <div>
- <h1 className="text-2xl font-bold dark:text-white">{t('guides.title')}</h1>
- <p className="text-slate-500 dark:text-slate-400 text-sm">{t('booking.subtitle')}</p>
+ <h1 className="page-title">{t('guides.title')}</h1>
+ <p className="page-subtitle">{t('booking.subtitle')}</p>
+ </div>
  </div>
  </div>
 
@@ -83,27 +85,27 @@ const Guides = () => {
  )}
 
  {!loading && guides.length === 0 && (
- <div className="text-center py-20 text-slate-500 dark:text-slate-400">
- <Users size={48} className="mx-auto mb-4 opacity-50" />
- <p>No guides available at the moment.</p>
+ <div className="empty-state">
+ <Users size={48} className="empty-state-icon" />
+ <p className="empty-state-title">No guides available at the moment.</p>
  </div>
  )}
 
  {/* Guide Cards */}
- <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+ <div className="grid-cards">
  {guides.map((g) => (
  <div key={g._id} className="card-flush">
  {g.imageUrl && (
  <img src={imageUrl(g.imageUrl)} alt={g.name} className="w-full h-48 object-cover" />
  )}
- <div className="p-5">
- <h2 className="text-xl font-bold dark:text-white">{g.name}</h2>
- <p className="text-slate-600 dark:text-slate-300 mt-2">{g.bio}</p>
+ <div className="card-body">
+ <h2 className="card-title">{g.name}</h2>
+ <p className="card-desc">{g.bio}</p>
  <div className="mt-3">
  <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('guides.languages')}:</p>
  <div className="flex flex-wrap gap-1">
  {g.languages.map((lang, i) => (
- <span key={i} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-xs">
+ <span key={i} className="tag">
  {lang}
  </span>
  ))}
@@ -111,7 +113,7 @@ const Guides = () => {
  </div>
  <button
  onClick={() => openBooking(g)}
- className="mt-4 inline-flex items-center gap-1.5 text-sm bg-amber-600 text-white px-4 py-2 rounded-xl hover:bg-amber-700 transition font-medium"
+ className="btn btn-primary btn-md mt-4"
  >
  <CalendarDays size={14} /> {t('nav.bookTour')}
  </button>
@@ -122,34 +124,34 @@ const Guides = () => {
 
  {/* Booking Modal */}
  {bookingGuide && (
- <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeBooking}>
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
- <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+ <div className="modal-overlay" onClick={closeBooking}>
+ <div className="modal-box" onClick={e => e.stopPropagation()}>
+ <div className="modal-header">
  <div>
  <h2 className="text-xl font-bold dark:text-white">{t('booking.title')}</h2>
  <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">{t('booking.with')} {bookingGuide.name}</p>
  </div>
- <button onClick={closeBooking} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 transition">
+ <button onClick={closeBooking} className="btn btn-ghost btn-sm">
  <X size={20} />
  </button>
  </div>
 
  {submitted ? (
- <div className="p-8 text-center">
+ <div className="modal-body text-center">
  <CheckCircle size={64} className="text-green-500 mx-auto mb-4" />
  <h3 className="text-xl font-bold dark:text-white mb-2">{t('booking.submitted')}</h3>
  <p className="text-slate-600 dark:text-slate-400 mb-6">{t('booking.submittedMsg')}</p>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
- <button onClick={closeBooking} className="bg-amber-600 text-white px-6 py-2 rounded-xl hover:bg-amber-700 transition font-semibold">
+ <button onClick={closeBooking} className="btn btn-primary btn-md">
  {t('booking.bookAnother')}
  </button>
- <Link to="/map" onClick={closeBooking} className="inline-flex items-center justify-center gap-2 border border-amber-600 text-amber-700 dark:text-amber-400 px-6 py-2 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition font-semibold">
+ <Link to="/artifacts" onClick={closeBooking} className="btn btn-outline-primary btn-md">
  <MapPin size={16} /> {t('nav.map')}
  </Link>
  </div>
  </div>
  ) : (
- <form onSubmit={handleSubmit} className="p-6 space-y-4">
+ <form onSubmit={handleSubmit} className="modal-body space-y-4">
  <div className="grid sm:grid-cols-2 gap-4">
  <div>
  <label className="form-label">{t('booking.name')} *</label>
@@ -196,7 +198,7 @@ const Guides = () => {
  className={inputClass} />
  </div>
 
- <button type="submit" disabled={submitting} className="w-full bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+ <button type="submit" disabled={submitting} className="btn-submit">
  {submitting ? t('common.submitting') : t('booking.submit')}
  </button>
  </form>

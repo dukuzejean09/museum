@@ -88,23 +88,23 @@ const AdminTrails = () => {
 
  return (
  <div>
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
- <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Trails</h1>
- <div className="flex items-center gap-3 w-full sm:w-auto">
+ <div className="admin-header">
+ <h1 className="admin-header-title">Trails</h1>
+ <div className="admin-header-actions">
  {/* Search */}
- <div className="relative flex-1 sm:w-64">
- <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+ <div className="search-wrap">
+ <Search size={16} className="search-icon" />
  <input
  type="text"
  value={search}
  onChange={(e) => setSearch(e.target.value)}
  placeholder="Search trails..."
- className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-amber-500"
+ className="form-input"
  />
  </div>
  <Link
  to="/admin/trails/new"
- className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition font-medium whitespace-nowrap"
+ className="btn btn-primary btn-md"
  >
  <Plus size={20} /> Add Trail
  </Link>

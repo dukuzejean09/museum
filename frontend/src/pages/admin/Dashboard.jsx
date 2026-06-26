@@ -57,7 +57,7 @@ const Dashboard = () => {
     <div>
       {/* Welcome header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+        <h1 className="admin-header-title">
           {isAdmin ? 'Welcome to your Dashboard' : 'Welcome to your Dashboard'}
           {displayName && <span className="text-amber-600">, {displayName}</span>}
         </h1>

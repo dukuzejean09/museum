@@ -311,7 +311,7 @@ const TrailForm = () => {
  <ArrowLeft size={20} /> Back to Trails
  </button>
 
- <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
+ <h1 className="admin-header-title mb-6">
  {isEditing ? 'Edit Trail' : 'Create Trail'}
  </h1>
 
@@ -552,7 +552,7 @@ const TrailForm = () => {
  <button
  type="submit"
  disabled={loading}
- className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-6 py-2.5 rounded-xl transition font-medium disabled:opacity-50"
+ className="btn btn-primary btn-lg"
  >
  <Save size={18} />
  {loading ? 'Saving...' : isEditing ? 'Update Trail' : 'Create Trail'}

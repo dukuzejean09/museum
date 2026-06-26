@@ -83,18 +83,18 @@ const AdminArtifacts = () => {
 
  return (
  <div>
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
- <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Artifacts</h1>
- <div className="flex items-center gap-2">
+ <div className="admin-header">
+ <h1 className="admin-header-title">Artifacts</h1>
+ <div className="admin-header-actions">
  <button
  onClick={() => setBulkQrOpen(true)}
- className="flex items-center gap-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-2 rounded-xl transition font-medium text-sm"
+ className="btn btn-outline btn-md"
  >
  <Layers size={16} /> Bulk QR
  </button>
  <Link
  to="/admin/artifacts/new"
- className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition font-medium text-sm"
+ className="btn btn-primary btn-md"
  >
  <Plus size={18} /> Add Artifact
  </Link>

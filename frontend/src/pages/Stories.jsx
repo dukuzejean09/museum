@@ -54,24 +54,24 @@ const Stories = () => {
 
  return (
  <div className="page-container">
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
- <div className="flex items-center gap-3">
- <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
- <BookOpen size={24} className="text-amber-600" />
+ <div className="page-header">
+ <div className="page-header-left">
+ <div className="page-header-icon">
+ <BookOpen size={24} />
  </div>
  <div>
- <h1 className="text-2xl font-bold dark:text-white">{t('story.title')}</h1>
- <p className="text-slate-500 dark:text-slate-400 text-sm">{t('story.subtitle')}</p>
+ <h1 className="page-title">{t('story.title')}</h1>
+ <p className="page-subtitle">{t('story.subtitle')}</p>
  </div>
  </div>
- <div className="relative w-full sm:w-72">
- <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+ <div className="search-wrap">
+ <Search size={18} className="search-icon" />
  <input
  type="text"
  placeholder={t('common.search') + '...'}
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="form-input pl-10"
+ className="form-input"
  />
  </div>
  </div>
@@ -81,14 +81,14 @@ const Stories = () => {
  <CardGridSkeleton />
  ) : stories.length > 0 ? (
  <>
- <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+ <div className="grid-cards">
  {stories.map((story) => (
  <Link
  key={story._id}
  to={`/stories/${story._id}`}
  className="card-flush group hover:shadow-lg transition-all duration-300"
  >
- <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+ <div className="card-image">
  {story.exhibitionId?.artifacts?.length > 0 ? (
    <ArtifactSlideshowCard
      artifacts={story.exhibitionId.artifacts}
@@ -107,11 +107,11 @@ const Stories = () => {
    </div>
  )}
  </div>
- <div className="p-5">
- <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
+ <div className="card-body">
+ <h3 className="card-title">
  {getLocalized(story.title)}
  </h3>
- <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+ <p className="card-desc" style={{ WebkitLineClamp: 3 }}>
  {getLocalized(story.content)}
  </p>
  {story.exhibitionId && (
@@ -126,12 +126,8 @@ const Stories = () => {
 
  {/* Pagination */}
  {totalPages > 1 && (
- <div className="flex items-center justify-center gap-2 mt-10">
- <button
- onClick={() => setPage(p => Math.max(1, p - 1))}
- disabled={page === 1}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
- >
+ <div className="pagination">
+ <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="pagination-btn">
  <ChevronLeft size={18} />
  </button>
  {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -139,33 +135,22 @@ const Stories = () => {
  .map((p, i, arr) => (
  <span key={p}>
  {i > 0 && arr[i - 1] < p - 1 && <span className="px-1 text-slate-400">...</span>}
- <button
- onClick={() => setPage(p)}
- className={`w-9 h-9 rounded-lg text-sm font-medium transition ${
- p === page
- ? 'bg-amber-600 text-white'
- : 'border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
- }`}
- >
+ <button onClick={() => setPage(p)} className={`pagination-num ${p === page ? 'active' : ''}`}>
  {p}
  </button>
  </span>
  ))}
- <button
- onClick={() => setPage(p => Math.min(totalPages, p + 1))}
- disabled={page === totalPages}
- className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition"
- >
+ <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="pagination-btn">
  <ChevronRight size={18} />
  </button>
  </div>
  )}
  </>
  ) : (
- <div className="text-center py-20">
- <BookOpen size={48} className="mx-auto mb-4 text-slate-300 dark:text-slate-600" />
- <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{t('search.noResults') || 'No results found'}</p>
- <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">{t('common.noData') || 'No data available'}</p>
+ <div className="empty-state">
+ <BookOpen size={48} className="empty-state-icon" />
+ <p className="empty-state-title">{t('search.noResults') || 'No results found'}</p>
+ <p className="empty-state-desc">{t('common.noData') || 'No data available'}</p>
  </div>
  )}
  </div>

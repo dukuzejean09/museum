@@ -57,7 +57,7 @@ const ArtifactDetail = () => {
  return (
  <div>
  {/* Hero */}
- <div className="relative h-72 sm:h-96 overflow-hidden bg-slate-800">
+ <div className="detail-hero">
  {allImages[0] ? (
  <img src={imgUrl(allImages[0])} alt={getLocalized(artifact.name)} className="w-full h-full object-cover" />
  ) : (
@@ -65,21 +65,21 @@ const ArtifactDetail = () => {
  <Sparkles size={60} />
  </div>
  )}
- <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
- <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+ <div className="detail-hero-overlay" />
+ <div className="detail-hero-content">
  <div className="container mx-auto">
- <Link to="/artifacts" className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-3 transition">
+ <Link to="/artifacts" className="back-link">
  <ArrowLeft size={16} /> {t('common.back')}
  </Link>
  <div className="flex items-center gap-3 mb-2">
  {artifact.category && (
- <span className="bg-amber-600 text-white px-2.5 py-0.5 rounded text-xs font-semibold uppercase">{artifact.category}</span>
+ <span className="badge badge-primary" style={{ textTransform: 'uppercase' }}>{artifact.category}</span>
  )}
  {artifact.dateCreated && (
  <span className="flex items-center gap-1 text-white/70 text-sm"><Calendar size={14} /> {artifact.dateCreated}</span>
  )}
  </div>
- <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+ <h1>
  {getLocalized(artifact.name)}
  </h1>
  </div>
@@ -87,14 +87,14 @@ const ArtifactDetail = () => {
  </div>
 
  <div className="page-container">
- <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+ <div className="detail-layout">
  {/* Main */}
  <div className="space-y-8">
  {/* Description */}
  {getLocalized(artifact.description) && (
  <div>
- <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.description') || 'Description'}</h2>
- <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+ <h2 className="detail-section-title">{t('exhibits.description') || 'Description'}</h2>
+ <p className="detail-text whitespace-pre-line">
  {getLocalized(artifact.description)}
  </p>
  </div>
@@ -103,8 +103,8 @@ const ArtifactDetail = () => {
  {/* Historical Story */}
  {getLocalized(artifact.historicalStory) && (
  <div>
- <h2 className="text-xl font-bold mb-3 dark:text-white">{t('exhibits.historicalContext') || 'Historical Story'}</h2>
- <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+ <h2 className="detail-section-title">{t('exhibits.historicalContext') || 'Historical Story'}</h2>
+ <p className="detail-text whitespace-pre-line">
  {getLocalized(artifact.historicalStory)}
  </p>
  </div>
@@ -136,12 +136,12 @@ const ArtifactDetail = () => {
  {/* Image Gallery */}
  {allImages.length > 1 && (
  <div>
- <h2 className="text-xl font-bold mb-4 dark:text-white">{t('exhibition.gallery') || 'Gallery'}</h2>
- <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+ <h2 className="detail-section-title">{t('exhibition.gallery') || 'Gallery'}</h2>
+ <div className="gallery-grid">
  {allImages.map((img, i) => (
  <div
  key={i}
- className="aspect-square rounded-xl overflow-hidden cursor-pointer group bg-slate-100 dark:bg-slate-800"
+ className="gallery-item"
  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
  >
  <img src={imgUrl(img)} alt={`Image ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -164,16 +164,16 @@ const ArtifactDetail = () => {
 
  {/* Related Exhibitions */}
  {artifact.exhibitions?.length > 0 && (
- <div className="card p-5">
- <h3 className="font-semibold mb-4 dark:text-white">{t('artifact.inExhibitions') || 'Found in Exhibitions'}</h3>
+ <div className="sidebar-card">
+ <h3 className="sidebar-card-title">{t('artifact.inExhibitions') || 'Found in Exhibitions'}</h3>
  <div className="space-y-3">
  {artifact.exhibitions.map(ex => (
  <Link
  key={ex._id}
  to={`/exhibitions/${ex._id}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
+ className="sidebar-link"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
+ <div className="sidebar-thumb">
  {ex.coverImage ? (
  <img src={imgUrl(ex.coverImage)} alt="" className="w-full h-full object-cover" />
  ) : (
@@ -194,16 +194,16 @@ const ArtifactDetail = () => {
 
  {/* Related Trails */}
  {artifact.trails?.length > 0 && (
- <div className="card p-5">
- <h3 className="font-semibold mb-4 dark:text-white">{t('artifact.inTrails') || 'Featured in Trails'}</h3>
+ <div className="sidebar-card">
+ <h3 className="sidebar-card-title">{t('artifact.inTrails') || 'Featured in Trails'}</h3>
  <div className="space-y-3">
  {artifact.trails.map(trail => (
  <Link
  key={trail._id}
  to={`/trails/${trail._id}`}
- className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group"
+ className="sidebar-link"
  >
- <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-700">
+ <div className="sidebar-thumb">
  {trail.coverImage ? (
  <img src={imgUrl(trail.coverImage)} alt="" className="w-full h-full object-cover" />
  ) : (

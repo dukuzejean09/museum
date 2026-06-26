@@ -111,14 +111,14 @@ const AdminAccessCodes = () => {
 
  return (
  <div>
- <div className="flex items-center justify-between mb-6">
+ <div className="admin-header">
  <div>
- <h1 className="text-2xl font-bold dark:text-white">Access Codes</h1>
- <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">Generate QR codes for visitor access with custom time limits</p>
+ <h1 className="admin-header-title">Access Codes</h1>
+ <p className="page-subtitle">Generate QR codes for visitor access with custom time limits</p>
  </div>
  <button
  onClick={() => setShowForm(!showForm)}
- className="inline-flex items-center gap-2 bg-amber-600 text-white px-4 py-2 rounded-xl hover:bg-amber-700 transition font-medium"
+ className="btn btn-primary btn-md"
  >
  <Plus size={18} /> Generate New Code
  </button>
