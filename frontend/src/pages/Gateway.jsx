@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import GatewayBackgroundVideo from '../components/GatewayBackgroundVideo';
+import GatewayNarrator from '../components/GatewayNarrator';
 
 /* ───────────────────────────────────────────
    Inline SVG: Rwandan hills silhouette
@@ -284,6 +285,9 @@ const Gateway = () => {
     <div className="min-h-screen bg-slate-950/80 flex flex-col relative overflow-hidden">
       {/* ── Cinematic background video layer ── */}
       <GatewayBackgroundVideo overlayOpacity={0.4} />
+
+      {/* ── Welcome narrator — auto-plays on page load ── */}
+      <GatewayNarrator />
 
       {/* ── Floating Imigongo tiles (decorative background) ── */}
       <FloatingTile x={5} y={15} delay={0} />
