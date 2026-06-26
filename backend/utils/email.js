@@ -45,23 +45,50 @@ const sendEmail = async ({ to, subject, html, text }) => {
 };
 
 export const sendBookingConfirmation = async (booking, guide) => {
+  const isPhysical = booking.visitType === 'physical';
+  const dateStr = new Date(booking.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
   return sendEmail({
     to: booking.visitorEmail,
-    subject: `Booking Confirmed — ${booking.referenceNumber}`,
+    subject: `Booking Received — ${booking.referenceNumber}`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #4F46E5;">Your Museum Tour is Confirmed!</h2>
-        <p><strong>Reference:</strong> ${booking.referenceNumber}</p>
-        <p><strong>Guide:</strong> ${guide?.name || 'TBA'}</p>
-        <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
-        <p><strong>Time:</strong> ${booking.time}</p>
-        <p><strong>Group Size:</strong> ${booking.groupSize}</p>
-        <p>We look forward to welcoming you!</p>
-        <hr style="border: none; border-top: 1px solid #eee;" />
-        <p style="color: #888; font-size: 12px;">Best regards,<br/>Kandt House Museum Team</p>
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #FAFAF9; border-radius: 16px; overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); padding: 32px; text-align: center;">
+          <h1 style="color: #F59E0B; margin: 0; font-size: 24px;">🏛 Kandt House Museum</h1>
+          <p style="color: #94A3B8; margin: 8px 0 0; font-size: 14px;">Booking Received</p>
+        </div>
+        <div style="padding: 24px;">
+          <p style="color: #1E293B; font-size: 15px;">Dear <strong>${booking.visitorName}</strong>,</p>
+          <p style="color: #57534E; font-size: 14px; line-height: 1.6;">
+            Thank you for your ${isPhysical ? 'museum tour' : 'online access'} booking! We have received your request and it is now being reviewed.
+          </p>
+
+          <div style="background: white; border: 1px solid #E7E5E4; border-radius: 12px; padding: 16px; margin: 16px 0;">
+            <table style="width: 100%; font-size: 14px; color: #44403C;">
+              <tr><td style="padding: 6px 0; color: #78716C;">Reference</td><td style="padding: 6px 0; font-weight: bold;">${booking.referenceNumber}</td></tr>
+              <tr><td style="padding: 6px 0; color: #78716C;">Visit Type</td><td style="padding: 6px 0;">${isPhysical ? '🚶 In-Person Tour' : '💻 Online Access'}</td></tr>
+              <tr><td style="padding: 6px 0; color: #78716C;">Date</td><td style="padding: 6px 0;">${dateStr}</td></tr>
+              ${isPhysical && booking.time ? `<tr><td style="padding: 6px 0; color: #78716C;">Time</td><td style="padding: 6px 0;">${booking.time}</td></tr>` : ''}
+              ${guide ? `<tr><td style="padding: 6px 0; color: #78716C;">Guide</td><td style="padding: 6px 0;">${guide.name}</td></tr>` : ''}
+              <tr><td style="padding: 6px 0; color: #78716C;">Group Size</td><td style="padding: 6px 0;">${booking.groupSize} ${booking.groupSize === 1 ? 'person' : 'people'}</td></tr>
+            </table>
+          </div>
+
+          <div style="background: #FFF7ED; border: 1px solid #FDE68A; border-radius: 8px; padding: 12px; margin: 16px 0; font-size: 13px; color: #92400E;">
+            <strong>⏳ What's next?</strong>
+            <p style="margin: 8px 0 0; line-height: 1.6;">Your booking is pending confirmation. You will receive another email with your access code and full details once it has been approved.</p>
+          </div>
+
+          <p style="color: #78716C; font-size: 13px; text-align: center; margin-top: 24px;">
+            Need to cancel? Use reference <strong>${booking.referenceNumber}</strong> and your email address.
+          </p>
+        </div>
+        <div style="background: #1E293B; padding: 16px; text-align: center;">
+          <p style="color: #64748B; font-size: 12px; margin: 0;">Kandt House Museum — Kigali, Rwanda</p>
+        </div>
       </div>
     `,
-    text: `Booking ${booking.referenceNumber} confirmed for ${new Date(booking.date).toLocaleDateString()} at ${booking.time}`,
+    text: `Booking ${booking.referenceNumber} received for ${dateStr}${booking.time ? ' at ' + booking.time : ''}. Your booking is pending confirmation. You will receive your access code once approved.`,
   });
 };
 
@@ -198,6 +225,59 @@ export const sendCredentialsEmail = async ({ name, email, username, password, ro
       </div>
     `,
     text: `Your ${roleLabel} account at Kandt House Museum has been created.\nEmail: ${email}\nUsername: ${username}\nPassword: ${password}\nPlease change your password after first login.\nLogin at: ${url}/enter`,
+  });
+};
+
+/**
+ * Send welcome notification to a newly created guide.
+ */
+export const sendGuideWelcomeEmail = async (guide) => {
+  if (!guide.email) return;
+
+  const url = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  return sendEmail({
+    to: guide.email,
+    subject: `Welcome to the Team — Kandt House Museum`,
+    html: `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #FAFAF9; border-radius: 16px; overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); padding: 32px; text-align: center;">
+          <h1 style="color: #F59E0B; margin: 0; font-size: 24px;">🏛 Kandt House Museum</h1>
+          <p style="color: #94A3B8; margin: 8px 0 0; font-size: 14px;">Welcome to the Team!</p>
+        </div>
+        <div style="padding: 24px;">
+          <p style="color: #1E293B; font-size: 15px;">Dear <strong>${guide.name}</strong>,</p>
+          <p style="color: #57534E; font-size: 14px; line-height: 1.6;">
+            You have been added as a <strong>Tour Guide</strong> at Kandt House Museum. We're excited to have you on the team!
+          </p>
+
+          <div style="background: white; border: 1px solid #E7E5E4; border-radius: 12px; padding: 16px; margin: 16px 0;">
+            <table style="width: 100%; font-size: 14px; color: #44403C;">
+              <tr><td style="padding: 6px 0; color: #78716C; width: 120px;">Name</td><td style="padding: 6px 0; font-weight: bold;">${guide.name}</td></tr>
+              ${guide.languages?.length ? `<tr><td style="padding: 6px 0; color: #78716C;">Languages</td><td style="padding: 6px 0;">${guide.languages.join(', ')}</td></tr>` : ''}
+              ${guide.specializations?.length ? `<tr><td style="padding: 6px 0; color: #78716C;">Specializations</td><td style="padding: 6px 0;">${guide.specializations.join(', ')}</td></tr>` : ''}
+            </table>
+          </div>
+
+          <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 12px; margin: 16px 0; font-size: 13px; color: #166534;">
+            <strong>📌 What's next?</strong>
+            <ul style="margin: 8px 0 0; padding-left: 20px; line-height: 1.8;">
+              <li>You will be assigned to visitor bookings based on your availability</li>
+              <li>You will receive notifications when visitors book a tour with you</li>
+              <li>If you have a login account, you can manage your profile and view your schedule</li>
+            </ul>
+          </div>
+
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="${url}" style="display: inline-block; background: #D97706; color: white; padding: 12px 32px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">Visit Museum Platform</a>
+          </div>
+        </div>
+        <div style="background: #1E293B; padding: 16px; text-align: center;">
+          <p style="color: #64748B; font-size: 12px; margin: 0;">Kandt House Museum — Kigali, Rwanda</p>
+        </div>
+      </div>
+    `,
+    text: `Welcome to Kandt House Museum, ${guide.name}! You have been added as a Tour Guide. You will be assigned to visitor bookings based on your availability.`,
   });
 };
 

@@ -71,13 +71,11 @@ export const createBooking = asyncHandler(async (req, res) => {
     groupSize: size,
   });
 
-  // Send confirmation email for physical tours (non-blocking)
-  if (type === 'physical' && guideId) {
-    const guide = await Guide.findById(guideId).lean();
-    sendBookingConfirmation(booking, guide).catch(err => {
-      console.error('Failed to send booking confirmation email:', err.message);
-    });
-  }
+  // Send booking received email for ALL bookings (non-blocking)
+  const guide = guideId ? await Guide.findById(guideId).lean() : null;
+  sendBookingConfirmation(booking, guide).catch(err => {
+    console.error('Failed to send booking confirmation email:', err.message);
+  });
 
   bookingSocket.created(booking);
   notification.toStaff({ type: 'new_booking', message: `New ${type} booking from ${booking.visitorName}`, bookingId: booking._id });

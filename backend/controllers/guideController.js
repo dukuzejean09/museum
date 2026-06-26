@@ -3,6 +3,7 @@ import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
 import { guide as guideSocket } from '../utils/socketEmitter.js';
+import { sendGuideWelcomeEmail } from '../utils/email.js';
 
 // @desc    Get all guides — paginated, filterable
 // @route   GET /api/guides
@@ -49,6 +50,14 @@ export const createGuide = asyncHandler(async (req, res) => {
   }
   const guide = await Guide.create(data);
   guideSocket.created(guide);
+
+  // Send welcome email to the new guide (non-blocking)
+  if (guide.email) {
+    sendGuideWelcomeEmail(guide).catch(err => {
+      console.error('Failed to send guide welcome email:', err.message);
+    });
+  }
+
   res.status(201).json(guide);
 });
 
