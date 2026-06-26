@@ -45,7 +45,7 @@ const AdminGuides = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">Guides</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Guides</h1>
         <Link
           to="/admin/guides/new"
           className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition font-medium"
@@ -56,18 +56,18 @@ const AdminGuides = () => {
 
       <div className="card overflow-hidden !p-0">
         <table className="w-full">
-          <thead className="bg-slate-50 border-b">
+          <thead className="bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-700">
             <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Image</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Name</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Bio</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Languages</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500">Actions</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Image</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Name</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Bio</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Languages</th>
+              <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
             {guides.map((guide) => (
-              <tr key={guide._id} className="hover:bg-slate-50">
+              <tr key={guide._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
                 <td className="px-6 py-4">
                   {guide.imageUrl ? (
                     <img
@@ -76,17 +76,17 @@ const AdminGuides = () => {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 text-xs">
+                    <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 text-xs">
                       No img
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4 font-medium text-slate-800">{guide.name}</td>
-                <td className="px-6 py-4 text-slate-600 max-w-xs truncate">{guide.bio}</td>
+                <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">{guide.name}</td>
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 max-w-xs truncate">{guide.bio}</td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1">
                     {guide.languages?.map((lang) => (
-                      <span key={lang} className="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">
+                      <span key={lang} className="px-2 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">
                         {lang}
                       </span>
                     ))}
@@ -96,7 +96,7 @@ const AdminGuides = () => {
                   <div className="flex items-center gap-2">
                     <Link
                       to={`/admin/guides/edit/${guide._id}`}
-                      className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition"
+                      className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
                       title="Edit"
                     >
                       <Edit size={18} />
@@ -104,7 +104,7 @@ const AdminGuides = () => {
                     {isAdmin && (
                       <button
                         onClick={() => handleDelete(guide._id, guide.name)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
                         title="Delete"
                       >
                         <Trash2 size={18} />
@@ -116,7 +116,7 @@ const AdminGuides = () => {
             ))}
             {guides.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-6 py-12 text-center text-slate-500">
+                <td colSpan="5" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                   No guides found. Add your first guide!
                 </td>
               </tr>
