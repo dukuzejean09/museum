@@ -286,8 +286,7 @@ const Gateway = () => {
       {/* ── Cinematic background video layer ── */}
       <GatewayBackgroundVideo overlayOpacity={0.4} />
 
-      {/* ── Welcome narrator — auto-plays on page load ── */}
-      <GatewayNarrator />
+      {/* Narrator is now inline in the left column */}
 
       {/* ── Floating Imigongo tiles (decorative background) ── */}
       <FloatingTile x={5} y={15} delay={0} />
@@ -334,7 +333,7 @@ const Gateway = () => {
           {/* Radial glow — subtle, transparent */}
           <div className="absolute inset-0 bg-gradient-to-b from-amber-900/5 via-transparent to-transparent" />
 
-          {/* Branding content */}
+          {/* Branding + inline narrator */}
           <div className="relative z-10 px-6 sm:px-10 lg:px-14 pt-8 lg:pt-0 lg:pb-0 flex flex-col justify-center flex-1">
             <div className="max-w-md mx-auto lg:mx-0">
               <div className="flex items-start gap-4 mb-6">
@@ -348,26 +347,13 @@ const Gateway = () => {
                   </h1>
                 </div>
               </div>
-              <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-6 lg:mb-8">
+              <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-6">
                 {t('gateway.subtitle')}
               </p>
 
-              {/* Cultural highlights */}
-              <div className="hidden lg:grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-transparent border border-white/10 rounded-xl p-3 flex items-center gap-3">
-                  <Mountain size={20} className="text-amber-500 shrink-0" />
-                  <div>
-                    <p className="text-white text-xs font-semibold">Land of a Thousand Hills</p>
-                    <p className="text-slate-400 text-[11px]">Rwanda's natural heritage</p>
-                  </div>
-                </div>
-                <div className="bg-transparent border border-white/10 rounded-xl p-3 flex items-center gap-3">
-                  <Sparkles size={20} className="text-amber-500 shrink-0" />
-                  <div>
-                    <p className="text-white text-xs font-semibold">Imigongo Art</p>
-                    <p className="text-slate-400 text-[11px]">Traditional geometric patterns</p>
-                  </div>
-                </div>
+              {/* ── Narrator (inline in left column) ── */}
+              <div className="mb-6">
+                <GatewayNarrator />
               </div>
 
               {/* Quote */}

@@ -1,42 +1,41 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Play, Pause, Square, RotateCcw, Volume2, VolumeX, Volume1,
-  Gauge, ChevronDown, X, Headphones,
+  Gauge, ChevronDown, Headphones,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-/* ─── Bilingual narration segments (EN / FR, equal count & length) ─── */
+/* ─── Bilingual narration segments (EN / FR) ─── */
 const SEGMENTS = {
   en: [
-    "Welcome to Kandt House Museum, one of Rwanda's most important historical museums.",
-    "Here you will explore Rwanda's natural heritage, wildlife, geological history, and the fascinating story of Doctor Richard Kandt, the first colonial resident of Kigali.",
-    "This digital museum platform has been designed to make your visit more interactive and engaging.",
-    "You can explore exhibitions, experience Augmented Reality, watch educational videos, view historical artifacts in 3D, participate in quizzes, and discover detailed information about every exhibition.",
-    "Our intelligent multilingual assistant is always available to answer your questions and guide you throughout your visit in your preferred language.",
-    "Whether you are visiting physically or exploring remotely, this platform offers an immersive learning experience for students, researchers, tourists, and anyone interested in Rwanda's rich history and culture.",
-    "We invite you to begin your journey and enjoy discovering the remarkable heritage preserved at Kandt House Museum.",
+    "Kandt House Museum is not just a building, it is a living story of Rwanda's identity, from ancient geological origins to the vibrant culture of today.",
+    "Ever wondered what Kigali looked like over a hundred years ago? Doctor Richard Kandt was the first European to settle here, and his story is only the beginning of what this museum holds.",
+    "To explore this digital museum, you have two options. Book a visit to get your access code, or if you already have a code, enter it to unlock the full experience right away.",
+    "Once inside, dive into curated exhibitions and follow guided trails that take you through Rwanda's wildlife, history, and cultural heritage, step by step.",
+    "Point your camera at museum artifacts and watch them come alive through our image-based Augmented Reality experience, bringing history closer than ever before.",
+    "Take quizzes to test what you have learned, read the untold stories behind each exhibition, and let our intelligent multilingual assistant guide you in your own language.",
+    "This is not your typical museum visit. Whether you are a student, a curious traveler, or someone discovering Rwanda for the first time, this experience was built for you. Start exploring now.",
   ],
   fr: [
-    "Bienvenue au Musée de la Maison Kandt, l'un des musées historiques les plus importants du Rwanda.",
-    "Ici, vous découvrirez le patrimoine naturel du Rwanda, sa faune, son histoire géologique et l'histoire fascinante du Docteur Richard Kandt, premier résident colonial de Kigali.",
-    "Cette plateforme muséale numérique a été conçue pour rendre votre visite plus interactive et captivante.",
-    "Vous pouvez explorer les expositions, vivre la Réalité Augmentée, regarder des vidéos éducatives, visualiser des artefacts historiques en 3D, participer à des quiz et découvrir des informations détaillées sur chaque exposition.",
-    "Notre assistant multilingue intelligent est toujours disponible pour répondre à vos questions et vous accompagner tout au long de votre visite dans la langue de votre choix.",
-    "Que vous visitiez en personne ou à distance, cette plateforme offre une expérience d'apprentissage immersive pour les étudiants, chercheurs, touristes et toute personne intéressée par la riche histoire et culture du Rwanda.",
-    "Nous vous invitons à commencer votre voyage et à profiter de la découverte du patrimoine remarquable préservé au Musée de la Maison Kandt.",
+    "Le Musée de la Maison Kandt n'est pas qu'un simple bâtiment, c'est une histoire vivante de l'identité du Rwanda, depuis ses origines géologiques anciennes jusqu'à la culture vibrante d'aujourd'hui.",
+    "Vous êtes-vous déjà demandé à quoi ressemblait Kigali il y a plus de cent ans ? Le Docteur Richard Kandt fut le premier Européen à s'y installer, et son histoire n'est que le début de ce que ce musée renferme.",
+    "Pour explorer ce musée numérique, vous avez deux options. Réservez une visite pour obtenir votre code d'accès, ou si vous avez déjà un code, saisissez-le pour débloquer l'expérience complète immédiatement.",
+    "Une fois à l'intérieur, plongez dans des expositions organisées et suivez des parcours guidés qui vous emmènent à travers la faune, l'histoire et le patrimoine culturel du Rwanda, étape par étape.",
+    "Pointez votre caméra sur les artefacts du musée et regardez-les prendre vie grâce à notre expérience de Réalité Augmentée basée sur l'image, rapprochant l'histoire comme jamais auparavant.",
+    "Testez vos connaissances avec des quiz, lisez les histoires méconnues derrière chaque exposition, et laissez notre assistant multilingue intelligent vous guider dans votre propre langue.",
+    "Ce n'est pas une visite de musée ordinaire. Que vous soyez étudiant, voyageur curieux, ou que vous découvriez le Rwanda pour la première fois, cette expérience a été conçue pour vous. Commencez à explorer maintenant.",
   ],
 };
 
 const SPEED_OPTIONS = [
-  { value: 0.5, label: '0.5x' },
-  { value: 0.75, label: '0.75x' },
-  { value: 1, label: '1x' },
-  { value: 1.25, label: '1.25x' },
-  { value: 1.5, label: '1.5x' },
-  { value: 2, label: '2x' },
+  { value: 0.5, label: '0.5×' },
+  { value: 0.75, label: '0.75×' },
+  { value: 1, label: '1×' },
+  { value: 1.25, label: '1.25×' },
+  { value: 1.5, label: '1.5×' },
+  { value: 2, label: '2×' },
 ];
 
-/* ─── Voice quality scoring ─── */
 const scoreVoice = (v) => {
   const n = v.name.toLowerCase();
   let s = 0;
@@ -69,7 +68,7 @@ const formatTime = (s) => {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 };
 
-/* ─── Waveform bar ─── */
+/* ─── Animated waveform bar ─── */
 const WaveBar = ({ active, i }) => (
   <div
     className={`w-[3px] rounded-full transition-all duration-300 ${
@@ -84,21 +83,22 @@ const WaveBar = ({ active, i }) => (
   />
 );
 
-/* ═══════════════════════════════════════════════
-   GatewayNarrator
-   — Uses system language from LanguageContext.
-   — Full media controls (play/pause, stop, restart,
-     progress bar, speed, volume).
-   — No narration for Kinyarwanda (not supported by TTS).
-   ═══════════════════════════════════════════════ */
-const GatewayNarrator = () => {
-  const { lang: systemLang, t } = useLanguage();
+/* ═══════════════════════════════════════════════════
+   GatewayNarrator — inline player for Gateway left column.
 
-  // Narration language: follow system, fallback to 'en' if unsupported
+   Renders TWO things based on state:
+   • isActive = false → a prompt button (small, non-intrusive)
+   • isActive = true  → full decorated player that replaces
+     the left column branding content
+
+   The parent (Gateway.jsx) conditionally renders this
+   in place of the branding section.
+   ═══════════════════════════════════════════════════ */
+const GatewayNarrator = () => {
+  const { lang: systemLang } = useLanguage();
   const narrLang = SEGMENTS[systemLang] ? systemLang : null;
 
-  // States: prompt | speaking | paused | done | dismissed
-  const [state, setState] = useState('prompt');
+  const [state, setState] = useState('prompt'); // prompt | speaking | paused | done | dismissed
   const [segIdx, setSegIdx] = useState(-1);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -118,21 +118,17 @@ const GatewayNarrator = () => {
 
   const segments = narrLang ? SEGMENTS[narrLang] : [];
 
-  // Estimate total duration based on text length and speed
   const estimatedDuration = segments.reduce((sum, seg) => {
     const words = seg.split(/\s+/).length;
     return sum + (words / (narrLang === 'fr' ? 2.2 : 2.5)) / speed;
   }, 0);
 
-  /* ── Load voices on mount ── */
   useEffect(() => {
     mountedRef.current = true;
     if (!window.speechSynthesis) return;
-
     const checkVoices = () => window.speechSynthesis.getVoices();
     checkVoices();
     window.speechSynthesis.onvoiceschanged = checkVoices;
-
     return () => {
       mountedRef.current = false;
       activeRef.current = false;
@@ -141,7 +137,6 @@ const GatewayNarrator = () => {
     };
   }, []);
 
-  /* ── Chrome bug: keep synthesis alive ── */
   useEffect(() => {
     if (state !== 'speaking') return;
     const iv = setInterval(() => {
@@ -151,7 +146,6 @@ const GatewayNarrator = () => {
     return () => clearInterval(iv);
   }, [state]);
 
-  /* ── Close dropdowns on outside click ── */
   useEffect(() => {
     const handler = (e) => {
       if (speedMenuRef.current && !speedMenuRef.current.contains(e.target)) setShowSpeedMenu(false);
@@ -161,10 +155,8 @@ const GatewayNarrator = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  /* ── Speak all segments sequentially ── */
   const play = useCallback(() => {
     if (!narrLang || !window.speechSynthesis) return;
-
     const synth = window.speechSynthesis;
     synth.cancel();
     activeRef.current = true;
@@ -184,9 +176,7 @@ const GatewayNarrator = () => {
       setProgress(pct);
     }, 250);
 
-    const langCode = narrLang === 'fr' ? 'fr' : 'en';
-    const voice = findBestVoice(langCode);
-
+    const voice = findBestVoice(narrLang === 'fr' ? 'fr' : 'en');
     let idx = 0;
     const speakNext = () => {
       if (!activeRef.current || !mountedRef.current) return;
@@ -196,38 +186,25 @@ const GatewayNarrator = () => {
         setProgress(100);
         setCurrentTime(finalTime);
         setDuration(finalTime);
-        setTimeout(() => {
-          if (mountedRef.current) {
-            setState('done');
-            activeRef.current = false;
-          }
-        }, 400);
+        setTimeout(() => { if (mountedRef.current) { setState('done'); activeRef.current = false; } }, 400);
         return;
       }
-
       const utt = new SpeechSynthesisUtterance(segments[idx]);
       if (voice) utt.voice = voice;
       utt.lang = narrLang === 'fr' ? 'fr-FR' : 'en-US';
       utt.rate = (narrLang === 'fr' ? 0.82 : 0.78) * speed;
       utt.pitch = 1.0;
       utt.volume = muted ? 0 : volume;
-
-      const currentIdx = idx;
-      utt.onstart = () => { if (mountedRef.current) setSegIdx(currentIdx); };
+      const ci = idx;
+      utt.onstart = () => { if (mountedRef.current) setSegIdx(ci); };
       utt.onend = () => { idx++; setTimeout(speakNext, 300); };
-      utt.onerror = (e) => {
-        if (e.error === 'canceled' || e.error === 'interrupted') return;
-        idx++;
-        setTimeout(speakNext, 300);
-      };
-
+      utt.onerror = (e) => { if (e.error === 'canceled' || e.error === 'interrupted') return; idx++; setTimeout(speakNext, 300); };
       synth.speak(utt);
     };
-
     speakNext();
   }, [narrLang, segments, speed, volume, muted, estimatedDuration]);
 
-  const stop = useCallback(() => {
+  const stopFull = useCallback(() => {
     activeRef.current = false;
     clearInterval(timerRef.current);
     window.speechSynthesis?.cancel();
@@ -243,9 +220,7 @@ const GatewayNarrator = () => {
       clearInterval(timerRef.current);
       window.speechSynthesis?.cancel();
       setState('paused');
-    } else if (state === 'paused' || state === 'done') {
-      play();
-    } else if (state === 'prompt') {
+    } else {
       play();
     }
   };
@@ -264,19 +239,9 @@ const GatewayNarrator = () => {
     setState('dismissed');
   };
 
-  const toggleMute = () => setMuted((m) => !m);
+  const changeSpeed = (s) => { setSpeed(s); setShowSpeedMenu(false); };
+  const changeVolume = (v) => { setVolume(v); if (v > 0 && muted) setMuted(false); };
 
-  const changeSpeed = (s) => {
-    setSpeed(s);
-    setShowSpeedMenu(false);
-  };
-
-  const changeVolume = (v) => {
-    setVolume(v);
-    if (v > 0 && muted) setMuted(false);
-  };
-
-  // Hidden
   if (state === 'dismissed') return null;
   if (!window.speechSynthesis) return null;
 
@@ -284,6 +249,57 @@ const GatewayNarrator = () => {
   const VolumeIcon = muted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
   const isActive = state === 'speaking' || state === 'paused' || state === 'done';
 
+  /* ── Prompt state: small inline button ── */
+  if (!isActive) {
+    return (
+      <>
+        <style>{`
+          @keyframes gwPromptPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(217,119,6,0.35); }
+            50% { box-shadow: 0 0 0 10px rgba(217,119,6,0); }
+          }
+          @keyframes gwFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+        <div style={{ animation: 'gwFadeIn 0.5s ease-out' }}>
+          {narrLang ? (
+            <button
+              onClick={play}
+              className="group flex items-center gap-3 w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/25 hover:border-amber-500/50 hover:from-amber-500/15 hover:to-amber-600/10 transition-all duration-300"
+              style={{ animation: 'gwPromptPulse 2.5s ease-in-out infinite' }}
+            >
+              <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0 group-hover:bg-amber-500/25 transition">
+                <Headphones size={20} className="text-amber-400" />
+              </div>
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-white text-sm font-semibold">
+                  {narrLang === 'fr' ? 'Découvrir le musée' : 'Discover the museum'}
+                </p>
+                <p className="text-slate-400 text-xs">
+                  {narrLang === 'fr' ? 'Appuyez pour en savoir plus' : 'Tap to learn more'}
+                </p>
+              </div>
+              <Play size={18} className="text-amber-400/60 group-hover:text-amber-400 transition shrink-0" />
+            </button>
+          ) : (
+            <div className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl bg-slate-500/5 border border-slate-500/20">
+              <div className="w-11 h-11 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center shrink-0">
+                <Headphones size={20} className="text-slate-500" />
+              </div>
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-slate-400 text-sm">Narration ntiboneka muri Ikinyarwanda</p>
+                <p className="text-slate-500 text-xs">Narration is not available in Kinyarwanda</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  /* ── Active player: decorated, replaces left column content ── */
   return (
     <>
       <style>{`
@@ -292,200 +308,136 @@ const GatewayNarrator = () => {
           100% { transform: scaleY(1.8); }
         }
         @keyframes gwCaptionIn {
-          from { opacity: 0; transform: translateY(-5px); }
+          from { opacity: 0; transform: translateY(6px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes gwPromptPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(217,119,6,0.4); }
-          50% { box-shadow: 0 0 0 12px rgba(217,119,6,0); }
+        @keyframes gwPlayerIn {
+          from { opacity: 0; transform: scale(0.97) translateY(10px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        @keyframes gwFadeIn {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes gwGlowPulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.7; }
         }
       `}</style>
 
-      <div className="fixed top-0 left-0 right-0 z-40 pointer-events-none flex justify-center px-3 sm:px-4 pt-4 sm:pt-6">
+      <div
+        className="w-full flex flex-col"
+        style={{ animation: 'gwPlayerIn 0.5s ease-out' }}
+      >
+        {/* ── Player card ── */}
+        <div className="relative rounded-2xl overflow-hidden border border-amber-500/20 bg-gradient-to-br from-slate-900/80 via-amber-950/20 to-slate-900/80 backdrop-blur-md shadow-xl shadow-amber-900/10">
 
-        {/* ── PROMPT: tap to start ── */}
-        {state === 'prompt' && (
+          {/* Decorative glow */}
           <div
-            className="pointer-events-auto flex items-center gap-2"
-            style={{ animation: 'gwFadeIn 0.6s ease-out' }}
-          >
-            {narrLang ? (
-              <button
-                onClick={play}
-                className="flex items-center gap-3 px-5 py-3 rounded-2xl backdrop-blur-xl border border-amber-500/30 text-white hover:border-amber-500/50 transition-all duration-300"
-                style={{
-                  background: 'rgba(15, 15, 20, 0.88)',
-                  animation: 'gwPromptPulse 2s ease-in-out infinite',
-                }}
-              >
-                <div className="w-10 h-10 rounded-full bg-amber-600/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                  <Headphones size={18} className="text-amber-400" />
-                </div>
-                <div className="text-left">
-                  <p className="text-slate-300 text-xs sm:text-sm">
-                    {narrLang === 'fr'
-                      ? 'Appuyez pour écouter la narration de bienvenue'
-                      : 'Tap to hear the welcome narration'}
-                  </p>
-                </div>
-              </button>
-            ) : (
-              /* Kinyarwanda — no narration available */
-              <div
-                className="flex items-center gap-3 px-5 py-3 rounded-2xl backdrop-blur-xl border border-slate-500/30 text-white"
-                style={{ background: 'rgba(15, 15, 20, 0.88)' }}
-              >
-                <div className="w-10 h-10 rounded-full bg-slate-600/20 border border-slate-500/40 flex items-center justify-center shrink-0">
-                  <Headphones size={18} className="text-slate-400" />
-                </div>
-                <div className="text-left">
-                  <p className="text-slate-400 text-xs sm:text-sm">
-                    Narration ntiboneka muri Ikinyarwanda
-                  </p>
-                  <p className="text-slate-500 text-[11px]">
-                    Narration is not available in Kinyarwanda
-                  </p>
-                </div>
+            className="absolute -top-20 -right-20 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"
+            style={{ animation: state === 'speaking' ? 'gwGlowPulse 3s ease-in-out infinite' : 'none' }}
+          />
+          <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10">
+            {/* ── Header ── */}
+            <div className="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-white/5">
+              <div className="flex items-center gap-[3px] h-6 shrink-0">
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+                  <WaveBar key={i} active={state === 'speaking'} i={i} />
+                ))}
               </div>
-            )}
-            <button
-              onClick={dismiss}
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-xl border border-white/10 text-slate-400 hover:text-white transition pointer-events-auto"
-              title="Dismiss"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
-
-        {/* ── ACTIVE PLAYER (speaking / paused / done) ── */}
-        {isActive && (
-          <div
-            className="pointer-events-auto w-full max-w-2xl rounded-2xl overflow-hidden backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/40"
-            style={{ background: 'rgba(15, 15, 20, 0.92)', animation: state === 'speaking' && segIdx === -1 ? 'gwFadeIn 0.4s ease-out' : undefined }}
-          >
-            {/* ── Caption area ── */}
-            <div className="px-4 sm:px-5 pt-3 sm:pt-4 pb-2">
-              <div className="flex items-start gap-3">
-                {/* Waveform */}
-                <div className="flex items-center gap-[3px] h-6 shrink-0 mt-1">
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <WaveBar key={i} active={state === 'speaking'} i={i} />
-                  ))}
-                </div>
-
-                {/* Caption text */}
-                <div className="flex-1 min-w-0">
-                  {state === 'speaking' && caption ? (
-                    <p
-                      key={segIdx}
-                      className="text-white/90 text-xs sm:text-sm leading-relaxed"
-                      style={{ animation: 'gwCaptionIn 0.35s ease-out' }}
-                    >
-                      {caption}
-                    </p>
-                  ) : state === 'paused' ? (
-                    <p className="text-slate-500 text-xs sm:text-sm italic">
-                      {narrLang === 'fr' ? 'Narration en pause' : 'Narration paused'}
-                    </p>
-                  ) : state === 'done' ? (
-                    <p className="text-slate-400 text-xs sm:text-sm">
-                      {narrLang === 'fr' ? 'Narration terminée' : 'Narration complete'}
-                    </p>
-                  ) : (
-                    <p className="text-slate-500 text-xs sm:text-sm">
-                      {narrLang === 'fr' ? 'Démarrage...' : 'Starting...'}
-                    </p>
-                  )}
-                </div>
-
-                {/* Close */}
-                <button
-                  onClick={dismiss}
-                  className="w-7 h-7 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 transition text-slate-400 hover:text-white shrink-0"
-                  title="Close"
-                >
-                  <X size={13} />
-                </button>
+              <div className="flex-1 min-w-0">
+                <p className="text-amber-400/80 text-[11px] font-semibold uppercase tracking-widest">
+                  {narrLang === 'fr' ? 'À l\'écoute' : 'Now playing'}
+                </p>
               </div>
+              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400/80 border border-amber-500/15">
+                {narrLang === 'fr' ? 'FR' : 'EN'}
+              </span>
             </div>
 
-            {/* ── Progress bar (seekable visual) ── */}
-            <div className="px-4 sm:px-5">
-              <div className="h-1.5 rounded-full bg-white/10 relative group cursor-pointer">
+            {/* ── Caption area ── */}
+            <div className="px-5 py-4 min-h-[80px] flex items-center">
+              {state === 'speaking' && caption ? (
+                <p
+                  key={segIdx}
+                  className="text-white/90 text-sm sm:text-base leading-relaxed"
+                  style={{ animation: 'gwCaptionIn 0.35s ease-out' }}
+                >
+                  {caption}
+                </p>
+              ) : state === 'paused' ? (
+                <p className="text-slate-400 text-sm italic">
+                  {narrLang === 'fr' ? 'Narration en pause — appuyez sur lecture pour reprendre' : 'Paused — press play to resume'}
+                </p>
+              ) : state === 'done' ? (
+                <p className="text-slate-400 text-sm">
+                  {narrLang === 'fr' ? 'Prêt à explorer ? Réservez ou entrez votre code ci-contre.' : 'Ready to explore? Book a visit or enter your code.'}
+                </p>
+              ) : (
+                <p className="text-slate-500 text-sm">{narrLang === 'fr' ? 'Démarrage...' : 'Starting...'}</p>
+              )}
+            </div>
+
+            {/* ── Progress bar ── */}
+            <div className="px-5">
+              <div className="h-1.5 rounded-full bg-white/5 relative group cursor-default">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-500 transition-all duration-300 relative"
+                  className="h-full rounded-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-300 relative"
                   style={{ width: `${progress}%` }}
                 >
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-400 opacity-0 group-hover:opacity-100 transition-opacity shadow" />
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-300 shadow-lg shadow-amber-500/30 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </div>
-              <div className="flex justify-between mt-1 mb-1">
-                <span className="text-[10px] text-slate-500 tabular-nums">
-                  {formatTime(currentTime)}
-                </span>
-                <span className="text-[10px] text-slate-500 tabular-nums">
-                  {formatTime(state === 'done' ? duration : estimatedDuration)}
-                </span>
+              <div className="flex justify-between mt-1.5">
+                <span className="text-[10px] text-slate-500 tabular-nums">{formatTime(currentTime)}</span>
+                <span className="text-[10px] text-slate-500 tabular-nums">{formatTime(state === 'done' ? duration : estimatedDuration)}</span>
               </div>
             </div>
 
-            {/* ── Media controls ── */}
-            <div className="px-4 sm:px-5 pb-3 sm:pb-4 flex items-center gap-2">
-              {/* Play / Pause */}
+            {/* ── Controls ── */}
+            <div className="px-5 pt-2 pb-4 flex items-center gap-2">
+              {/* Stop */}
+              <button
+                onClick={stopFull}
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition"
+                title="Stop"
+              >
+                <Square size={12} />
+              </button>
+
+              {/* Play / Pause — center, bigger */}
               <button
                 onClick={togglePlayPause}
-                className="w-9 h-9 rounded-full flex items-center justify-center bg-amber-600 hover:bg-amber-700 text-white transition-colors shrink-0"
+                className="w-11 h-11 rounded-full flex items-center justify-center bg-amber-600 hover:bg-amber-500 text-white transition-colors shadow-lg shadow-amber-600/20 mx-1"
                 aria-label={state === 'speaking' ? 'Pause' : 'Play'}
               >
                 {state === 'speaking'
-                  ? <Pause size={16} />
-                  : <Play size={16} className="ml-0.5" />}
+                  ? <Pause size={18} />
+                  : <Play size={18} className="ml-0.5" />}
               </button>
-
-              {/* Stop */}
-              {(state !== 'prompt') && (
-                <button
-                  onClick={stop}
-                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition shrink-0"
-                  aria-label="Stop"
-                  title="Stop"
-                >
-                  <Square size={13} />
-                </button>
-              )}
 
               {/* Restart */}
               <button
                 onClick={restart}
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition shrink-0"
-                aria-label="Restart"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition"
                 title="Restart"
               >
-                <RotateCcw size={13} />
+                <RotateCcw size={12} />
               </button>
 
-              {/* Spacer */}
               <div className="flex-1" />
 
               {/* Volume */}
               <div className="relative" ref={volumeRef}>
                 <button
                   onClick={() => setShowVolumeSlider(!showVolumeSlider)}
-                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition"
-                  aria-label={muted ? 'Unmute' : 'Mute'}
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition"
                 >
                   <VolumeIcon size={14} />
                 </button>
                 {showVolumeSlider && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 rounded-lg shadow-lg border border-white/10 p-3 z-20 w-36">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900/95 backdrop-blur-md rounded-xl shadow-xl border border-white/10 p-3 z-20 w-40">
                     <div className="flex items-center gap-2">
-                      <button onClick={toggleMute} className="text-slate-400 hover:text-amber-400">
-                        <VolumeIcon size={13} />
+                      <button onClick={() => setMuted(!muted)} className="text-slate-400 hover:text-amber-400 transition">
+                        <VolumeIcon size={12} />
                       </button>
                       <input
                         type="range" min="0" max="1" step="0.05"
@@ -493,7 +445,7 @@ const GatewayNarrator = () => {
                         onChange={(e) => changeVolume(parseFloat(e.target.value))}
                         className="flex-1 h-1 accent-amber-500 cursor-pointer"
                       />
-                      <span className="text-[10px] text-slate-400 w-7 text-right tabular-nums">
+                      <span className="text-[10px] text-slate-500 w-7 text-right tabular-nums">
                         {Math.round((muted ? 0 : volume) * 100)}%
                       </span>
                     </div>
@@ -505,15 +457,14 @@ const GatewayNarrator = () => {
               <div className="relative" ref={speedMenuRef}>
                 <button
                   onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                  className="flex items-center gap-1 px-2 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition text-xs"
-                  aria-label="Speed"
+                  className="flex items-center gap-1 px-2.5 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition text-xs"
                 >
-                  <Gauge size={13} />
-                  <span className="tabular-nums">{speed}x</span>
-                  <ChevronDown size={11} />
+                  <Gauge size={12} />
+                  <span className="tabular-nums">{speed}×</span>
+                  <ChevronDown size={10} />
                 </button>
                 {showSpeedMenu && (
-                  <div className="absolute bottom-full right-0 mb-2 bg-slate-900 rounded-lg shadow-lg border border-white/10 py-1 z-20 min-w-[80px]">
+                  <div className="absolute bottom-full right-0 mb-2 bg-slate-900/95 backdrop-blur-md rounded-xl shadow-xl border border-white/10 py-1 z-20 min-w-[80px]">
                     {SPEED_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}
@@ -530,14 +481,25 @@ const GatewayNarrator = () => {
                   </div>
                 )}
               </div>
-
-              {/* Language badge */}
-              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20">
-                {narrLang === 'fr' ? 'FR' : 'EN'}
-              </span>
             </div>
           </div>
-        )}
+        </div>
+
+        {/* ── Segment dots indicator ── */}
+        <div className="flex items-center justify-center gap-1.5 mt-3">
+          {segments.map((_, i) => (
+            <div
+              key={i}
+              className={`rounded-full transition-all duration-300 ${
+                i === segIdx
+                  ? 'w-5 h-1.5 bg-amber-400'
+                  : i < segIdx
+                    ? 'w-1.5 h-1.5 bg-amber-400/40'
+                    : 'w-1.5 h-1.5 bg-white/10'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
