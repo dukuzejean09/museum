@@ -1,9 +1,11 @@
+// Load env vars BEFORE any other imports that might need them
+import 'dotenv/config';
+
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
@@ -31,8 +33,6 @@ import { publicRouter as arPublic, adminRouter as arAdmin } from './routes/arRou
 import { publicRouter as evaluationPublic, adminRouter as evaluationAdmin } from './routes/evaluationRoutes.js';
 import yoloProxyRoutes from './routes/yoloProxyRoutes.js';
 import translationRoutes from './routes/translationRoutes.js';
-
-dotenv.config();
 connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -216,7 +216,13 @@ const httpServer = createServer(app);
 initSocket(httpServer, allowedOrigins);
 console.log('WebSocket server initialized');
 
-const server = httpServer.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+const server = httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`[CONFIG] SMTP_HOST: ${process.env.SMTP_HOST || '(not set)'}`);
+  console.log(`[CONFIG] SMTP_USER: ${process.env.SMTP_USER ? process.env.SMTP_USER.substring(0, 8) + '...' : '(not set)'}`);
+  console.log(`[CONFIG] SMTP_PASS: ${process.env.SMTP_PASS ? '****set****' : '(not set)'}`);
+  console.log(`[CONFIG] SMTP_FROM: ${process.env.SMTP_FROM || '(not set)'}`);
+});
 
 // Graceful shutdown
 const shutdown = (signal) => {

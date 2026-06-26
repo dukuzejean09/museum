@@ -1,5 +1,5 @@
 /**
- * Email utility — uses nodemailer with Gmail SMTP.
+ * Email utility — uses nodemailer with Brevo SMTP.
  * Falls back to console logging if SMTP is not configured.
  */
 import nodemailer from 'nodemailer';
@@ -9,19 +9,32 @@ let transporter = null;
 function getTransporter() {
   if (transporter) return transporter;
 
-  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+
+  if (smtpUser && smtpPass) {
+    const host = process.env.SMTP_HOST || 'smtp-relay.brevo.com';
+    const port = parseInt(process.env.SMTP_PORT) || 587;
+    const secure = process.env.SMTP_SECURE === 'true';
+
+    console.log(`[EMAIL] Creating SMTP transporter → ${host}:${port} (secure: ${secure}, user: ${smtpUser.substring(0, 6)}...)`);
+
     transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT) || 587,
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+      host,
+      port,
+      secure,
+      auth: { user: smtpUser, pass: smtpPass },
     });
+
+    // Verify connection on first use
+    transporter.verify()
+      .then(() => console.log('[EMAIL] SMTP connection verified successfully'))
+      .catch((err) => console.error('[EMAIL] SMTP connection verification FAILED:', err.message));
+
     return transporter;
   }
 
+  console.warn('[EMAIL] SMTP credentials not found — emails will be logged to console only');
   return null;
 }
 
@@ -29,17 +42,20 @@ const sendEmail = async ({ to, subject, html, text }) => {
   const transport = getTransporter();
 
   if (transport) {
-    return transport.sendMail({
-      from: process.env.SMTP_FROM || `"Kandt House Museum" <${process.env.SMTP_USER}>`,
-      to,
-      subject,
-      html,
-      text,
-    });
+    const from = process.env.SMTP_FROM || `"Kandt House Museum" <${process.env.SMTP_USER}>`;
+    console.log(`[EMAIL] Sending to: ${to} | Subject: ${subject} | From: ${from}`);
+    try {
+      const info = await transport.sendMail({ from, to, subject, html, text });
+      console.log(`[EMAIL] Sent successfully — messageId: ${info.messageId}`);
+      return info;
+    } catch (err) {
+      console.error(`[EMAIL] SEND FAILED to ${to}:`, err.message);
+      throw err; // Re-throw so callers know it failed
+    }
   }
 
   // Development fallback — just log
-  console.log(`[EMAIL] To: ${to} | Subject: ${subject}`);
+  console.log(`[EMAIL] (no SMTP) To: ${to} | Subject: ${subject}`);
   if (text) console.log(`[EMAIL] Body: ${text.substring(0, 200)}...`);
   return { messageId: `dev-${Date.now()}` };
 };
