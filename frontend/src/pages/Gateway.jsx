@@ -286,8 +286,6 @@ const Gateway = () => {
       {/* ── Cinematic background video layer ── */}
       <GatewayBackgroundVideo overlayOpacity={0.4} />
 
-      {/* Narrator is now inline in the left column */}
-
       {/* ── Floating Imigongo tiles (decorative background) ── */}
       <FloatingTile x={5} y={15} delay={0} />
       <FloatingTile x={85} y={10} delay={1.2} />

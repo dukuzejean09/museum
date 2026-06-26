@@ -99,8 +99,8 @@ const ExhibitionForm = () => {
  try {
  const { data } = await adminFetchArtifacts();
  setAvailableArtifacts(data.data || data.artifacts || []);
- } catch (err) {
- console.error('Failed to load artifacts', err);
+ } catch {
+ // silently fail — artifacts list is optional
  }
  };
  loadArtifacts();

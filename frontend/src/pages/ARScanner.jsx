@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Search, Home, Scan, Info, X } from 'lucide-react';
 import ARCamera from '../components/ar/ARCamera';
 import AROverlay from '../components/ar/AROverlay';
@@ -7,7 +7,8 @@ import RecognitionStatus from '../components/ar/RecognitionStatus';
 import DetectionBox from '../components/ar/DetectionBox';
 import useARRecognition from '../hooks/useARRecognition';
 import { useLanguage } from '../i18n/LanguageContext';
-import { fetchExhibitionById, fetchArtifactById } from '../api';
+
+
 
 /**
  * AR Scanner Page — /ar
@@ -21,7 +22,6 @@ import { fetchExhibitionById, fetchArtifactById } from '../api';
  */
 const ARScanner = () => {
   const { t } = useLanguage();
-  const [searchParams] = useSearchParams();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -46,30 +46,6 @@ const ARScanner = () => {
     updateSize();
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
-  }, []);
-
-  // Handle deep-link from QR code scanned outside the app
-  useEffect(() => {
-    const type = searchParams.get('type');
-    const id = searchParams.get('id');
-    if (type && id) {
-      loadEntityFromParams(type, id);
-    }
-  }, [searchParams]);
-
-  const loadEntityFromParams = useCallback(async (type, id) => {
-    try {
-      let data;
-      if (type === 'artifact') {
-        const res = await fetchArtifactById(id);
-        data = res.data?.data || res.data;
-      } else {
-        const res = await fetchExhibitionById(id);
-        data = res.data?.data || res.data;
-      }
-    } catch {
-      // Entity not found — continue scanning
-    }
   }, []);
 
   const handleCameraReady = useCallback(() => {

@@ -92,28 +92,28 @@ const AnalyticsInsights = () => {
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-sky-500 text-white p-3 rounded-lg"><Eye size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500">Total Events</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Total Events</p>
             <p className="text-xl font-bold text-slate-800 dark:text-white">{insights.dailyVisitors?.reduce((s, d) => s + d.events, 0) || 0}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-amber-500 text-white p-3 rounded-lg"><Scan size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500">AR Scans</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">AR Scans</p>
             <p className="text-xl font-bold text-slate-800 dark:text-white">{Object.values(insights.arMethods || {}).reduce((s, v) => s + v, 0)}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-violet-500 text-white p-3 rounded-lg"><Headphones size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500">Audio Plays</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Audio Plays</p>
             <p className="text-xl font-bold text-slate-800 dark:text-white">{insights.audio?.plays || 0}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-emerald-500 text-white p-3 rounded-lg"><TrendingUp size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500">Audio Completions</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Audio Completions</p>
             <p className="text-xl font-bold text-slate-800 dark:text-white">{insights.audio?.completions || 0}</p>
           </div>
         </div>

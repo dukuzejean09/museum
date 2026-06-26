@@ -10,8 +10,8 @@ const Footer = () => {
 
   const quickLinks = [
     { to: '/exhibitions', label: t('nav.exhibitions') || 'Exhibitions', icon: Image },
-    { to: '/trail', label: t('nav.trail'), icon: Compass },
-    { to: '/map', label: t('nav.map'), icon: MapPin },
+    { to: '/trails', label: t('nav.trails') || 'Trails', icon: Compass },
+    { to: '/artifacts', label: t('nav.artifacts') || 'Artifacts', icon: MapPin },
     { to: '/guides', label: t('nav.guides'), icon: Users },
     { to: '/feedback', label: t('nav.feedback'), icon: ClipboardList },
   ];
