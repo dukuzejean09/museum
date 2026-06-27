@@ -32,7 +32,7 @@ export const generateAccessCode = asyncHandler(async (req, res) => {
   });
 
   // Generate QR code encoding the gateway URL
-  const gatewayUrl = `${FRONTEND_URL}/enter?code=${code}`;
+  const gatewayUrl = `${FRONTEND_URL}/?code=${code}`;
   const qrCodeDataUrl = await QRCode.toDataURL(gatewayUrl, { width: 300, margin: 2 });
 
   accessCodeSocket.created(accessCode);

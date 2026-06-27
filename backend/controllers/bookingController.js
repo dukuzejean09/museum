@@ -161,7 +161,7 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
   // Build response with QR if access code was generated
   const response = booking.toObject();
   if (status === 'confirmed' && booking.accessCodeId) {
-    const gatewayUrl = `${FRONTEND_URL}/enter?code=${booking.accessCodeId.code}`;
+    const gatewayUrl = `${FRONTEND_URL}/?code=${booking.accessCodeId.code}`;
     response.qrCodeDataUrl = await QRCode.toDataURL(gatewayUrl, { width: 300, margin: 2 });
     response.gatewayUrl = gatewayUrl;
   }
@@ -172,7 +172,7 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
       ? await Guide.findById(booking.guideId).lean()
       : null;
     const gatewayUrl = booking.accessCodeId
-      ? `${FRONTEND_URL}/enter?code=${booking.accessCodeId.code}`
+      ? `${FRONTEND_URL}/?code=${booking.accessCodeId.code}`
       : null;
 
     sendBookingConfirmationWithCode(booking, guide, {
@@ -222,7 +222,7 @@ export const generateBookingAccessCode = asyncHandler(async (req, res) => {
   }
   await booking.save();
 
-  const gatewayUrl = `${FRONTEND_URL}/enter?code=${code}`;
+  const gatewayUrl = `${FRONTEND_URL}/?code=${code}`;
   const qrCodeDataUrl = await QRCode.toDataURL(gatewayUrl, { width: 300, margin: 2 });
 
   // Send confirmation email with access code

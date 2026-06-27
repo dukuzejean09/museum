@@ -303,7 +303,7 @@ export const sendCredentialsEmail = async ({ name, email, username, password, ro
           </div>
 
           <div style="text-align: center; margin-top: 24px;">
-            <a href="${url}/enter" style="display: inline-block; background: #D97706; color: white; padding: 12px 32px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">Login to Your Account</a>
+            <a href="${url}/" style="display: inline-block; background: #D97706; color: white; padding: 12px 32px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">Login to Your Account</a>
           </div>
         </div>
         <div style="background: #1E293B; padding: 16px; text-align: center;">
@@ -311,7 +311,7 @@ export const sendCredentialsEmail = async ({ name, email, username, password, ro
         </div>
       </div>
     `,
-    text: `Your ${roleLabel} account at Kandt House Museum has been created.\nEmail: ${email}\nUsername: ${username}\nPassword: ${password}\nPlease change your password after first login.\nLogin at: ${url}/enter`,
+    text: `Your ${roleLabel} account at Kandt House Museum has been created.\nEmail: ${email}\nUsername: ${username}\nPassword: ${password}\nPlease change your password after first login.\nLogin at: ${url}/`,
   });
 };
 
