@@ -248,11 +248,11 @@ const SearchPage = () => {
     <div className="page-container max-w-4xl">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-900/20 rounded-full mb-4">
-          <SearchIcon size={28} className="text-amber-600" />
+        <div className="page-header-icon mx-auto mb-4" style={{ width: '3.5rem', height: '3.5rem' }}>
+          <SearchIcon size={28} />
         </div>
-        <h1 className="text-2xl font-bold mb-2">{t('search.title')}</h1>
-        <p className="text-slate-400 text-sm max-w-md mx-auto">{t('search.subtitle')}</p>
+        <h1 className="page-title">{t('search.title')}</h1>
+        <p className="page-subtitle mt-2">{t('search.subtitle')}</p>
       </div>
 
       {/* Tab Switch */}
