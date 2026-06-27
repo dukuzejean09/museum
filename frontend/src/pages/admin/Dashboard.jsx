@@ -4,6 +4,7 @@ import { fetchAnalytics } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { useAdminRealtimeSync } from '../../hooks/useRealtimeStore';
+import { useNavigate } from 'react-router-dom';
 import { Presentation, Gem, MapPin, Users, MessageSquare, CalendarDays, ClipboardList, BookOpen, Wifi, WifiOff } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
@@ -11,6 +12,7 @@ import { DashboardSkeleton } from '../../components/ui/LoadingSkeleton';
 
 const Dashboard = () => {
   const { isAdmin, admin } = useAuth();
+  const navigate = useNavigate();
   const { connected, connectionCount } = useSocket() || {};
 
   // Real-time: auto-refresh dashboard when any entity changes
@@ -36,14 +38,14 @@ const Dashboard = () => {
   }
 
   const allCards = [
-    { label: 'Exhibitions', count: stats?.exhibitionCount || 0, icon: Presentation, color: 'bg-blue-500', roles: ['admin', 'guide'] },
-    { label: 'Artifacts', count: stats?.artifactCount || 0, icon: Gem, color: 'bg-indigo-500', roles: ['admin', 'guide'] },
-    { label: 'Trails', count: stats?.trailCount || 0, icon: MapPin, color: 'bg-green-500', roles: ['admin', 'guide'] },
-    { label: 'Stories', count: stats?.storyCount || 0, icon: BookOpen, color: 'bg-pink-500', roles: ['admin', 'guide'] },
-    { label: 'Guides', count: stats?.guideCount || 0, icon: Users, color: 'bg-purple-500', roles: ['admin'] },
-    { label: 'Bookings', count: stats?.bookingCount || 0, icon: CalendarDays, color: 'bg-orange-500', roles: ['admin', 'guide'] },
-    { label: 'Surveys', count: stats?.surveyCount || 0, icon: ClipboardList, color: 'bg-cyan-500', roles: ['admin'] },
-    { label: 'Messages', count: stats?.messageCount || 0, icon: MessageSquare, color: 'bg-amber-500', roles: ['admin', 'guide'] },
+    { label: 'Exhibitions', count: stats?.exhibitionCount || 0, icon: Presentation, color: 'bg-blue-500', to: '/admin/exhibitions', roles: ['admin', 'guide'] },
+    { label: 'Artifacts', count: stats?.artifactCount || 0, icon: Gem, color: 'bg-indigo-500', to: '/admin/artifacts', roles: ['admin', 'guide'] },
+    { label: 'Trails', count: stats?.trailCount || 0, icon: MapPin, color: 'bg-green-500', to: '/admin/trails', roles: ['admin', 'guide'] },
+    { label: 'Stories', count: stats?.storyCount || 0, icon: BookOpen, color: 'bg-pink-500', to: '/admin/stories', roles: ['admin', 'guide'] },
+    { label: 'Guides', count: stats?.guideCount || 0, icon: Users, color: 'bg-purple-500', to: '/admin/guides', roles: ['admin'] },
+    { label: 'Bookings', count: stats?.bookingCount || 0, icon: CalendarDays, color: 'bg-orange-500', to: '/admin/bookings', roles: ['admin', 'guide'] },
+    { label: 'Surveys', count: stats?.surveyCount || 0, icon: ClipboardList, color: 'bg-cyan-500', to: '/admin/surveys', roles: ['admin'] },
+    { label: 'Messages', count: stats?.messageCount || 0, icon: MessageSquare, color: 'bg-amber-500', to: '/admin/messages', roles: ['admin', 'guide'] },
   ];
 
   const cards = allCards.filter(c => c.roles.includes(isAdmin ? 'admin' : 'guide'));
@@ -80,8 +82,12 @@ const Dashboard = () => {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {cards.map(({ label, count, icon: Icon, color }) => (
-          <div key={label} className="card p-6 flex items-center gap-4">
+        {cards.map(({ label, count, icon: Icon, color, to }) => (
+          <div
+            key={label}
+            onClick={() => navigate(to)}
+            className="card p-6 flex items-center gap-4 cursor-pointer hover:border-amber-500/50 hover:scale-[1.02] transition-all duration-200"
+          >
             <div className={`${color} text-white p-3 rounded-lg`}>
               <Icon size={24} />
             </div>
@@ -110,7 +116,7 @@ const Dashboard = () => {
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent Messages */}
         <div className="card p-6">
-          <h2 className="text-lg font-semibold text-slate-300 mb-4">Recent Messages</h2>
+          <h2 onClick={() => navigate('/admin/messages')} className="text-lg font-semibold text-slate-300 mb-4 cursor-pointer hover:text-amber-400 transition-colors w-fit">Recent Messages &rarr;</h2>
           {stats?.recentMessages?.length > 0 ? (
             <div className="space-y-3">
               {stats.recentMessages.map((msg) => (
@@ -135,7 +141,7 @@ const Dashboard = () => {
 
         {/* Recent Bookings */}
         <div className="card p-6">
-          <h2 className="text-lg font-semibold text-slate-300 mb-4">Recent Bookings</h2>
+          <h2 onClick={() => navigate('/admin/bookings')} className="text-lg font-semibold text-slate-300 mb-4 cursor-pointer hover:text-amber-400 transition-colors w-fit">Recent Bookings &rarr;</h2>
           {stats?.recentBookings?.length > 0 ? (
             <div className="space-y-3">
               {stats.recentBookings.map((b) => (

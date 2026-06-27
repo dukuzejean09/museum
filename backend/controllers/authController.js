@@ -101,6 +101,29 @@ export const registerAdmin = asyncHandler(async (req, res) => {
     throw new ValidationError('Invalid email format');
   }
 
+  // Block disposable/temporary email providers
+  const disposableDomains = [
+    'tempmail.com', 'throwaway.email', 'guerrillamail.com', 'guerrillamail.net',
+    'mailinator.com', 'yopmail.com', 'tempail.com', 'fakeinbox.com',
+    'sharklasers.com', 'guerrillamailblock.com', 'grr.la', 'dispostable.com',
+    'trashmail.com', 'trashmail.net', 'trashmail.me', 'maildrop.cc',
+    'temp-mail.org', 'temp-mail.io', 'emailondeck.com', 'getnada.com',
+    'mohmal.com', 'burnermail.io', 'minutemail.com', '10minutemail.com',
+    'tempmailo.com', 'disposableemailaddresses.emailmiser.com',
+    'mailnesia.com', 'mailtrap.io', 'harakirimail.com', 'crazymailing.com',
+    'tmail.ws', 'inboxkitten.com', 'mytemp.email', 'tempr.email',
+    'discard.email', 'discardmail.com', 'discardmail.de', 'emailfake.com',
+    'fakemailgenerator.com', 'generator.email', 'guerrillamail.de',
+    'guerrillamail.info', 'mailcatch.com', 'mailexpire.com', 'mailnator.com',
+    'notmailinator.com', 'spamgourmet.com', 'throwam.com', 'tmpmail.net',
+    'tmpmail.org', 'wegwerfmail.de', 'wegwerfmail.net', 'yopmail.fr',
+    'jetable.org', 'mailtemp.net', 'tempinbox.com', 'tempmailaddress.com',
+  ];
+  const emailDomain = trimmedEmail.split('@')[1];
+  if (disposableDomains.includes(emailDomain)) {
+    throw new ValidationError('Temporary/disposable email addresses are not allowed. Please use a real email address.');
+  }
+
   // ── Password validation ──
   if (password.length < 6) {
     throw new ValidationError('Password must be at least 6 characters');
