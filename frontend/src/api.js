@@ -15,7 +15,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-const PUBLIC_PATHS = ['/', '/book', '/book-tour', '/feedback', '/enter'];
+const PUBLIC_PATHS = ['/', '/book', '/book-tour', '/feedback'];
 
 API.interceptors.response.use(
   (response) => response,
@@ -26,7 +26,7 @@ API.interceptors.response.use(
       if (!isPublicPage) {
         localStorage.removeItem('visitorToken');
         localStorage.removeItem('visitorExpiresAt');
-        window.location.href = '/enter';
+        window.location.href = '/';
       }
     }
     return Promise.reject(error);
@@ -54,7 +54,7 @@ AdminAPI.interceptors.response.use(
     if (error.response?.status === 401 && window.location.pathname.startsWith('/admin')) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminInfo');
-      window.location.href = '/enter';
+      window.location.href = '/';
     }
     return Promise.reject(error);
   }
