@@ -474,7 +474,7 @@ const Home = () => {
               <div className="flex items-center gap-3 justify-center lg:justify-start">
                 <div className="p-1.5 rounded-lg bg-white/90 shadow-md">
                   <QRCodeSVG
-                    value={window.location.origin + '/enter'}
+                    value={window.location.origin + '/'}
                     size={48}
                     level="M"
                     bgColor="#ffffff"

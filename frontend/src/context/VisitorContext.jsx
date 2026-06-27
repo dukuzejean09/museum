@@ -64,8 +64,8 @@ export const VisitorProvider = ({ children }) => {
         clearAccess();
         toast.error('Your access has expired. Please scan the QR code again.');
         // Redirect to gateway for re-authentication
-        if (window.location.pathname !== '/enter' && !window.location.pathname.startsWith('/admin')) {
-          window.location.href = '/enter';
+        if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/admin')) {
+          window.location.href = '/';
         }
       }
     };

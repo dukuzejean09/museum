@@ -167,7 +167,7 @@ const Gateway = () => {
   const [loginError, setLoginError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const redirectTo = location.state?.from || '/';
+  const redirectTo = location.state?.from || '/home';
 
   useEffect(() => {
     if (admin) navigate('/admin/dashboard', { replace: true });

@@ -62,7 +62,7 @@ const PageLoader = () => (
 const ProtectedRoute = () => {
   const { admin, loading } = useAuth();
   if (loading) return <PageLoader />;
-  return admin ? <Outlet /> : <Navigate to="/enter" replace />;
+  return admin ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 // Admin-only route protection
@@ -84,7 +84,7 @@ const VisitorProtectedRoute = () => {
     return <Outlet />;
   }
 
-  return <Navigate to="/enter" state={{ from: location.pathname }} replace />;
+  return <Navigate to="/" state={{ from: location.pathname }} replace />;
 };
 
 // Minimal shell for booking page — back button only, no navigation
@@ -95,7 +95,7 @@ const BookingShell = () => {
       <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800">
         <div className="container mx-auto px-4 py-3 flex items-center gap-3">
           <a
-            href="/enter"
+            href="/"
             className="flex items-center gap-2 text-slate-300 hover:text-amber-400 transition text-sm font-medium"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -130,8 +130,8 @@ function App() {
                   <Toaster position="top-right" />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
-                    {/* Gateway — always accessible */}
-                    <Route path="/enter" element={<Gateway />} />
+                    {/* Gateway — root landing page, always accessible */}
+                    <Route path="/" element={<Gateway />} />
 
                     {/* AR Scanner — full-screen, no layout, visitor-protected */}
                     <Route element={<VisitorProtectedRoute />}>
@@ -145,7 +145,7 @@ function App() {
                     {/* All visitor-facing routes — requires authentication */}
                     <Route element={<Layout />}>
                       <Route element={<VisitorProtectedRoute />}>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/home" element={<Home />} />
                         <Route path="/feedback" element={<Feedback />} />
                         <Route path="/trail" element={<Navigate to="/trails" replace />} />
                         <Route path="/map" element={<Navigate to="/exhibitions" replace />} />
@@ -163,8 +163,8 @@ function App() {
                         {/* Redirects for old routes */}
                         <Route path="/exhibits" element={<Navigate to="/exhibitions" replace />} />
                         <Route path="/exhibits/:id" element={<Navigate to="/exhibitions" replace />} />
-                        <Route path="/museums" element={<Navigate to="/" replace />} />
-                        <Route path="/museums/:slug" element={<Navigate to="/" replace />} />
+                        <Route path="/museums" element={<Navigate to="/home" replace />} />
+                        <Route path="/museums/:slug" element={<Navigate to="/home" replace />} />
                         <Route path="/collections/:id" element={<Navigate to="/exhibitions" replace />} />
                         <Route path="/ai-scanner" element={<Navigate to="/ar" replace />} />
                         <Route path="/scan" element={<Navigate to="/exhibitions" replace />} />
@@ -174,7 +174,7 @@ function App() {
                     </Route>
 
                     {/* Staff login — redirect to Gateway (login is now in Gateway modal) */}
-                    <Route path="/admin/login" element={<Navigate to="/enter" replace />} />
+                    <Route path="/admin/login" element={<Navigate to="/" replace />} />
 
                     {/* Staff protected routes (admin + guide) */}
                     <Route path="/admin" element={<ProtectedRoute />}>

@@ -114,7 +114,7 @@ const BookVisit = () => {
  Book Another
  </button>
  <Link
- to="/enter"
+ to="/"
  className="px-5 py-2.5 rounded-full bg-amber-600 text-white hover:bg-amber-700 font-semibold transition"
  >
  Back to Gateway

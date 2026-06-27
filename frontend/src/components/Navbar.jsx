@@ -53,7 +53,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const navLinks = [
-    { to: '/', label: t('nav.home') },
+    { to: '/home', label: t('nav.home') },
     { to: '/exhibitions', label: t('nav.exhibitions') },
     { to: '/artifacts', label: t('nav.artifacts') || 'Artifacts' },
     { to: '/trails', label: t('nav.trails') || 'Trails' },
@@ -65,14 +65,14 @@ const Navbar = () => {
   ];
 
   const isActive = (path) =>
-    location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
+    location.pathname === path || (path !== '/home' && location.pathname.startsWith(path));
 
   const linkClass = (path) => isActive(path) ? linkActive : linkBase;
 
   return (
     <nav className={`${navBg} shadow-sm border-b ${border} sticky top-0 z-40`}>
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        <Link to="/" className="text-xl font-bold text-amber-400">
+        <Link to="/home" className="text-xl font-bold text-amber-400">
           Kandt Museum
         </Link>
 

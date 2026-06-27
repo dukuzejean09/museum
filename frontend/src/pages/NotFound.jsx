@@ -22,7 +22,7 @@ const NotFound = () => {
           <ArrowLeft size={18} /> {t('common.back') || 'Go Back'}
         </button>
         <Link
-          to="/"
+          to="/home"
           className="btn btn-primary btn-md"
         >
           <Home size={18} /> {t('nav.home') || 'Home'}

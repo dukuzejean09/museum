@@ -74,7 +74,7 @@ const ARScanner = () => {
       {/* ─── Top bar: Home button (always visible) ─── */}
       <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/70 to-transparent pointer-events-none">
         <Link
-          to="/"
+          to="/home"
           className="pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 backdrop-blur-sm text-white hover:bg-black/70 transition"
         >
           <Home size={18} />
