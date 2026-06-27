@@ -82,28 +82,28 @@ const QRPreviewModal = ({ isOpen, onClose, entityType, entity, frontendUrl }) =>
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-slate-900 rounded-2xl shadow-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-slate-800 dark:text-white">QR Code</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-            <X size={20} className="text-slate-500" />
+          <h3 className="text-lg font-bold text-white">QR Code</h3>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 transition">
+            <X size={20} className="text-slate-400" />
           </button>
         </div>
 
-        <div ref={qrRef} className="flex flex-col items-center py-6 px-4 bg-slate-50 dark:bg-slate-800 rounded-xl mb-4">
+        <div ref={qrRef} className="flex flex-col items-center py-6 px-4 bg-slate-800 rounded-xl mb-4">
           <QRCodeSVG value={deepLink} size={220} level="H" includeMargin />
-          <p className="mt-4 font-semibold text-slate-800 dark:text-white text-center">{entityName}</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{entityType}</p>
+          <p className="mt-4 font-semibold text-white text-center">{entityName}</p>
+          <p className="text-xs text-slate-400 capitalize">{entityType}</p>
         </div>
 
-        <div className="flex items-center gap-2 p-2 bg-slate-100 dark:bg-slate-800 rounded-lg mb-4">
+        <div className="flex items-center gap-2 p-2 bg-slate-100 rounded-lg mb-4">
           <input
             readOnly
             value={deepLink}
-            className="flex-1 bg-transparent text-xs text-slate-600 dark:text-slate-300 outline-none truncate"
+            className="flex-1 bg-transparent text-xs text-slate-400 outline-none truncate"
           />
-          <button onClick={handleCopy} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Copy link">
-            {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} className="text-slate-500" />}
+          <button onClick={handleCopy} className="p-1.5 rounded hover:bg-slate-200 transition" title="Copy link">
+            {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} className="text-slate-400" />}
           </button>
         </div>
 
@@ -116,7 +116,7 @@ const QRPreviewModal = ({ isOpen, onClose, entityType, entity, frontendUrl }) =>
           </button>
           <button
             onClick={handlePrint}
-            className="flex-1 flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 py-2.5 rounded-xl transition font-medium text-sm"
+            className="flex-1 flex items-center justify-center gap-2 border border-slate-600 text-slate-300 hover:bg-slate-800 py-2.5 rounded-xl transition font-medium text-sm"
           >
             <Printer size={16} /> Print
           </button>

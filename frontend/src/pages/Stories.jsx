@@ -115,7 +115,7 @@ const Stories = () => {
  {getLocalized(story.content)}
  </p>
  {story.exhibitionId && (
- <p className="mt-3 text-xs text-amber-600 dark:text-amber-400 font-medium truncate">
+ <p className="mt-3 text-xs text-amber-600 font-medium truncate">
  {getLocalized(story.exhibitionId.title) || t('story.linkedExhibition') || 'View Exhibition'}
  </p>
  )}

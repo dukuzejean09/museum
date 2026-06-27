@@ -15,25 +15,25 @@
   --color-primary-light: #fef3c7;
   --color-primary-muted: #92400e;
 
-  /* Neutrals (light mode) */
-  --color-bg: #ffffff;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f8fafc;
-  --color-text: #334155;
-  --color-text-secondary: #64748b;
-  --color-text-muted: #94a3b8;
-  --color-border: #e2e8f0;
-  --color-border-strong: #cbd5e1;
+  /* Neutrals (dark theme) */
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-hover: #334155;
+  --color-text: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #718096;
+  --color-border: #334155;
+  --color-border-strong: #475569;
 
   /* Semantic */
   --color-success: #16a34a;
-  --color-success-light: #f0fdf4;
+  --color-success-light: rgba(22, 163, 74, 0.15);
   --color-warning: #d97706;
-  --color-warning-light: #fffbeb;
+  --color-warning-light: rgba(217, 119, 6, 0.15);
   --color-danger: #dc2626;
-  --color-danger-light: #fef2f2;
+  --color-danger-light: rgba(220, 38, 38, 0.15);
   --color-info: #2563eb;
-  --color-info-light: #eff6ff;
+  --color-info-light: rgba(37, 99, 235, 0.1);
 
   /* Radius */
   --radius-sm: 0.5rem;
@@ -42,10 +42,10 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.2);
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -61,23 +61,7 @@
   --transition-slow: 300ms ease;
 }
 
-.dark {
-  --color-bg: #0f172a;
-  --color-surface: #1e293b;
-  --color-surface-hover: #334155;
-  --color-text: #e2e8f0;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
-  --color-border: #334155;
-  --color-border-strong: #475569;
-  --color-success-light: rgba(22, 163, 74, 0.15);
-  --color-warning-light: rgba(217, 119, 6, 0.15);
-  --color-danger-light: rgba(220, 38, 38, 0.15);
-  --color-info-light: rgba(37, 99, 235, 0.1);
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
-}
+/* Dark-only theme — no light mode override needed */
 
 /* ── Global Base ────────────────────────────────────────────── */
 html {

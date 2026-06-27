@@ -42,7 +42,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen flex bg-slate-950">
       {/* Mobile sidebar toggle */}
       <button
         className="lg:hidden fixed top-4 left-4 z-50 bg-slate-900 text-white p-2 rounded-lg shadow-lg"

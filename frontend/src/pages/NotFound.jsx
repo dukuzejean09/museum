@@ -8,10 +8,10 @@ const NotFound = () => {
   return (
     <div className="page-container py-20 text-center">
       <h1 className="text-7xl font-extrabold text-amber-600 mb-4">404</h1>
-      <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">
+      <h2 className="text-2xl font-bold text-slate-200 mb-2">
         {t('error.notFound') || 'Page Not Found'}
       </h2>
-      <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
+      <p className="text-slate-400 mb-8 max-w-md mx-auto">
         {t('error.notFoundDesc') || "The page you're looking for doesn't exist or has been moved."}
       </p>
       <div className="flex items-center justify-center gap-4">

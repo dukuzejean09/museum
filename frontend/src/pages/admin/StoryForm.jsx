@@ -126,7 +126,7 @@ const StoryForm = () => {
  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${
  current === lang
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+ : 'text-slate-300 hover:bg-slate-800'
  }`}
  >
  {LANG_LABELS[lang]}
@@ -143,7 +143,7 @@ const StoryForm = () => {
  <div>
  <button
  onClick={() => navigate('/admin/stories')}
- className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-amber-600 mb-6 transition"
+ className="flex items-center gap-2 text-slate-400 hover:text-amber-600 mb-6 transition"
  >
  <ArrowLeft size={20} /> Back to Stories
  </button>
@@ -154,7 +154,7 @@ const StoryForm = () => {
 
  <form onSubmit={handleSubmit} className="space-y-6">
  {/* Title */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title">Title</h2>
  {renderLangTabs(titleLang, setTitleLang)}
  {LANGUAGES.map((lang) => (
@@ -170,7 +170,7 @@ const StoryForm = () => {
  </div>
 
  {/* Content */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title">Content</h2>
  {renderLangTabs(contentLang, setContentLang)}
  {LANGUAGES.map((lang) => (
@@ -186,7 +186,7 @@ const StoryForm = () => {
  </div>
 
  {/* Exhibition & Status */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title">Settings</h2>
  <div className="grid md:grid-cols-3 gap-4">
  <div>

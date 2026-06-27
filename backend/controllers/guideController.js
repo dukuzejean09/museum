@@ -1,9 +1,11 @@
+import crypto from 'crypto';
 import Guide from '../models/Guide.js';
+import Admin from '../models/Admin.js';
 import { asyncHandler, NotFoundError } from '../utils/errors.js';
 import { paginateWithCount } from '../utils/pagination.js';
 import { uploadToCloudinary } from '../config/cloudinary.js';
-import { guide as guideSocket } from '../utils/socketEmitter.js';
-import { sendGuideWelcomeEmail } from '../utils/email.js';
+import { guide as guideSocket, user as userSocket } from '../utils/socketEmitter.js';
+import { sendGuideWelcomeEmail, sendCredentialsEmail } from '../utils/email.js';
 
 // @desc    Get all guides — paginated, filterable
 // @route   GET /api/guides
@@ -31,7 +33,7 @@ export const getGuideById = asyncHandler(async (req, res) => {
   res.json(guide);
 });
 
-// @desc    Create guide (admin)
+// @desc    Create guide (admin) — also creates a user account with guide role
 // @route   POST /api/admin/guides
 export const createGuide = asyncHandler(async (req, res) => {
   const data = { ...req.body };
@@ -48,15 +50,66 @@ export const createGuide = asyncHandler(async (req, res) => {
   if (typeof data.availability === 'string') {
     try { data.availability = JSON.parse(data.availability); } catch { delete data.availability; }
   }
+
+  // Auto-create a user account for this guide
+  let adminUser = null;
+  const guideEmail = data.email;
+  if (guideEmail) {
+    // Check if a user with this email already exists
+    adminUser = await Admin.findOne({ email: guideEmail.toLowerCase().trim() });
+  }
+
+  if (!adminUser && guideEmail) {
+    // Generate username from name (e.g. "Sylvie Umubyeyi" → "sylvie_umubyeyi")
+    const nameParts = (data.name || 'guide').trim().toLowerCase().split(/\s+/);
+    let baseUsername = nameParts.join('_').replace(/[^a-z0-9_]/g, '');
+    if (baseUsername.length < 3) baseUsername = 'guide_' + baseUsername;
+
+    // Ensure unique username
+    let username = baseUsername;
+    let counter = 1;
+    while (await Admin.findOne({ username })) {
+      username = `${baseUsername}${counter++}`;
+    }
+
+    // Generate random password
+    const password = crypto.randomBytes(4).toString('hex'); // 8 char hex
+
+    // Send credentials email FIRST — only create account if email succeeds
+    try {
+      await sendCredentialsEmail({
+        name: data.name,
+        email: guideEmail,
+        username,
+        password,
+        role: 'guide',
+      });
+    } catch (err) {
+      console.error('Failed to send guide credentials email:', err.message);
+      return res.status(500).json({ message: 'Failed to send credentials email. Guide was not created. Please check email configuration and try again.' });
+    }
+
+    adminUser = await Admin.create({
+      username,
+      email: guideEmail.toLowerCase().trim(),
+      password,
+      role: 'guide',
+      profile: {
+        firstName: nameParts[0] ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1) : '',
+        lastName: nameParts.slice(1).map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '),
+        phone: data.phone || '',
+      },
+    });
+    userSocket.created(adminUser);
+  }
+
+  // Link guide to user account
+  if (adminUser) {
+    data.userId = adminUser._id;
+  }
+
   const guide = await Guide.create(data);
   guideSocket.created(guide);
-
-  // Send welcome email to the new guide (non-blocking)
-  if (guide.email) {
-    sendGuideWelcomeEmail(guide).catch(err => {
-      console.error('Failed to send guide welcome email:', err.message);
-    });
-  }
 
   res.status(201).json(guide);
 });
@@ -84,11 +137,21 @@ export const updateGuide = asyncHandler(async (req, res) => {
   res.json(guide);
 });
 
-// @desc    Delete guide (admin)
+// @desc    Delete guide (admin) — also deletes the linked user account
 // @route   DELETE /api/admin/guides/:id
 export const deleteGuide = asyncHandler(async (req, res) => {
   const guide = await Guide.findByIdAndDelete(req.params.id);
   if (!guide) throw new NotFoundError('Guide');
+
+  // Also delete the linked user account
+  if (guide.userId) {
+    const user = await Admin.findById(guide.userId);
+    if (user && !user.isProtected) {
+      await user.deleteOne();
+      userSocket.deleted(guide.userId);
+    }
+  }
+
   guideSocket.deleted(req.params.id);
   res.json({ message: 'Guide removed' });
 });

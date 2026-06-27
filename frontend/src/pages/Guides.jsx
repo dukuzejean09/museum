@@ -102,7 +102,7 @@ const Guides = () => {
  <h2 className="card-title">{g.name}</h2>
  <p className="card-desc">{g.bio}</p>
  <div className="mt-3">
- <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('guides.languages')}:</p>
+ <p className="text-sm text-slate-400 mb-1">{t('guides.languages')}:</p>
  <div className="flex flex-wrap gap-1">
  {g.languages.map((lang, i) => (
  <span key={i} className="tag">
@@ -128,8 +128,8 @@ const Guides = () => {
  <div className="modal-box" onClick={e => e.stopPropagation()}>
  <div className="modal-header">
  <div>
- <h2 className="text-xl font-bold dark:text-white">{t('booking.title')}</h2>
- <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">{t('booking.with')} {bookingGuide.name}</p>
+ <h2 className="text-xl font-bold">{t('booking.title')}</h2>
+ <p className="text-sm text-amber-600 mt-1">{t('booking.with')} {bookingGuide.name}</p>
  </div>
  <button onClick={closeBooking} className="btn btn-ghost btn-sm">
  <X size={20} />
@@ -139,8 +139,8 @@ const Guides = () => {
  {submitted ? (
  <div className="modal-body text-center">
  <CheckCircle size={64} className="text-green-500 mx-auto mb-4" />
- <h3 className="text-xl font-bold dark:text-white mb-2">{t('booking.submitted')}</h3>
- <p className="text-slate-600 dark:text-slate-400 mb-6">{t('booking.submittedMsg')}</p>
+ <h3 className="text-xl font-bold mb-2">{t('booking.submitted')}</h3>
+ <p className="text-slate-400 mb-6">{t('booking.submittedMsg')}</p>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
  <button onClick={closeBooking} className="btn btn-primary btn-md">
  {t('booking.bookAnother')}

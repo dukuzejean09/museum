@@ -76,7 +76,7 @@ const ArtifactSlideshow = ({ artifacts = [], className = '', interval = 4000, ov
               key={i}
               onClick={() => { setFading(true); setTimeout(() => { setCurrent(i); setFading(false); }, 700); }}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                i === current ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/70'
+                i === current ? 'bg-slate-900 w-4' : 'bg-white/50 hover:bg-white/70'
               }`}
               aria-label={`Slide ${i + 1}`}
             />
@@ -110,7 +110,7 @@ export const ArtifactSlideshowCard = ({ artifacts = [], className = '', interval
   }, [images.length, interval]);
 
   if (images.length === 0) {
-    return <div className={`bg-slate-100 dark:bg-slate-800 ${className}`} />;
+    return <div className={`bg-slate-800 ${className}`} />;
   }
 
   return (

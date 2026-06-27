@@ -44,7 +44,7 @@ const TrailDetail = () => {
  if (!trail) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData')}</h1>
+ <h1 className="text-2xl font-bold mb-4">{t('common.noData')}</h1>
  <Link to="/trails" className="text-amber-600 hover:underline">{t('common.back')}</Link>
  </div>
  );
@@ -98,7 +98,7 @@ const TrailDetail = () => {
  className="w-full h-full object-cover transition-all duration-500"
  />
  ) : (
- <div className="w-full h-full flex items-center justify-center text-slate-500">
+ <div className="w-full h-full flex items-center justify-center text-slate-400">
  <Sparkles size={60} />
  </div>
  )}
@@ -121,17 +121,17 @@ const TrailDetail = () => {
  )}
 
  {/* Progress Bar */}
- <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30">
+ <div className="bg-slate-900 border-b border-slate-700 sticky top-0 z-30">
  <div className="container mx-auto px-4 py-3">
  <div className="flex items-center justify-between mb-2">
- <span className="text-sm font-medium dark:text-white">
+ <span className="text-sm font-medium">
  {isIntro ? 'Introduction' : `Stop ${currentStop + 1} of ${totalStops}`}
  </span>
- <span className="text-sm text-slate-500 dark:text-slate-400">
+ <span className="text-sm text-slate-400">
  {Math.round(progress * 100)}% complete
  </span>
  </div>
- <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+ <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
  <div
  className="h-full bg-amber-600 rounded-full transition-all duration-500"
  style={{ width: `${progress * 100}%` }}
@@ -144,7 +144,7 @@ const TrailDetail = () => {
  className={`flex-shrink-0 w-8 h-8 rounded-full text-xs font-bold transition ${
  isIntro
  ? 'bg-amber-600 text-white'
- : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-300'
+ : 'bg-slate-700 text-slate-400 hover:bg-slate-300'
  }`}
  >
  i
@@ -158,7 +158,7 @@ const TrailDetail = () => {
  ? 'bg-amber-600 text-white'
  : visitedStops.has(idx)
  ? 'bg-green-500 text-white'
- : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-300'
+ : 'bg-slate-700 text-slate-400 hover:bg-slate-300'
  }`}
  >
  {visitedStops.has(idx) && currentStop !== idx ? <Check size={14} className="mx-auto" /> : idx + 1}
@@ -189,15 +189,15 @@ const TrailDetail = () => {
 
  {/* Preview of stops */}
  <div className="card">
- <h3 className="font-bold dark:text-white mb-4">{t('trail.stops') || 'Trail Stops'} ({totalStops})</h3>
+ <h3 className="font-bold mb-4">{t('trail.stops') || 'Trail Stops'} ({totalStops})</h3>
  <div className="space-y-3">
  {stops.map((s, idx) => (
  <div key={idx} className="flex items-center gap-3">
- <span className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 flex items-center justify-center text-sm font-bold flex-shrink-0">
+ <span className="w-8 h-8 rounded-full bg-amber-900/20 text-amber-400 flex items-center justify-center text-sm font-bold flex-shrink-0">
  {s.order}
  </span>
  <div className="flex-1 min-w-0">
- <p className="font-medium dark:text-white truncate">
+ <p className="font-medium truncate">
  {getLocalized(s.artifact?.title) || `Stop ${s.order}`}
  </p>
  </div>
@@ -241,8 +241,8 @@ const TrailDetail = () => {
 
  {/* Stop-specific description */}
  {getLocalized(stop.description) && (
- <div className="mt-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
- <p className="text-amber-800 dark:text-amber-300 text-sm italic">
+ <div className="mt-4 bg-amber-900/20 rounded-xl p-4 border border-amber-800">
+ <p className="text-amber-800 text-sm italic">
  {getLocalized(stop.description)}
  </p>
  </div>
@@ -260,7 +260,7 @@ const TrailDetail = () => {
 
  <Link
  to={`/artifacts/${artifact._id}`}
- className="mt-4 inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline text-sm font-medium"
+ className="mt-4 inline-flex items-center gap-1.5 text-amber-600 hover:underline text-sm font-medium"
  >
  {t('trail.viewArtifact') || 'View full artifact details'} <ExternalLink size={14} />
  </Link>
@@ -286,7 +286,7 @@ const TrailDetail = () => {
  </button>
  ) : (
  <div className="text-center">
- <p className="text-green-600 dark:text-green-400 font-bold text-lg">
+ <p className="text-green-600 font-bold text-lg">
  {t('trail.completed') || 'Trail Complete!'}
  </p>
  <Link to="/trails" className="text-amber-600 hover:underline text-sm">

@@ -295,7 +295,7 @@ const NarrationPlayer = ({
         </button>
         <div className="flex-1 min-w-0">
           <div
-            className="h-1.5 rounded-full bg-amber-200 dark:bg-amber-800/40 cursor-pointer"
+            className="h-1.5 rounded-full bg-amber-200 cursor-pointer"
             onClick={mode === 'audio' ? handleSeek : undefined}
           >
             <div
@@ -304,7 +304,7 @@ const NarrationPlayer = ({
             />
           </div>
         </div>
-        <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums">
+        <span className="text-[10px] text-slate-400 tabular-nums">
           {formatTime(currentTime)}
         </span>
       </div>
@@ -316,7 +316,7 @@ const NarrationPlayer = ({
   // ═══════════════════════════════════════════════════════════
   return (
     <div
-      className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-4"
+      className="bg-amber-900/20 border border-amber-800/40 rounded-xl p-4"
       role="region"
       aria-label={title || t('narration.audioNarration') || 'Audio Narration'}
     >
@@ -334,16 +334,16 @@ const NarrationPlayer = ({
 
       {/* Header */}
       <div className="flex items-center gap-2 mb-3">
-        <Volume2 size={18} className="text-amber-600 dark:text-amber-400" />
-        <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+        <Volume2 size={18} className="text-amber-600" />
+        <span className="text-sm font-semibold text-slate-300">
           {title || t('narration.audioNarration') || 'Audio Narration'}
         </span>
         <div className="ml-auto flex items-center gap-1.5">
-          <span className="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">
+          <span className="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-medium">
             {LANG_LABELS[lang] || lang}
           </span>
           {mode === 'tts' && (
-            <span className="text-[10px] bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full font-medium">
+            <span className="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full font-medium">
               TTS
             </span>
           )}
@@ -355,7 +355,7 @@ const NarrationPlayer = ({
         {/* Play/Pause button */}
         <button
           onClick={playing ? pause : play}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
           aria-label={playing ? t('narration.pause') || 'Pause' : t('narration.play') || 'Play narration'}
         >
           {playing ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
@@ -365,7 +365,7 @@ const NarrationPlayer = ({
         {(playing || progress > 0) && (
           <button
             onClick={stop}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-700 hover:bg-slate-300 text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
             aria-label={t('narration.stop') || 'Stop'}
           >
             <Square size={14} />
@@ -376,7 +376,7 @@ const NarrationPlayer = ({
         {progress > 0 && (
           <button
             onClick={restart}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-700 hover:bg-slate-300 text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
             aria-label={t('narration.restart') || 'Restart'}
           >
             <RotateCcw size={14} />
@@ -386,7 +386,7 @@ const NarrationPlayer = ({
         {/* Progress bar */}
         <div className="flex-1 min-w-0">
           <div
-            className="h-2 rounded-full bg-amber-200 dark:bg-amber-800/40 cursor-pointer relative group"
+            className="h-2 rounded-full bg-amber-200 cursor-pointer relative group"
             onClick={handleSeek}
             role="slider"
             aria-label={t('narration.progress') || 'Narration progress'}
@@ -406,14 +406,14 @@ const NarrationPlayer = ({
               style={{ width: `${progress}%` }}
             >
               {/* Scrubber handle */}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-500 opacity-0 group-hover:opacity-100 transition-opacity shadow" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-700 opacity-0 group-hover:opacity-100 transition-opacity shadow" />
             </div>
           </div>
           <div className="flex justify-between mt-1">
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums">
+            <span className="text-[10px] text-slate-400 tabular-nums">
               {formatTime(currentTime)}
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums">
+            <span className="text-[10px] text-slate-400 tabular-nums">
               {formatTime(duration || estimateDuration(text, lang))}
             </span>
           </div>
@@ -421,20 +421,20 @@ const NarrationPlayer = ({
       </div>
 
       {/* Secondary controls row */}
-      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-800/30">
+      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-amber-800/50/30">
         {/* Volume control */}
         <div className="relative" ref={volumeRef}>
           <button
             onClick={() => setShowVolumeSlider(!showVolumeSlider)}
-            className="flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors p-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="flex items-center gap-1 text-slate-400 hover:text-amber-600 transition-colors p-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
             aria-label={muted ? t('narration.unmute') || 'Unmute' : t('narration.mute') || 'Mute'}
           >
             <VolumeIcon size={16} />
           </button>
           {showVolumeSlider && (
-            <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 p-3 z-20 w-36">
+            <div className="absolute bottom-full left-0 mb-2 bg-slate-800 rounded-lg shadow-lg border border-slate-700 p-3 z-20 w-36">
               <div className="flex items-center gap-2">
-                <button onClick={toggleMute} className="text-slate-500 hover:text-amber-600">
+                <button onClick={toggleMute} className="text-slate-400 hover:text-amber-600">
                   <VolumeIcon size={14} />
                 </button>
                 <input
@@ -451,7 +451,7 @@ const NarrationPlayer = ({
                   className="flex-1 h-1.5 accent-amber-600 cursor-pointer"
                   aria-label={t('narration.volume') || 'Volume'}
                 />
-                <span className="text-[10px] text-slate-500 w-7 text-right tabular-nums">
+                <span className="text-[10px] text-slate-400 w-7 text-right tabular-nums">
                   {Math.round((muted ? 0 : volume) * 100)}%
                 </span>
               </div>
@@ -463,7 +463,7 @@ const NarrationPlayer = ({
         <div className="relative" ref={speedMenuRef}>
           <button
             onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-            className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="flex items-center gap-1 text-xs text-slate-400 hover:text-amber-600 transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
             aria-label={t('narration.speed') || 'Playback speed'}
           >
             <Gauge size={14} />
@@ -471,15 +471,15 @@ const NarrationPlayer = ({
             <ChevronDown size={12} />
           </button>
           {showSpeedMenu && (
-            <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-20 min-w-[80px]">
+            <div className="absolute bottom-full left-0 mb-2 bg-slate-800 rounded-lg shadow-lg border border-slate-700 py-1 z-20 min-w-[80px]">
               {SPEED_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   onClick={() => changeSpeed(opt.value)}
-                  className={`w-full text-left px-3 py-1.5 text-xs hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors ${
+                  className={`w-full text-left px-3 py-1.5 text-xs hover:bg-amber-900/20 transition-colors ${
                     speedMultiplier === opt.value
-                      ? 'text-amber-600 font-semibold bg-amber-50/50 dark:bg-amber-900/20'
-                      : 'text-slate-600 dark:text-slate-300'
+                      ? 'text-amber-600 font-semibold bg-amber-900/20'
+                      : 'text-slate-300'
                   }`}
                 >
                   {opt.label}
@@ -494,7 +494,7 @@ const NarrationPlayer = ({
           <div className="relative ml-auto" ref={voiceRef}>
             <button
               onClick={() => setShowVoiceSelector(!showVoiceSelector)}
-              className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="flex items-center gap-1 text-xs text-slate-400 hover:text-amber-600 transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
               aria-label={t('narration.selectVoice') || 'Select voice'}
             >
               <Settings size={14} />
@@ -504,7 +504,7 @@ const NarrationPlayer = ({
               <ChevronDown size={12} />
             </button>
             {showVoiceSelector && (
-              <div className="absolute bottom-full right-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-20 max-h-48 overflow-y-auto min-w-[180px]">
+              <div className="absolute bottom-full right-0 mb-2 bg-slate-800 rounded-lg shadow-lg border border-slate-700 py-1 z-20 max-h-48 overflow-y-auto min-w-[180px]">
                 {availableVoices.map((voice, idx) => (
                   <button
                     key={voice.name + voice.lang}
@@ -517,10 +517,10 @@ const NarrationPlayer = ({
                         setTimeout(() => play(), 100);
                       }
                     }}
-                    className={`w-full text-left px-3 py-1.5 text-xs hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors ${
+                    className={`w-full text-left px-3 py-1.5 text-xs hover:bg-amber-900/20 transition-colors ${
                       selectedVoiceIdx === idx
-                        ? 'text-amber-600 font-semibold bg-amber-50/50 dark:bg-amber-900/20'
-                        : 'text-slate-600 dark:text-slate-300'
+                        ? 'text-amber-600 font-semibold bg-amber-900/20'
+                        : 'text-slate-300'
                     }`}
                   >
                     <div className="truncate">{voice.name}</div>

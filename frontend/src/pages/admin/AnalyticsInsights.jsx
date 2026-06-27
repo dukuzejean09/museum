@@ -15,8 +15,8 @@ const HeatBar = ({ items, maxCount, label }) => {
     <div className="space-y-2">
       {items.map((item, i) => (
         <div key={item._id || i} className="flex items-center gap-3">
-          <span className="text-xs text-slate-600 dark:text-slate-400 w-32 truncate shrink-0" title={item.name}>{item.name}</span>
-          <div className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-5 relative overflow-hidden">
+          <span className="text-xs text-slate-400 w-32 truncate shrink-0" title={item.name}>{item.name}</span>
+          <div className="flex-1 bg-slate-700 rounded-full h-5 relative overflow-hidden">
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -24,7 +24,7 @@ const HeatBar = ({ items, maxCount, label }) => {
                 background: `hsl(${30 + (i * 15)}, 80%, ${55 - i * 2}%)`,
               }}
             />
-            <span className="absolute inset-0 flex items-center justify-end pr-2 text-[10px] font-bold text-slate-700 dark:text-slate-300">
+            <span className="absolute inset-0 flex items-center justify-end pr-2 text-[10px] font-bold text-slate-300">
               {item.count}
             </span>
           </div>
@@ -64,7 +64,7 @@ const AnalyticsInsights = () => {
   };
 
   if (loading) return <DashboardSkeleton />;
-  if (!insights) return <p className="text-center py-16 text-slate-500">Failed to load data.</p>;
+  if (!insights) return <p className="text-center py-16 text-slate-400">Failed to load data.</p>;
 
   const arMethodData = Object.entries(insights.arMethods || {}).map(([name, value]) => ({ name, value }));
 
@@ -77,7 +77,7 @@ const AnalyticsInsights = () => {
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-sm"
+            className="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-white text-sm"
           >
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>
@@ -89,38 +89,38 @@ const AnalyticsInsights = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-sky-500 text-white p-3 rounded-lg"><Eye size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Total Events</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{insights.dailyVisitors?.reduce((s, d) => s + d.events, 0) || 0}</p>
+            <p className="text-sm text-slate-400">Total Events</p>
+            <p className="text-xl font-bold text-white">{insights.dailyVisitors?.reduce((s, d) => s + d.events, 0) || 0}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-amber-500 text-white p-3 rounded-lg"><Scan size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">AR Scans</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{Object.values(insights.arMethods || {}).reduce((s, v) => s + v, 0)}</p>
+            <p className="text-sm text-slate-400">AR Scans</p>
+            <p className="text-xl font-bold text-white">{Object.values(insights.arMethods || {}).reduce((s, v) => s + v, 0)}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-violet-500 text-white p-3 rounded-lg"><Headphones size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Audio Plays</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{insights.audio?.plays || 0}</p>
+            <p className="text-sm text-slate-400">Audio Plays</p>
+            <p className="text-xl font-bold text-white">{insights.audio?.plays || 0}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-3">
           <div className="bg-emerald-500 text-white p-3 rounded-lg"><TrendingUp size={20} /></div>
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Audio Completions</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{insights.audio?.completions || 0}</p>
+            <p className="text-sm text-slate-400">Audio Completions</p>
+            <p className="text-xl font-bold text-white">{insights.audio?.completions || 0}</p>
           </div>
         </div>
       </div>
 
       {/* Daily Visitors Chart */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-slate-900 rounded-xl shadow-sm p-6 mb-6">
         <h2 className="section-title">Daily Visitor Activity</h2>
         {insights.dailyVisitors?.length > 0 ? (
           <ResponsiveContainer width="100%" height={280}>
@@ -140,7 +140,7 @@ const AnalyticsInsights = () => {
 
       {/* AR Methods + Engagement by Day */}
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">AR Recognition Methods</h2>
           {arMethodData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
@@ -157,7 +157,7 @@ const AnalyticsInsights = () => {
           )}
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">Engagement by Day</h2>
           {insights.engagementByDay?.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
@@ -177,15 +177,15 @@ const AnalyticsInsights = () => {
 
       {/* Heatmap / Popularity Section */}
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-slate-300 mb-1 flex items-center gap-2">
             <Flame size={18} className="text-orange-500" /> Most Popular Artifacts
           </h2>
           <p className="text-xs text-slate-400 mb-4">Ranked by total interactions</p>
           <HeatBar items={heatmap?.artifacts} />
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-slate-300 mb-1 flex items-center gap-2">
             <Flame size={18} className="text-orange-500" /> Most Popular Exhibitions
           </h2>
           <p className="text-xs text-slate-400 mb-4">Ranked by total interactions</p>
@@ -195,16 +195,16 @@ const AnalyticsInsights = () => {
 
       {/* Top entities tables */}
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">Top Scanned Artifacts</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr><th className="text-left px-3 py-2 text-slate-500">Name</th><th className="text-right px-3 py-2 text-slate-500">Views</th><th className="text-right px-3 py-2 text-slate-500">Scans</th></tr></thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <thead><tr><th className="text-left px-3 py-2 text-slate-400">Name</th><th className="text-right px-3 py-2 text-slate-400">Views</th><th className="text-right px-3 py-2 text-slate-400">Scans</th></tr></thead>
+              <tbody className="divide-y divide-slate-100">
                 {insights.topArtifacts?.map((a) => (
                   <tr key={a._id}>
-                    <td className="px-3 py-2 text-slate-800 dark:text-white truncate max-w-[200px]">{a.name}</td>
-                    <td className="px-3 py-2 text-right text-slate-600 dark:text-slate-400">{a.views}</td>
+                    <td className="px-3 py-2 text-white truncate max-w-[200px]">{a.name}</td>
+                    <td className="px-3 py-2 text-right text-slate-400">{a.views}</td>
                     <td className="px-3 py-2 text-right text-amber-600 font-medium">{a.scans}</td>
                   </tr>
                 ))}
@@ -213,16 +213,16 @@ const AnalyticsInsights = () => {
             </table>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">Top Visited Exhibitions</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr><th className="text-left px-3 py-2 text-slate-500">Name</th><th className="text-right px-3 py-2 text-slate-500">Views</th><th className="text-right px-3 py-2 text-slate-500">Total</th></tr></thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <thead><tr><th className="text-left px-3 py-2 text-slate-400">Name</th><th className="text-right px-3 py-2 text-slate-400">Views</th><th className="text-right px-3 py-2 text-slate-400">Total</th></tr></thead>
+              <tbody className="divide-y divide-slate-100">
                 {insights.topExhibitions?.map((e) => (
                   <tr key={e._id}>
-                    <td className="px-3 py-2 text-slate-800 dark:text-white truncate max-w-[200px]">{e.name}</td>
-                    <td className="px-3 py-2 text-right text-slate-600 dark:text-slate-400">{e.views}</td>
+                    <td className="px-3 py-2 text-white truncate max-w-[200px]">{e.name}</td>
+                    <td className="px-3 py-2 text-right text-slate-400">{e.views}</td>
                     <td className="px-3 py-2 text-right text-amber-600 font-medium">{e.total}</td>
                   </tr>
                 ))}
@@ -235,8 +235,8 @@ const AnalyticsInsights = () => {
 
       {/* Trail Heatmap */}
       {heatmap?.trails?.length > 0 && (
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 mt-6">
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-2">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6 mt-6">
+          <h2 className="text-lg font-semibold text-slate-300 mb-1 flex items-center gap-2">
             <Flame size={18} className="text-orange-500" /> Popular Trails
           </h2>
           <p className="text-xs text-slate-400 mb-4">Ranked by visitor interactions</p>

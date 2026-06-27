@@ -286,11 +286,11 @@ const GatewayNarrator = () => {
           ) : (
             <div className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl bg-slate-500/5 border border-slate-500/20">
               <div className="w-11 h-11 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center shrink-0">
-                <Headphones size={20} className="text-slate-500" />
+                <Headphones size={20} className="text-slate-400" />
               </div>
               <div className="text-left flex-1 min-w-0">
                 <p className="text-slate-400 text-sm">Narration ntiboneka muri Ikinyarwanda</p>
-                <p className="text-slate-500 text-xs">Narration is not available in Kinyarwanda</p>
+                <p className="text-slate-400 text-xs">Narration is not available in Kinyarwanda</p>
               </div>
             </div>
           )}
@@ -372,7 +372,7 @@ const GatewayNarrator = () => {
                   {narrLang === 'fr' ? 'Prêt à explorer ? Réservez ou entrez votre code ci-contre.' : 'Ready to explore? Book a visit or enter your code.'}
                 </p>
               ) : (
-                <p className="text-slate-500 text-sm">{narrLang === 'fr' ? 'Démarrage...' : 'Starting...'}</p>
+                <p className="text-slate-400 text-sm">{narrLang === 'fr' ? 'Démarrage...' : 'Starting...'}</p>
               )}
             </div>
 
@@ -387,8 +387,8 @@ const GatewayNarrator = () => {
                 </div>
               </div>
               <div className="flex justify-between mt-1.5">
-                <span className="text-[10px] text-slate-500 tabular-nums">{formatTime(currentTime)}</span>
-                <span className="text-[10px] text-slate-500 tabular-nums">{formatTime(state === 'done' ? duration : estimatedDuration)}</span>
+                <span className="text-[10px] text-slate-400 tabular-nums">{formatTime(currentTime)}</span>
+                <span className="text-[10px] text-slate-400 tabular-nums">{formatTime(state === 'done' ? duration : estimatedDuration)}</span>
               </div>
             </div>
 
@@ -445,7 +445,7 @@ const GatewayNarrator = () => {
                         onChange={(e) => changeVolume(parseFloat(e.target.value))}
                         className="flex-1 h-1 accent-amber-500 cursor-pointer"
                       />
-                      <span className="text-[10px] text-slate-500 w-7 text-right tabular-nums">
+                      <span className="text-[10px] text-slate-400 w-7 text-right tabular-nums">
                         {Math.round((muted ? 0 : volume) * 100)}%
                       </span>
                     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { adminFetchGuide, adminCreateGuide, adminUpdateGuide } from '../../api';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Save, Upload, Clock } from 'lucide-react';
+import { ArrowLeft, Save, Upload, Clock, Mail } from 'lucide-react';
 
 import { TextSkeleton } from '../../components/ui/LoadingSkeleton';
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -98,6 +98,10 @@ const GuideForm = () => {
  toast.error('Name is required');
  return;
  }
+ if (!isEdit && !form.email.trim()) {
+ toast.error('Email is required — a user account will be created for this guide');
+ return;
+ }
  setLoading(true);
  try {
  const formData = new FormData();
@@ -138,7 +142,7 @@ const GuideForm = () => {
  <div>
  <button
  onClick={() => navigate('/admin/guides')}
- className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-amber-600 mb-6 transition"
+ className="flex items-center gap-2 text-slate-400 hover:text-amber-600 mb-6 transition"
  >
  <ArrowLeft size={20} /> Back to Guides
  </button>
@@ -149,21 +153,21 @@ const GuideForm = () => {
 
  <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
  {/* Basic Info */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title">Basic Information</h2>
 
  {/* Image */}
  <div className="flex items-center gap-6 mb-6">
  <div className="shrink-0">
  {preview ? (
- <img src={preview} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700" />
+ <img src={preview} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-slate-700" />
  ) : (
- <div className="w-20 h-20 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 text-xs">
+ <div className="w-20 h-20 rounded-full bg-slate-700 flex items-center justify-center text-slate-400 text-xs">
  No img
  </div>
  )}
  </div>
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition">
  <Upload size={18} />
  <span>{preview ? 'Change Image' : 'Upload Image'}</span>
  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
@@ -176,8 +180,8 @@ const GuideForm = () => {
  <input name="name" value={form.name} onChange={handleChange} required className={inputClass} placeholder="Guide name" />
  </div>
  <div>
- <label className="form-label">Email</label>
- <input name="email" type="email" value={form.email} onChange={handleChange} className={inputClass} placeholder="guide@museum.rw" />
+ <label className="form-label">Email {!isEdit && '*'}</label>
+ <input name="email" type="email" value={form.email} onChange={handleChange} required={!isEdit} className={inputClass} placeholder="guide@museum.rw" />
  </div>
  <div>
  <label className="form-label">Phone</label>
@@ -198,15 +202,22 @@ const GuideForm = () => {
  <label className="form-label">Bio</label>
  <textarea name="bio" value={form.bio} onChange={handleChange} rows="4" className={inputClass} placeholder="Guide biography..." />
  </div>
+
+ {!isEdit && (
+ <div className="mt-4 flex items-center gap-2 bg-blue-900/20 border border-blue-800 rounded-lg px-3 py-2 text-sm text-blue-300">
+ <Mail size={16} className="flex-shrink-0" />
+ A user account will be created automatically. Login credentials will be sent to the guide's email.
+ </div>
+ )}
  </div>
 
  {/* Availability Schedule */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title flex items-center gap-2">
  <Clock size={20} />
  Weekly Availability
  </h2>
- <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+ <p className="text-sm text-slate-400 mb-4">
  Set available hours for each day of the week.
  </p>
 
@@ -216,8 +227,8 @@ const GuideForm = () => {
  key={slot.day}
  className={`flex items-center gap-4 p-3 rounded-xl transition ${
  slot.enabled
- ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
- : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700'
+ ? 'bg-amber-900/20 border border-amber-800'
+ : 'bg-slate-800/50 border border-slate-700'
  }`}
  >
  <label className="flex items-center gap-3 min-w-[140px] cursor-pointer">
@@ -225,9 +236,9 @@ const GuideForm = () => {
  type="checkbox"
  checked={slot.enabled}
  onChange={(e) => handleAvailabilityChange(index, 'enabled', e.target.checked)}
- className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-slate-300 dark:border-slate-600"
+ className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-slate-600"
  />
- <span className={`text-sm font-medium ${slot.enabled ? 'text-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
+ <span className={`text-sm font-medium ${slot.enabled ? 'text-white' : 'text-slate-400'}`}>
  {DAY_LABELS[slot.day]}
  </span>
  </label>
@@ -240,7 +251,7 @@ const GuideForm = () => {
  onChange={(e) => handleAvailabilityChange(index, 'startTime', e.target.value)}
  className="form-input"
  />
- <span className="text-slate-400 dark:text-slate-500 text-sm">to</span>
+ <span className="text-slate-400 text-sm">to</span>
  <input
  type="time"
  value={slot.endTime}
@@ -249,7 +260,7 @@ const GuideForm = () => {
  />
  </div>
  ) : (
- <span className="text-sm text-slate-400 dark:text-slate-500 italic">Unavailable</span>
+ <span className="text-sm text-slate-400 italic">Unavailable</span>
  )}
  </div>
  ))}

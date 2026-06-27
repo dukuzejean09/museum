@@ -21,7 +21,7 @@ const ImageCarousel = ({ images = [], interval = 5000, className = '' }) => {
 
  if (count === 0) {
  return (
- <div className={`bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 ${className}`}>
+ <div className={`bg-slate-700 flex items-center justify-center text-slate-400 ${className}`}>
  No image
  </div>
  );

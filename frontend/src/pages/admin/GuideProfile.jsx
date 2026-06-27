@@ -135,12 +135,12 @@ const GuideProfile = () => {
  if (notLinked) {
  return (
  <div className="max-w-2xl mx-auto">
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 text-center">
- <User size={48} className="mx-auto text-slate-400 dark:text-slate-500 mb-4" />
- <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-2">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-8 text-center">
+ <User size={48} className="mx-auto text-slate-400 mb-4" />
+ <h2 className="text-xl font-bold text-white mb-2">
  No Guide Profile Linked
  </h2>
- <p className="text-slate-600 dark:text-slate-400">
+ <p className="text-slate-400">
  Your account is not linked to a guide profile yet. Please ask an administrator to create
  a guide record and link it to your account.
  </p>
@@ -158,21 +158,21 @@ const GuideProfile = () => {
 
  <form onSubmit={handleSubmit} className="space-y-6">
  {/* Profile Image & Basic Info */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title">Basic Information</h2>
 
  {/* Image */}
  <div className="flex items-center gap-6 mb-6">
  <div className="shrink-0">
  {preview ? (
- <img src={preview} alt="Profile" className="w-24 h-24 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700" />
+ <img src={preview} alt="Profile" className="w-24 h-24 rounded-full object-cover border-2 border-slate-700" />
  ) : (
- <div className="w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
- <User size={32} className="text-slate-400 dark:text-slate-500" />
+ <div className="w-24 h-24 rounded-full bg-slate-700 flex items-center justify-center">
+ <User size={32} className="text-slate-400" />
  </div>
  )}
  </div>
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition">
  <Upload size={18} />
  <span>{preview ? 'Change Photo' : 'Upload Photo'}</span>
  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
@@ -227,12 +227,12 @@ const GuideProfile = () => {
  </div>
 
  {/* Availability Schedule */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <h2 className="section-title flex items-center gap-2">
  <Clock size={20} />
  Weekly Availability
  </h2>
- <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+ <p className="text-sm text-slate-400 mb-4">
  Set your available hours for each day of the week.
  </p>
 
@@ -242,8 +242,8 @@ const GuideProfile = () => {
  key={slot.day}
  className={`flex items-center gap-4 p-3 rounded-xl transition ${
  slot.enabled
- ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
- : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700'
+ ? 'bg-amber-900/20 border border-amber-800'
+ : 'bg-slate-800/50 border border-slate-700'
  }`}
  >
  <label className="flex items-center gap-3 min-w-[140px] cursor-pointer">
@@ -251,9 +251,9 @@ const GuideProfile = () => {
  type="checkbox"
  checked={slot.enabled}
  onChange={(e) => handleAvailabilityChange(index, 'enabled', e.target.checked)}
- className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-slate-300 dark:border-slate-600"
+ className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-slate-600"
  />
- <span className={`text-sm font-medium ${slot.enabled ? 'text-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
+ <span className={`text-sm font-medium ${slot.enabled ? 'text-white' : 'text-slate-400'}`}>
  {DAY_LABELS[slot.day]}
  </span>
  </label>
@@ -264,18 +264,18 @@ const GuideProfile = () => {
  type="time"
  value={slot.startTime}
  onChange={(e) => handleAvailabilityChange(index, 'startTime', e.target.value)}
- className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+ className="px-3 py-1.5 rounded-lg border border-slate-600 bg-slate-800 text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
  />
- <span className="text-slate-400 dark:text-slate-500 text-sm">to</span>
+ <span className="text-slate-400 text-sm">to</span>
  <input
  type="time"
  value={slot.endTime}
  onChange={(e) => handleAvailabilityChange(index, 'endTime', e.target.value)}
- className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+ className="px-3 py-1.5 rounded-lg border border-slate-600 bg-slate-800 text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
  />
  </div>
  ) : (
- <span className="text-sm text-slate-400 dark:text-slate-500 italic">Unavailable</span>
+ <span className="text-sm text-slate-400 italic">Unavailable</span>
  )}
  </div>
  ))}

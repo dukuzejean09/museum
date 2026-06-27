@@ -116,7 +116,7 @@ const AdminArtifacts = () => {
  <select
  value={statusFilter}
  onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
- className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none text-sm"
+ className="px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-white focus:ring-2 focus:ring-amber-500 outline-none text-sm"
  >
  <option value="">All Status</option>
  <option value="draft">Draft</option>
@@ -127,19 +127,19 @@ const AdminArtifacts = () => {
 
  <div className="card overflow-hidden overflow-x-auto !p-0">
  <table className="w-full min-w-[600px]">
- <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-800 border-b border-slate-700">
  <tr>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Image</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Name</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Category</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Status</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Views</th>
- <th className="text-left px-6 py-3 text-sm font-medium text-slate-500 dark:text-slate-400">Actions</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-400">Image</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-400">Name</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-400">Category</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-400">Status</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-400">Views</th>
+ <th className="text-left px-6 py-3 text-sm font-medium text-slate-400">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+ <tbody className="divide-y divide-slate-100">
  {artifacts.map((artifact) => (
- <tr key={artifact._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
+ <tr key={artifact._id} className="hover:bg-slate-800">
  <td className="px-6 py-4">
  {artifact.image ? (
  <img
@@ -148,35 +148,35 @@ const AdminArtifacts = () => {
  className="w-12 h-12 rounded-lg object-cover"
  />
  ) : (
- <div className="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400">
+ <div className="w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center text-slate-400">
  <ImageIcon size={18} />
  </div>
  )}
  </td>
- <td className="px-6 py-4 font-medium text-slate-800 dark:text-white">
+ <td className="px-6 py-4 font-medium text-white">
  {artifact.name?.en || '-'}
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+ <td className="px-6 py-4 text-slate-400">
  {artifact.category || '-'}
  </td>
  <td className="px-6 py-4">
  <StatusBadge status={artifact.status || 'draft'} />
  </td>
- <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+ <td className="px-6 py-4 text-slate-400">
  {artifact.stats?.views ?? 0}
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
  <button
  onClick={() => setQrArtifact(artifact)}
- className="p-2 text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition"
+ className="p-2 text-violet-600 hover:bg-violet-50 rounded-lg transition"
  title="QR Code"
  >
  <QrCode size={18} />
  </button>
  <Link
  to={`/admin/artifacts/edit/${artifact._id}`}
- className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
+ className="p-2 text-amber-600 hover:bg-amber-900/20 rounded-lg transition"
  title="Edit"
  >
  <Edit size={18} />
@@ -184,7 +184,7 @@ const AdminArtifacts = () => {
  {isAdmin && (
  <button
  onClick={() => handleDelete(artifact._id, artifact.name?.en)}
- className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+ className="p-2 text-red-600 hover:bg-red-900/20 rounded-lg transition"
  title="Delete"
  >
  <Trash2 size={18} />
@@ -196,7 +196,7 @@ const AdminArtifacts = () => {
  ))}
  {artifacts.length === 0 && (
  <tr>
- <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
+ <td colSpan="6" className="px-6 py-12 text-center text-slate-400">
  No artifacts found.
  </td>
  </tr>

@@ -519,7 +519,7 @@ const Gateway = () => {
 
       {/* ── Bottom Imigongo band + footer ── */}
       <ImigongoStrip className="relative z-10" />
-      <div className="relative z-10 text-center py-3 text-slate-600 text-[11px] flex items-center justify-center gap-1.5">
+      <div className="relative z-10 text-center py-3 text-slate-400 text-[11px] flex items-center justify-center gap-1.5">
         <Lock size={10} />
         {t('gateway.secureFooter')}
       </div>
@@ -572,7 +572,7 @@ const Gateway = () => {
             </p>
             <button
               onClick={stopScanner}
-              className="text-slate-500 hover:text-white text-sm transition underline underline-offset-2"
+              className="text-slate-400 hover:text-white text-sm transition underline underline-offset-2"
             >
               {t('gateway.cancelScan') || 'Cancel'}
             </button>

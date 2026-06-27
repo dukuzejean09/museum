@@ -13,21 +13,21 @@ const RatingBar = ({ label, value, max = 5 }) => {
   const pct = ((value || 0) / max) * 100;
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm text-slate-600 dark:text-slate-400 w-28 shrink-0">{label}</span>
-      <div className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+      <span className="text-sm text-slate-400 w-28 shrink-0">{label}</span>
+      <div className="flex-1 bg-slate-700 rounded-full h-3">
         <div className="bg-amber-500 h-3 rounded-full transition-all" style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-sm font-bold text-slate-800 dark:text-white w-10 text-right">{value || '—'}</span>
+      <span className="text-sm font-bold text-white w-10 text-right">{value || '—'}</span>
     </div>
   );
 };
 
 const StatCard = ({ icon: Icon, label, value, subtext, color = 'bg-amber-500' }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
+  <div className="bg-slate-900 rounded-xl shadow-sm p-5 flex items-center gap-4">
     <div className={`${color} text-white p-3 rounded-lg`}><Icon size={22} /></div>
     <div>
-      <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="text-2xl font-bold text-slate-800 dark:text-white">{value}</p>
+      <p className="text-sm text-slate-400">{label}</p>
+      <p className="text-2xl font-bold text-white">{value}</p>
       {subtext && <p className="text-xs text-slate-400">{subtext}</p>}
     </div>
   </div>
@@ -120,7 +120,7 @@ const EvaluationDashboard = () => {
   };
 
   if (loading) return <DashboardSkeleton />;
-  if (!stats) return <p className="text-center py-16 text-slate-500">Failed to load data.</p>;
+  if (!stats) return <p className="text-center py-16 text-slate-400">Failed to load data.</p>;
 
   const { satisfaction, learningImpact, monthlyTrends, ar } = stats;
 
@@ -150,7 +150,7 @@ const EvaluationDashboard = () => {
 
       {/* Satisfaction Ratings */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">Visitor Satisfaction Ratings</h2>
           <div className="space-y-3">
             <RatingBar label="Overall" value={satisfaction.avgOverall} />
@@ -162,7 +162,7 @@ const EvaluationDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">Learning Impact</h2>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={learningData} layout="vertical">
@@ -178,7 +178,7 @@ const EvaluationDashboard = () => {
 
       {/* AR Analytics + Trends */}
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">AR Recognition Methods</h2>
           {methodData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
@@ -193,22 +193,22 @@ const EvaluationDashboard = () => {
             <p className="text-center text-slate-400 py-10">No AR scan data yet</p>
           )}
           <div className="grid grid-cols-3 gap-2 mt-4 text-center">
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
-              <p className="text-lg font-bold text-slate-800 dark:text-white">{ar.totalScans}</p>
-              <p className="text-xs text-slate-500">Total Scans</p>
+            <div className="bg-slate-800 rounded-lg p-2">
+              <p className="text-lg font-bold text-white">{ar.totalScans}</p>
+              <p className="text-xs text-slate-400">Total Scans</p>
             </div>
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-2">
+            <div className="bg-green-900/20 rounded-lg p-2">
               <p className="text-lg font-bold text-green-600">{ar.successCount}</p>
-              <p className="text-xs text-slate-500">Successes</p>
+              <p className="text-xs text-slate-400">Successes</p>
             </div>
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-2">
+            <div className="bg-red-900/20 rounded-lg p-2">
               <p className="text-lg font-bold text-red-600">{ar.failureCount}</p>
-              <p className="text-xs text-slate-500">Failures</p>
+              <p className="text-xs text-slate-400">Failures</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6">
+        <div className="bg-slate-900 rounded-xl shadow-sm p-6">
           <h2 className="section-title">Monthly Evaluation Trends</h2>
           {monthlyTrends.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
@@ -229,45 +229,45 @@ const EvaluationDashboard = () => {
       </div>
 
       {/* Individual Responses */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm">
+      <div className="bg-slate-900 rounded-xl shadow-sm">
         <button
           onClick={() => setShowResponses(!showResponses)}
           className="w-full flex items-center justify-between p-5 text-left"
         >
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200">Individual Responses ({satisfaction.total})</h2>
+          <h2 className="text-lg font-semibold text-slate-300">Individual Responses ({satisfaction.total})</h2>
           {showResponses ? <ChevronUp size={20} className="text-slate-400" /> : <ChevronDown size={20} className="text-slate-400" />}
         </button>
 
         {showResponses && (
-          <div className="border-t border-slate-200 dark:border-slate-700">
+          <div className="border-t border-slate-700">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-800">
+                <thead className="bg-slate-800">
                   <tr>
-                    <th className="text-left px-4 py-2 text-slate-500">Date</th>
-                    <th className="text-left px-4 py-2 text-slate-500">Name</th>
-                    <th className="text-left px-4 py-2 text-slate-500">Overall</th>
-                    <th className="text-left px-4 py-2 text-slate-500">AR</th>
-                    <th className="text-left px-4 py-2 text-slate-500">Recommend</th>
-                    <th className="text-left px-4 py-2 text-slate-500">Actions</th>
+                    <th className="text-left px-4 py-2 text-slate-400">Date</th>
+                    <th className="text-left px-4 py-2 text-slate-400">Name</th>
+                    <th className="text-left px-4 py-2 text-slate-400">Overall</th>
+                    <th className="text-left px-4 py-2 text-slate-400">AR</th>
+                    <th className="text-left px-4 py-2 text-slate-400">Recommend</th>
+                    <th className="text-left px-4 py-2 text-slate-400">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100">
                   {evaluations.map((ev) => (
-                    <tr key={ev._id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
-                      <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{new Date(ev.createdAt).toLocaleDateString()}</td>
-                      <td className="px-4 py-3 text-slate-800 dark:text-white">{ev.visitorName || '—'}</td>
+                    <tr key={ev._id} className="hover:bg-slate-800">
+                      <td className="px-4 py-3 text-slate-400">{new Date(ev.createdAt).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 text-white">{ev.visitorName || '—'}</td>
                       <td className="px-4 py-3">
                         <span className="flex items-center gap-1 text-amber-600"><Star size={14} /> {ev.overallSatisfaction}</span>
                       </td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{ev.arUsefulness || '—'}</td>
+                      <td className="px-4 py-3 text-slate-400">{ev.arUsefulness || '—'}</td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ev.wouldRecommend ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400'}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ev.wouldRecommend ? 'bg-green-900/20 text-green-400' : 'bg-red-900/20 text-red-400'}`}>
                           {ev.wouldRecommend ? 'Yes' : 'No'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <button onClick={() => handleDelete(ev._id)} className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition">
+                        <button onClick={() => handleDelete(ev._id)} className="p-1.5 text-red-600 hover:bg-red-900/20 rounded-lg transition">
                           <Trash2 size={16} />
                         </button>
                       </td>

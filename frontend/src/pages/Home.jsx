@@ -304,7 +304,7 @@ const TimelineSection = ({ t }) => {
                     }`}>
                       {t(`home.era${era.key.charAt(0).toUpperCase() + era.key.slice(1)}`)}
                     </h3>
-                    <p className="text-xs text-slate-500">{era.year}</p>
+                    <p className="text-xs text-slate-400">{era.year}</p>
                   </button>
                 </ScrollReveal>
               );
@@ -464,7 +464,7 @@ const Home = () => {
               </div>
 
               {/* Quick trust indicators */}
-              <div className="flex items-center gap-6 justify-center lg:justify-start text-xs text-slate-500">
+              <div className="flex items-center gap-6 justify-center lg:justify-start text-xs text-slate-400">
                 <span className="flex items-center gap-1.5"><Shield size={12} className="text-amber-500" /> {t('home.trustFree')}</span>
                 <span className="flex items-center gap-1.5"><Globe size={12} className="text-amber-500" /> {t('home.trustMultilingual')}</span>
                 <span className="flex items-center gap-1.5"><Camera size={12} className="text-amber-500" /> {t('home.trustAR')}</span>
@@ -483,7 +483,7 @@ const Home = () => {
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-amber-300">{t('home.entryScan') || 'Scan to Enter'}</p>
-                  <p className="text-[10px] text-slate-500">{t('home.entryLabel') || 'Museum Access'}</p>
+                  <p className="text-[10px] text-slate-400">{t('home.entryLabel') || 'Museum Access'}</p>
                 </div>
               </div>
             </div>
@@ -514,7 +514,7 @@ const Home = () => {
 
         {/* Scroll hint */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-scroll-hint z-10">
-          <span className="text-xs text-slate-500 uppercase tracking-widest">{t('home.scrollHint')}</span>
+          <span className="text-xs text-slate-400 uppercase tracking-widest">{t('home.scrollHint')}</span>
           <ChevronDown size={18} className="text-amber-500" />
         </div>
       </section>
@@ -751,7 +751,7 @@ const Home = () => {
                         </div>
                       </div>
                       <div className="p-4">
-                        <div className="flex items-center gap-3 text-xs text-slate-500 mb-2">
+                        <div className="flex items-center gap-3 text-xs text-slate-400 mb-2">
                           {trail.estimatedMinutes && (
                             <span className="flex items-center gap-1"><Clock size={12} /> {trail.estimatedMinutes} min</span>
                           )}

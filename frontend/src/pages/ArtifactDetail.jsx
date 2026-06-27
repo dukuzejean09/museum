@@ -43,7 +43,7 @@ const ArtifactDetail = () => {
  if (!artifact) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData')}</h1>
+ <h1 className="text-2xl font-bold mb-4">{t('common.noData')}</h1>
  <Link to="/artifacts" className="text-amber-600 hover:underline">{t('common.back')}</Link>
  </div>
  );
@@ -61,7 +61,7 @@ const ArtifactDetail = () => {
  {allImages[0] ? (
  <img src={imgUrl(allImages[0])} alt={getLocalized(artifact.name)} className="w-full h-full object-cover" />
  ) : (
- <div className="w-full h-full flex items-center justify-center text-slate-500">
+ <div className="w-full h-full flex items-center justify-center text-slate-400">
  <Sparkles size={60} />
  </div>
  )}
@@ -116,8 +116,8 @@ const ArtifactDetail = () => {
  <div className="flex items-start gap-2">
  <Calendar size={18} className="text-amber-600 mt-1 flex-shrink-0" />
  <div>
- <h3 className="font-semibold dark:text-white">Date Discovered / Collected</h3>
- <p className="text-slate-600 dark:text-slate-400">{artifact.dateDiscovered}</p>
+ <h3 className="font-semibold">Date Discovered / Collected</h3>
+ <p className="text-slate-400">{artifact.dateDiscovered}</p>
  </div>
  </div>
  )}
@@ -126,8 +126,8 @@ const ArtifactDetail = () => {
  <div className="flex items-start gap-2">
  <MapPin size={18} className="text-amber-600 mt-1 flex-shrink-0" />
  <div>
- <h3 className="font-semibold dark:text-white">Origin / Location</h3>
- <p className="text-slate-600 dark:text-slate-400">{getLocalized(artifact.originLocation)}</p>
+ <h3 className="font-semibold">Origin / Location</h3>
+ <p className="text-slate-400">{getLocalized(artifact.originLocation)}</p>
  </div>
  </div>
  )}
@@ -181,7 +181,7 @@ const ArtifactDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
  {getLocalized(ex.title)}
  </p>
  </div>
@@ -211,7 +211,7 @@ const ArtifactDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
  {getLocalized(trail.title)}
  </p>
  </div>

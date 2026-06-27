@@ -161,18 +161,18 @@ const QRBulkManager = ({ isOpen, onClose, items, entityType }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700">
-          <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+      <div className="bg-slate-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-5 border-b border-slate-700">
+          <h3 className="text-lg font-bold text-white">
             Bulk QR Codes — {entityType}s ({selected.size} selected)
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-            <X size={20} className="text-slate-500" />
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 transition">
+            <X size={20} className="text-slate-400" />
           </button>
         </div>
 
-        <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
-          <button onClick={selectAll} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-amber-600 transition">
+        <div className="flex items-center gap-3 px-5 py-3 border-b border-slate-700 bg-slate-800">
+          <button onClick={selectAll} className="flex items-center gap-2 text-sm text-slate-400 hover:text-amber-600 transition">
             {selected.size === items.length ? <CheckSquare size={16} /> : <Square size={16} />}
             {selected.size === items.length ? 'Deselect All' : 'Select All'}
           </button>
@@ -187,7 +187,7 @@ const QRBulkManager = ({ isOpen, onClose, items, entityType }) => {
           <button
             onClick={handleBulkPrint}
             disabled={selected.size === 0}
-            className="flex items-center gap-1.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 px-3 py-1.5 rounded-lg transition text-sm font-medium"
+            className="flex items-center gap-1.5 border border-slate-600 text-slate-300 hover:bg-slate-100 disabled:opacity-50 px-3 py-1.5 rounded-lg transition text-sm font-medium"
           >
             <Printer size={14} /> Print Sheet
           </button>
@@ -201,8 +201,8 @@ const QRBulkManager = ({ isOpen, onClose, items, entityType }) => {
                 onClick={() => toggleSelect(item._id)}
                 className={`flex items-center gap-3 p-3 rounded-xl border transition text-left ${
                   selected.has(item._id)
-                    ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
-                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                    ? 'border-amber-500 bg-amber-50'
+                    : 'border-slate-700 hover:border-slate-600'
                 }`}
               >
                 {selected.has(item._id) ? (
@@ -211,8 +211,8 @@ const QRBulkManager = ({ isOpen, onClose, items, entityType }) => {
                   <Square size={18} className="text-slate-400 flex-shrink-0" />
                 )}
                 <div className="min-w-0">
-                  <p className="font-medium text-sm text-slate-800 dark:text-white truncate">{getName(item)}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{entityType}</p>
+                  <p className="font-medium text-sm text-white truncate">{getName(item)}</p>
+                  <p className="text-xs text-slate-400 capitalize">{entityType}</p>
                 </div>
               </button>
             ))}

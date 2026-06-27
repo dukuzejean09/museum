@@ -40,13 +40,13 @@ const Pagination = ({ page, pages, total, onPageChange }) => {
  const btnActive =
  'bg-amber-600 text-white';
  const btnInactive =
- 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+ 'text-slate-300 hover:bg-slate-800';
  const btnDisabled =
- 'text-slate-300 dark:text-slate-600 cursor-not-allowed';
+ 'text-slate-300 cursor-not-allowed';
 
  return (
  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
- <p className="text-sm text-slate-500 dark:text-slate-400">
+ <p className="text-sm text-slate-400">
  Showing {from}-{to} of {total}
  </p>
  <div className="flex items-center gap-1">

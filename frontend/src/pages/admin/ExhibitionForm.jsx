@@ -236,7 +236,7 @@ const ExhibitionForm = () => {
  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${
  current === lang
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+ : 'text-slate-300 hover:bg-slate-800'
  }`}
  >
  {LANG_LABELS[lang]}
@@ -280,7 +280,7 @@ const ExhibitionForm = () => {
  <div>
  <button
  onClick={() => navigate('/admin/exhibitions')}
- className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-amber-600 mb-6 transition"
+ className="flex items-center gap-2 text-slate-400 hover:text-amber-600 mb-6 transition"
  >
  <ArrowLeft size={20} /> Back to Exhibitions
  </button>
@@ -299,7 +299,7 @@ const ExhibitionForm = () => {
  className={`px-4 py-2 text-sm rounded-xl font-medium whitespace-nowrap transition ${
  activeTab === idx
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'
+ : 'text-slate-300 hover:bg-slate-800 bg-slate-900 border border-slate-700'
  }`}
  >
  {tab}
@@ -310,7 +310,7 @@ const ExhibitionForm = () => {
  <form onSubmit={handleSubmit}>
  {/* TAB 0: Basic Info */}
  {activeTab === 0 && (
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6">
  <div>
  <label className="form-label">Title</label>
  {renderMultiLangInput('title', titleLang, setTitleLang, 'input', 'Exhibition title')}
@@ -332,11 +332,11 @@ const ExhibitionForm = () => {
 
  {/* TAB 1: Artifacts */}
  {activeTab === 1 && (
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6">
  <div className="grid md:grid-cols-2 gap-6">
  {/* Available Artifacts */}
  <div>
- <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+ <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
  <Gem size={20} className="text-amber-600" /> Available Artifacts
  </h3>
  <div className="relative mb-3">
@@ -364,21 +364,21 @@ const ExhibitionForm = () => {
  key={artifact._id}
  className={`flex items-center gap-3 p-3 rounded-xl border transition ${
  isSelected
- ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-50'
- : 'border-slate-200 dark:border-slate-700 hover:border-amber-500'
+ ? 'border-slate-700 bg-slate-800/50 opacity-50'
+ : 'border-slate-700 hover:border-amber-500'
  }`}
  >
  {thumb ? (
  <img src={thumb} alt={title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
  ) : (
- <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
  <Gem size={16} className="text-slate-400" />
  </div>
  )}
  <div className="flex-1 min-w-0">
- <p className="text-sm font-medium text-slate-800 dark:text-white truncate">{title}</p>
+ <p className="text-sm font-medium text-white truncate">{title}</p>
  {artifact.category && (
- <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{artifact.category}</p>
+ <p className="text-xs text-slate-400 capitalize">{artifact.category}</p>
  )}
  </div>
  <button
@@ -393,14 +393,14 @@ const ExhibitionForm = () => {
  );
  })}
  {availableArtifacts.length === 0 && (
- <p className="text-slate-500 dark:text-slate-400 text-sm">No artifacts found.</p>
+ <p className="text-slate-400 text-sm">No artifacts found.</p>
  )}
  </div>
  </div>
 
  {/* Selected Artifacts */}
  <div>
- <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-3">
+ <h3 className="text-lg font-semibold text-white mb-3">
  Selected Artifacts ({form.artifacts.length})
  </h3>
  <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -414,25 +414,25 @@ const ExhibitionForm = () => {
  return (
  <div
  key={artId}
- className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700"
+ className="flex items-center gap-3 p-3 rounded-xl border border-slate-700"
  >
  {thumb ? (
  <img src={thumb} alt={title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
  ) : (
- <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
  <Gem size={16} className="text-slate-400" />
  </div>
  )}
  <div className="flex-1 min-w-0">
- <p className="text-sm font-medium text-slate-800 dark:text-white truncate">{title}</p>
+ <p className="text-sm font-medium text-white truncate">{title}</p>
  {artifact?.category && (
- <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{artifact.category}</p>
+ <p className="text-xs text-slate-400 capitalize">{artifact.category}</p>
  )}
  </div>
  <button
  type="button"
  onClick={() => handleChange('artifacts', form.artifacts.filter((aId) => aId !== artId))}
- className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition"
+ className="p-2 text-red-500 hover:bg-red-900/20 rounded-xl transition"
  >
  <X size={18} />
  </button>
@@ -440,7 +440,7 @@ const ExhibitionForm = () => {
  );
  })}
  {form.artifacts.length === 0 && (
- <p className="text-slate-500 dark:text-slate-400 text-sm">No artifacts selected. Add artifacts from the list.</p>
+ <p className="text-slate-400 text-sm">No artifacts selected. Add artifacts from the list.</p>
  )}
  </div>
  </div>
@@ -450,7 +450,7 @@ const ExhibitionForm = () => {
 
  {/* TAB 2: Media */}
  {activeTab === 2 && (
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6">
  {/* Cover Image */}
  <div>
  <label className="form-label mb-2">Cover Image</label>
@@ -458,7 +458,7 @@ const ExhibitionForm = () => {
  {coverPreview && (
  <img src={coverPreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
  )}
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition">
  <Upload size={18} />
  <span>{coverPreview ? 'Change' : 'Upload'}</span>
  <input
@@ -480,7 +480,7 @@ const ExhibitionForm = () => {
  {/* Gallery Images */}
  <div>
  <label className="form-label mb-2">Gallery Images</label>
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Gallery Images</span>
  <input
@@ -492,7 +492,7 @@ const ExhibitionForm = () => {
  />
  </label>
  {form.galleryImages && (
- <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+ <p className="text-sm text-slate-400 mt-2">
  {form.galleryImages.length} file(s) selected
  </p>
  )}
@@ -515,7 +515,7 @@ const ExhibitionForm = () => {
  <button
  type="button"
  onClick={() => removeVideoUrl(idx)}
- className="p-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition"
+ className="p-2.5 text-red-500 hover:bg-red-900/20 rounded-xl transition"
  >
  <X size={18} />
  </button>
@@ -526,7 +526,7 @@ const ExhibitionForm = () => {
  <button
  type="button"
  onClick={addVideoUrl}
- className="flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 mt-2 font-medium"
+ className="flex items-center gap-1 text-sm text-amber-600 hover:text-amber-400 mt-2 font-medium"
  >
  <Plus size={16} /> Add Video URL
  </button>
@@ -536,10 +536,10 @@ const ExhibitionForm = () => {
 
  {/* TAB 3: Narration */}
  {activeTab === 3 && (
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6">
  <div>
  <label className="form-label mb-2">Full Narration Audio</label>
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Narration Audio</span>
  <input
@@ -550,12 +550,12 @@ const ExhibitionForm = () => {
  />
  </label>
  {form.narrationAudio && (
- <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{form.narrationAudio.name}</p>
+ <p className="text-sm text-slate-400 mt-2">{form.narrationAudio.name}</p>
  )}
  </div>
  <div>
  <label className="form-label mb-2">Preview Audio (15s teaser)</label>
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Preview Audio</span>
  <input
@@ -566,7 +566,7 @@ const ExhibitionForm = () => {
  />
  </label>
  {form.previewAudio && (
- <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{form.previewAudio.name}</p>
+ <p className="text-sm text-slate-400 mt-2">{form.previewAudio.name}</p>
  )}
  </div>
  </div>
@@ -574,7 +574,7 @@ const ExhibitionForm = () => {
 
  {/* TAB 4: Settings */}
  {activeTab === 4 && (
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6">
  <div className="grid md:grid-cols-2 gap-4">
  <div>
  <label className="form-label">Tags (comma-separated)</label>
@@ -629,9 +629,9 @@ const ExhibitionForm = () => {
 
  {/* TAB 5: Timeline */}
  {activeTab === 5 && (
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
  <div className="flex justify-between items-center mb-4">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Timeline Entries</h2>
+ <h2 className="text-lg font-semibold text-white">Timeline Entries</h2>
  <button
  type="button"
  onClick={addTimelineEntry}
@@ -641,7 +641,7 @@ const ExhibitionForm = () => {
  </button>
  </div>
  {form.timeline.length === 0 && (
- <p className="text-slate-500 dark:text-slate-400 text-sm">No timeline entries yet. Click "Add Entry" to start.</p>
+ <p className="text-slate-400 text-sm">No timeline entries yet. Click "Add Entry" to start.</p>
  )}
  <div className="space-y-3">
  {form.timeline.map((entry, idx) => (
@@ -667,7 +667,7 @@ const ExhibitionForm = () => {
  <button
  type="button"
  onClick={() => removeTimelineEntry(idx)}
- className="p-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition"
+ className="p-2.5 text-red-500 hover:bg-red-900/20 rounded-xl transition"
  >
  <X size={18} />
  </button>

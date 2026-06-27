@@ -137,7 +137,7 @@ const ArtifactForm = () => {
  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${
  current === lang
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+ : 'text-slate-300 hover:bg-slate-800'
  }`}
  >
  {LANG_LABELS[lang]}
@@ -181,7 +181,7 @@ const ArtifactForm = () => {
  <div>
  <button
  onClick={() => navigate('/admin/artifacts')}
- className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-amber-600 mb-6 transition"
+ className="flex items-center gap-2 text-slate-400 hover:text-amber-600 mb-6 transition"
  >
  <ArrowLeft size={20} /> Back to Artifacts
  </button>
@@ -192,7 +192,7 @@ const ArtifactForm = () => {
 
  <form onSubmit={handleSubmit}>
  {/* Name & Description */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6">
  <div>
  <label className="form-label">
  Artifact Name <span className="text-red-500">*</span>
@@ -214,8 +214,8 @@ const ArtifactForm = () => {
  </div>
 
  {/* Optional Fields */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6 mt-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Optional Details</h2>
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6 mt-6">
+ <h2 className="text-lg font-semibold text-white">Optional Details</h2>
  <div className="grid md:grid-cols-3 gap-4">
  <div>
  <label className="form-label">Date Created</label>
@@ -267,8 +267,8 @@ const ArtifactForm = () => {
  </div>
 
  {/* Images */}
- <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 space-y-6 mt-6">
- <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Images</h2>
+ <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6 space-y-6 mt-6">
+ <h2 className="text-lg font-semibold text-white">Images</h2>
  <div>
  <label className="form-label mb-2">
  Artifact Image <span className="text-red-500">*</span>
@@ -277,7 +277,7 @@ const ArtifactForm = () => {
  {imagePreview && (
  <img src={imagePreview} alt="Preview" className="w-24 h-24 rounded-xl object-cover" />
  )}
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition">
  <Upload size={18} />
  <span>{imagePreview ? 'Change' : 'Upload'}</span>
  <input
@@ -298,7 +298,7 @@ const ArtifactForm = () => {
 
  <div>
  <label className="form-label mb-2">Additional Images</label>
- <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
+ <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-500 cursor-pointer transition w-fit">
  <Upload size={18} />
  <span>Upload Images</span>
  <input
@@ -310,7 +310,7 @@ const ArtifactForm = () => {
  />
  </label>
  {form.additionalImages && (
- <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+ <p className="text-sm text-slate-400 mt-2">
  {form.additionalImages.length} file(s) selected
  </p>
  )}

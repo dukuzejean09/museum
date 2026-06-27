@@ -65,9 +65,9 @@ const AdminTrails = () => {
 
  const difficultyBadge = (level) => {
  const colors = {
- easy: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
- moderate: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
- detailed: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+ easy: 'bg-green-900/20 text-green-400',
+ moderate: 'bg-yellow-900/20 text-yellow-400',
+ detailed: 'bg-red-900/20 text-red-400',
  };
  return (
  <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${colors[level] || colors.easy}`}>
@@ -114,41 +114,41 @@ const AdminTrails = () => {
  <div className="card overflow-hidden !p-0">
  <div className="overflow-x-auto">
  <table className="w-full">
- <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-800 border-b border-slate-700">
  <tr>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Cover
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Title
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Difficulty
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Duration
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Stops
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Featured
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Status
  </th>
- <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
  Actions
  </th>
  </tr>
  </thead>
- <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+ <tbody className="divide-y divide-slate-100">
  {paginated.map((trail) => {
  const title = trail.title?.en || trail.title || 'Untitled';
  const stopCount = trail.stopCount ?? trail.stops?.length ?? 0;
 
  return (
- <tr key={trail._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+ <tr key={trail._id} className="hover:bg-slate-800/50 transition">
  {/* Cover */}
  <td className="px-4 py-3">
  {trail.coverImage ? (
@@ -158,7 +158,7 @@ const AdminTrails = () => {
  className="w-12 h-12 rounded-lg object-cover"
  />
  ) : (
- <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center">
  <MapPin size={18} className="text-slate-400" />
  </div>
  )}
@@ -166,7 +166,7 @@ const AdminTrails = () => {
 
  {/* Title */}
  <td className="px-4 py-3">
- <span className="font-medium text-slate-800 dark:text-white">{title}</span>
+ <span className="font-medium text-white">{title}</span>
  </td>
 
  {/* Difficulty */}
@@ -174,7 +174,7 @@ const AdminTrails = () => {
 
  {/* Duration */}
  <td className="px-4 py-3">
- <span className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
+ <span className="flex items-center gap-1 text-sm text-slate-400">
  <Clock size={14} />
  {trail.estimatedMinutes || 30} min
  </span>
@@ -182,7 +182,7 @@ const AdminTrails = () => {
 
  {/* Stops */}
  <td className="px-4 py-3">
- <span className="text-sm text-slate-600 dark:text-slate-400">{stopCount}</span>
+ <span className="text-sm text-slate-400">{stopCount}</span>
  </td>
 
  {/* Featured */}
@@ -197,8 +197,8 @@ const AdminTrails = () => {
  <span
  className={`px-2 py-0.5 text-xs font-medium rounded-full ${
  trail.isActive !== false
- ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
- : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+ ? 'bg-green-900/20 text-green-400'
+ : 'bg-slate-800 text-slate-400'
  }`}
  >
  {trail.isActive !== false ? 'Active' : 'Inactive'}
@@ -210,7 +210,7 @@ const AdminTrails = () => {
  <div className="flex items-center gap-1">
  <Link
  to={`/admin/trails/edit/${trail._id}`}
- className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
+ className="p-2 text-amber-600 hover:bg-amber-900/20 rounded-lg transition"
  title="Edit"
  >
  <Edit size={18} />
@@ -218,7 +218,7 @@ const AdminTrails = () => {
  {isAdmin && (
  <button
  onClick={() => handleDelete(trail._id, title)}
- className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+ className="p-2 text-red-600 hover:bg-red-900/20 rounded-lg transition"
  title="Delete"
  >
  <Trash2 size={18} />
@@ -231,7 +231,7 @@ const AdminTrails = () => {
  })}
  {paginated.length === 0 && (
  <tr>
- <td colSpan="8" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
+ <td colSpan="8" className="px-6 py-12 text-center text-slate-400">
  {search ? 'No trails match your search.' : 'No trails found. Add your first trail!'}
  </td>
  </tr>
@@ -242,8 +242,8 @@ const AdminTrails = () => {
 
  {/* Pagination */}
  {totalPages > 1 && (
- <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200 dark:border-slate-700">
- <span className="text-sm text-slate-500 dark:text-slate-400">
+ <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700">
+ <span className="text-sm text-slate-400">
  Showing {(page - 1) * ITEMS_PER_PAGE + 1}–
  {Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
  </span>
@@ -255,7 +255,7 @@ const AdminTrails = () => {
  className={`px-3 py-1 text-sm rounded-lg transition ${
  p === page
  ? 'bg-amber-600 text-white'
- : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+ : 'text-slate-400 hover:bg-slate-800'
  }`}
  >
  {p}

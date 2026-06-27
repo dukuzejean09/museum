@@ -77,7 +77,7 @@ const ExhibitionDetail = () => {
  if (!exhibition) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData')}</h1>
+ <h1 className="text-2xl font-bold mb-4">{t('common.noData')}</h1>
  <Link to="/exhibitions" className="text-amber-600 hover:underline">{t('common.back')}</Link>
  </div>
  );
@@ -120,15 +120,15 @@ const ExhibitionDetail = () => {
 
  <div className="page-container">
  {/* Tab Navigation */}
- <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-8 overflow-x-auto">
+ <div className="flex gap-1 border-b border-slate-700 mb-8 overflow-x-auto">
  {tabs.map(tab => (
  <button
  key={tab}
  onClick={() => setActiveTab(tab)}
  className={`px-5 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap ${
  activeTab === tab
- ? 'border-amber-600 text-amber-600 dark:text-amber-400'
- : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+ ? 'border-amber-600 text-amber-600'
+ : 'border-transparent text-slate-400 hover:text-slate-300'
  }`}
  >
  {t(`exhibition.${tab}`)}
@@ -164,12 +164,12 @@ const ExhibitionDetail = () => {
  {exhibition.timeline?.length > 0 && (
  <div>
  <h2 className="detail-section-title">{t('exhibition.timeline')}</h2>
- <div className="relative border-l-2 border-amber-300 dark:border-amber-700 ml-4 space-y-6">
+ <div className="relative border-l-2 border-amber-300 ml-4 space-y-6">
  {exhibition.timeline.map((entry, i) => (
  <div key={i} className="relative pl-8">
- <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-600 border-2 border-white dark:border-slate-900" />
- <span className="text-sm font-bold text-amber-600 dark:text-amber-400">{entry.year}</span>
- <p className="text-slate-700 dark:text-slate-300 mt-1">
+ <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-600 border-2 border-white" />
+ <span className="text-sm font-bold text-amber-600">{entry.year}</span>
+ <p className="text-slate-300 mt-1">
  {getLocalized(entry.event)}
  </p>
  </div>
@@ -200,7 +200,7 @@ const ExhibitionDetail = () => {
  <Link
  key={artifact._id}
  to={`/artifacts/${artifact._id}`}
- className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition group"
+ className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden hover:shadow-lg transition group"
  >
  <div className="card-image" style={{ height: '10rem' }}>
  {artifact.image ? (
@@ -239,8 +239,8 @@ const ExhibitionDetail = () => {
  <div className="space-y-6">
  {stories.map(story => (
  <div key={story._id} className="card">
- <h3 className="text-lg font-bold dark:text-white">{getLocalized(story.title)}</h3>
- <p className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">
+ <h3 className="text-lg font-bold">{getLocalized(story.title)}</h3>
+ <p className="mt-2 text-slate-400 leading-relaxed whitespace-pre-line">
  {getLocalized(story.content)}
  </p>
  </div>
@@ -300,7 +300,7 @@ const ExhibitionDetail = () => {
  {t('exhibits.share')}
  </button>
  {showShare && (
- <div className="absolute top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 space-y-2 z-10 border border-slate-200 dark:border-slate-700">
+ <div className="absolute top-full mt-2 w-full bg-slate-800 rounded-xl shadow-lg p-4 space-y-2 z-10 border border-slate-700">
  <a href={`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`} target="_blank" rel="noopener noreferrer"
  className="block w-full text-center py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition">WhatsApp</a>
  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer"
@@ -330,7 +330,7 @@ const ExhibitionDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
  {getLocalized(rel.title)}
  </p>
  </div>

@@ -99,10 +99,10 @@ const AdminAccessCodes = () => {
  };
 
  const getStatus = (code) => {
- if (!code.isActive) return { label: 'Deactivated', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' };
- if (code.expiresAt && new Date(code.expiresAt) < new Date()) return { label: 'Expired', color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400' };
- if (code.maxUses !== null && code.timesUsed >= code.maxUses) return { label: 'Depleted', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' };
- return { label: 'Active', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' };
+ if (!code.isActive) return { label: 'Deactivated', color: 'bg-red-900/20 text-red-400' };
+ if (code.expiresAt && new Date(code.expiresAt) < new Date()) return { label: 'Expired', color: 'bg-slate-800 text-slate-400' };
+ if (code.maxUses !== null && code.timesUsed >= code.maxUses) return { label: 'Depleted', color: 'bg-amber-900/20 text-amber-400' };
+ return { label: 'Active', color: 'bg-green-900/20 text-green-400' };
  };
 
  if (loading) {
@@ -127,34 +127,34 @@ const AdminAccessCodes = () => {
  {/* QR Preview Modal */}
  {selectedQr && (
  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedQr(null)}>
- <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center max-w-md w-full" onClick={e => e.stopPropagation()}>
- <h3 className="text-lg font-bold dark:text-white mb-2">Museum Access Code</h3>
+ <div className="bg-slate-900 rounded-2xl p-8 text-center max-w-md w-full" onClick={e => e.stopPropagation()}>
+ <h3 className="text-lg font-bold mb-2">Museum Access Code</h3>
  <div className="flex items-center justify-center gap-3 mb-4 text-sm">
- <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-full font-medium">
+ <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-900/20 px-2.5 py-1 rounded-full font-medium">
  <Clock size={14} /> {formatDuration(selectedQr.duration)}
  </span>
  {selectedQr.maxUses && (
- <span className="inline-flex items-center gap-1 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 rounded-full font-medium">
+ <span className="inline-flex items-center gap-1 text-blue-400 bg-blue-900/20 px-2.5 py-1 rounded-full font-medium">
  <Users size={14} /> {selectedQr.maxUses} uses
  </span>
  )}
- <span className="text-slate-400 dark:text-slate-500 capitalize">{selectedQr.type}</span>
+ <span className="text-slate-400 capitalize">{selectedQr.type}</span>
  </div>
 
  {selectedQr.qrImage && (
  <img src={selectedQr.qrImage} alt="QR Code" className="mx-auto mb-4" />
  )}
 
- <div className="flex items-center justify-center gap-2 text-sm text-slate-400 dark:text-slate-500 mb-1">
- <span className="flex-1 border-t border-slate-200 dark:border-slate-700" />
+ <div className="flex items-center justify-center gap-2 text-sm text-slate-400 mb-1">
+ <span className="flex-1 border-t border-slate-700" />
  <span>Scan QR Code or use the code below</span>
- <span className="flex-1 border-t border-slate-200 dark:border-slate-700" />
+ <span className="flex-1 border-t border-slate-700" />
  </div>
 
  {/* Access Code Display */}
  <div className="mt-4 mb-3">
- <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3">
- <code className="flex-1 text-xl font-mono font-bold text-amber-600 dark:text-amber-400 tracking-wider">
+ <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
+ <code className="flex-1 text-xl font-mono font-bold text-amber-600 tracking-wider">
  {selectedQr.code}
  </code>
  <button
@@ -162,7 +162,7 @@ const AdminAccessCodes = () => {
  navigator.clipboard.writeText(selectedQr.code);
  toast.success('Code copied to clipboard');
  }}
- className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition"
+ className="p-2 rounded-lg hover:bg-slate-700 text-slate-400 transition"
  title="Copy code"
  >
  <Copy size={16} />
@@ -173,9 +173,9 @@ const AdminAccessCodes = () => {
  {/* Gateway Link Display */}
  {selectedQr.link && (
  <div className="mb-4">
- <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3">
+ <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
  <Link2 size={16} className="shrink-0 text-slate-400" />
- <span className="flex-1 text-xs font-mono text-slate-500 dark:text-slate-400 truncate text-left">
+ <span className="flex-1 text-xs font-mono text-slate-400 truncate text-left">
  {selectedQr.link}
  </span>
  <button
@@ -183,7 +183,7 @@ const AdminAccessCodes = () => {
  navigator.clipboard.writeText(selectedQr.link);
  toast.success('Link copied to clipboard');
  }}
- className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition"
+ className="p-2 rounded-lg hover:bg-slate-700 text-slate-400 transition"
  title="Copy link"
  >
  <Copy size={16} />
@@ -192,7 +192,7 @@ const AdminAccessCodes = () => {
  </div>
  )}
 
- <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Print this QR code and display it at the museum entrance</p>
+ <p className="text-sm text-slate-400 mb-4">Print this QR code and display it at the museum entrance</p>
  <div className="flex gap-3 justify-center">
  {selectedQr.qrImage && (
  <a
@@ -205,7 +205,7 @@ const AdminAccessCodes = () => {
  )}
  <button
  onClick={() => setSelectedQr(null)}
- className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+ className="px-4 py-2 border border-slate-600 rounded-xl text-slate-300 hover:bg-slate-800 transition"
  >
  Close
  </button>
@@ -216,8 +216,8 @@ const AdminAccessCodes = () => {
 
  {/* Generate Form */}
  {showForm && (
- <form onSubmit={handleGenerate} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6 space-y-4">
- <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 rounded-xl p-3 text-xs text-blue-700 dark:text-blue-300 space-y-1">
+ <form onSubmit={handleGenerate} className="bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-700 mb-6 space-y-4">
+ <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-3 text-xs text-blue-300 space-y-1">
  <p><strong>Duration</strong> = how long a visitor can browse after scanning (e.g. 10 min, 3 hours)</p>
  <p><strong>Code Expires At</strong> = when the code itself stops working (e.g. after today, after this week)</p>
  <p><strong>Max Uses</strong> = how many people can scan this same code</p>
@@ -247,7 +247,7 @@ const AdminAccessCodes = () => {
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium mb-2 dark:text-slate-300">
+ <label className="block text-sm font-medium mb-2">
  <Clock size={14} className="inline mr-1" />
  Access Duration (how long after scanning)
  </label>
@@ -260,7 +260,7 @@ const AdminAccessCodes = () => {
  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
  Number(form.duration) === preset.value
  ? 'bg-amber-600 text-white'
- : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+ : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
  }`}
  >
  {preset.label}
@@ -306,7 +306,7 @@ const AdminAccessCodes = () => {
  setForm({ ...form, expiresAt: local });
  }
  }}
- className="px-2 py-1 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+ className="px-2 py-1 rounded text-xs font-medium bg-slate-800 text-slate-400 hover:bg-slate-700 transition"
  >
  {opt.label}
  </button>
@@ -333,7 +333,7 @@ const AdminAccessCodes = () => {
  <button
  type="button"
  onClick={() => setShowForm(false)}
- className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition"
+ className="px-4 py-2 text-slate-400 hover:text-white transition"
  >
  Cancel
  </button>
@@ -343,46 +343,46 @@ const AdminAccessCodes = () => {
 
  {/* Codes Table */}
  {codes.length === 0 ? (
- <div className="text-center py-16 text-slate-500 dark:text-slate-400">
+ <div className="text-center py-16 text-slate-400">
  <QrCode size={48} className="mx-auto mb-4 opacity-50" />
  <p>No access codes generated yet.</p>
  <p className="text-sm mt-1">Click "Generate New Code" to create your first access code.</p>
  </div>
  ) : (
- <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+ <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-700 overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
  <thead>
- <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
- <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Code</th>
- <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Label</th>
- <th className="text-center px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Type</th>
- <th className="text-center px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Duration</th>
- <th className="text-center px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Uses</th>
- <th className="text-center px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Status</th>
- <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Expires</th>
- <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Created</th>
- <th className="text-right px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Actions</th>
+ <tr className="border-b border-slate-700 bg-slate-800">
+ <th className="text-left px-4 py-3 font-medium text-slate-400">Code</th>
+ <th className="text-left px-4 py-3 font-medium text-slate-400">Label</th>
+ <th className="text-center px-4 py-3 font-medium text-slate-400">Type</th>
+ <th className="text-center px-4 py-3 font-medium text-slate-400">Duration</th>
+ <th className="text-center px-4 py-3 font-medium text-slate-400">Uses</th>
+ <th className="text-center px-4 py-3 font-medium text-slate-400">Status</th>
+ <th className="text-left px-4 py-3 font-medium text-slate-400">Expires</th>
+ <th className="text-left px-4 py-3 font-medium text-slate-400">Created</th>
+ <th className="text-right px-4 py-3 font-medium text-slate-400">Actions</th>
  </tr>
  </thead>
  <tbody>
  {codes.map(code => {
  const status = getStatus(code);
  return (
- <tr key={code._id} className="border-b border-slate-100 dark:border-slate-700 last:border-0">
+ <tr key={code._id} className="border-b border-slate-700 last:border-0">
  <td className="px-4 py-3">
- <code className="font-mono font-bold text-amber-600 dark:text-amber-400">{code.code}</code>
+ <code className="font-mono font-bold text-amber-600">{code.code}</code>
  </td>
- <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{code.label || '—'}</td>
+ <td className="px-4 py-3 text-slate-400">{code.label || '—'}</td>
  <td className="px-4 py-3 text-center">
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 capitalize">{code.type || 'physical'}</span>
+ <span className="text-xs font-medium text-slate-400 capitalize">{code.type || 'physical'}</span>
  </td>
  <td className="px-4 py-3 text-center">
- <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-full">
+ <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-400 bg-amber-900/20 px-2 py-0.5 rounded-full">
  <Clock size={12} /> {formatDuration(code.duration)}
  </span>
  </td>
- <td className="px-4 py-3 text-center dark:text-slate-300">
+ <td className="px-4 py-3 text-center">
  {code.timesUsed}{code.maxUses !== null ? ` / ${code.maxUses}` : ''}
  </td>
  <td className="px-4 py-3 text-center">
@@ -390,17 +390,17 @@ const AdminAccessCodes = () => {
  {status.label}
  </span>
  </td>
- <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">
+ <td className="px-4 py-3 text-slate-400 text-xs">
  {code.expiresAt ? new Date(code.expiresAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never'}
  </td>
- <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
+ <td className="px-4 py-3 text-slate-400">
  {new Date(code.createdAt).toLocaleDateString()}
  </td>
  <td className="px-4 py-3">
  <div className="flex items-center gap-1 justify-end">
  <button
  onClick={() => copyCode(code.code)}
- className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition"
+ className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 transition"
  title="Copy code"
  >
  <Copy size={14} />
@@ -408,7 +408,7 @@ const AdminAccessCodes = () => {
  {code.isActive && (
  <button
  onClick={() => handleDeactivate(code._id)}
- className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition"
+ className="p-1.5 rounded-lg hover:bg-red-900/20 text-red-500 transition"
  title="Deactivate"
  >
  <Ban size={14} />

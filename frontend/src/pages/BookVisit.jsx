@@ -227,7 +227,7 @@ const BookVisit = () => {
  </label>
  <input
  type="text" name="visitorName" value={form.visitorName} onChange={handleChange} required
- className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  placeholder="Your full name"
  />
  </div>
@@ -237,7 +237,7 @@ const BookVisit = () => {
  </label>
  <input
  type="email" name="visitorEmail" value={form.visitorEmail} onChange={handleChange} required
- className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  placeholder="you@example.com"
  />
  </div>
@@ -250,7 +250,7 @@ const BookVisit = () => {
  </label>
  <input
  type="tel" name="visitorPhone" value={form.visitorPhone} onChange={handleChange}
- className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  placeholder="+250 7XX XXX XXX"
  />
  </div>
@@ -263,7 +263,7 @@ const BookVisit = () => {
  </label>
  <input
  type="date" name="date" value={form.date} onChange={handleChange} required min={today}
- className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
  />
  </div>
  {isPhysical && (
@@ -291,7 +291,7 @@ const BookVisit = () => {
  Choose a Guide *
  </label>
  {guides.length === 0 ? (
- <p className="text-sm text-slate-500">No guides available</p>
+ <p className="text-sm text-slate-400">No guides available</p>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
  {guides.map(g => (
@@ -338,7 +338,7 @@ const BookVisit = () => {
  </label>
  <textarea
  name="message" value={form.message} onChange={handleChange} rows={3}
- className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition resize-none"
+ className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition resize-none"
  placeholder={isPhysical ? 'Any special requirements or accessibility needs...' : 'Tell us about your interest in the museum...'}
  />
  </div>

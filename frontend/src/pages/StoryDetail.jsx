@@ -37,7 +37,7 @@ const StoryDetail = () => {
  if (!story) {
  return (
  <div className="container mx-auto p-6 text-center">
- <h1 className="text-2xl font-bold mb-4 dark:text-white">{t('common.noData') || 'Not found'}</h1>
+ <h1 className="text-2xl font-bold mb-4">{t('common.noData') || 'Not found'}</h1>
  <Link to="/stories" className="text-amber-600 hover:underline">{t('common.back') || 'Back'}</Link>
  </div>
  );
@@ -49,7 +49,7 @@ const StoryDetail = () => {
  <div>
  {/* Hero */}
  <div className="detail-hero">
- <div className="w-full h-full flex items-center justify-center text-slate-500">
+ <div className="w-full h-full flex items-center justify-center text-slate-400">
  <BookOpen size={60} />
  </div>
  <div className="detail-hero-overlay" />
@@ -108,7 +108,7 @@ const StoryDetail = () => {
  )}
  </div>
  <div className="min-w-0 flex-1">
- <p className="text-sm font-medium dark:text-white group-hover:text-amber-600 transition-colors truncate">
+ <p className="text-sm font-medium group-hover:text-amber-600 transition-colors truncate">
  {getLocalized(story.exhibitionId.title) || t('story.viewExhibition') || 'View Exhibition'}
  </p>
  </div>

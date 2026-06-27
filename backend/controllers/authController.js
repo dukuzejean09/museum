@@ -1,9 +1,10 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin.js';
+import Guide from '../models/Guide.js';
 import { asyncHandler, NotFoundError, ValidationError, UnauthorizedError, ConflictError } from '../utils/errors.js';
 import { sendCredentialsEmail } from '../utils/email.js';
-import { user as userSocket } from '../utils/socketEmitter.js';
+import { user as userSocket, guide as guideSocket } from '../utils/socketEmitter.js';
 
 /**
  * Generate a fingerprint hash from the request to bind JWT to client.
@@ -138,6 +139,20 @@ export const registerAdmin = asyncHandler(async (req, res) => {
   const validRoles = ['admin', 'guide'];
   const assignedRole = validRoles.includes(role) ? role : 'admin';
 
+  // Send credentials email FIRST — only create account if email succeeds
+  try {
+    await sendCredentialsEmail({
+      name: `${profileData.firstName.trim()} ${profileData.lastName.trim()}`,
+      email: trimmedEmail,
+      username: trimmedUsername,
+      password,
+      role: assignedRole,
+    });
+  } catch (err) {
+    console.error('Failed to send credentials email:', err.message);
+    throw new ValidationError('Failed to send credentials email. Account was not created. Please check email configuration and try again.');
+  }
+
   const admin = await Admin.create({
     username: trimmedUsername,
     email: trimmedEmail,
@@ -150,16 +165,20 @@ export const registerAdmin = asyncHandler(async (req, res) => {
     },
   });
 
-  // Send credentials email (non-blocking)
-  sendCredentialsEmail({
-    name: `${profileData.firstName.trim()} ${profileData.lastName.trim()}`,
-    email: trimmedEmail,
-    username: trimmedUsername,
-    password, // plain text — before hashing
-    role: assignedRole,
-  }).catch(err => {
-    console.error('Failed to send credentials email:', err.message);
-  });
+  // If guide role, auto-create a Guide profile linked to this user
+  if (assignedRole === 'guide') {
+    try {
+      const guide = await Guide.create({
+        name: `${profileData.firstName.trim()} ${profileData.lastName.trim()}`,
+        email: trimmedEmail,
+        phone: profileData.phone.replace(/[\s\-().]/g, ''),
+        userId: admin._id,
+      });
+      guideSocket.created(guide);
+    } catch (err) {
+      console.error('Failed to auto-create guide profile:', err.message);
+    }
+  }
 
   userSocket.created(admin);
   res.status(201).json({
@@ -203,12 +222,26 @@ export const changePassword = asyncHandler(async (req, res) => {
   res.json({ message: 'Password changed successfully' });
 });
 
-// @desc    Get all users (admins and guides)
+// @desc    Get all users (admins and guides) with linked guide profiles
 // @route   GET /api/auth/users
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await Admin.find()
     .select('-password')
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .lean();
+
+  // Fetch all guide profiles and map by userId
+  const guides = await Guide.find().lean();
+  const guideByUserId = {};
+  for (const g of guides) {
+    if (g.userId) guideByUserId[g.userId.toString()] = g;
+  }
+
+  // Attach guide profile to each guide-role user
+  const usersWithProfiles = users.map((u) => ({
+    ...u,
+    guideProfile: u.role === 'guide' ? guideByUserId[u._id.toString()] || null : null,
+  }));
 
   const counts = {
     total: users.length,
@@ -216,7 +249,7 @@ export const getUsers = asyncHandler(async (req, res) => {
     guides: users.filter((u) => u.role === 'guide').length,
   };
 
-  res.json({ users, counts });
+  res.json({ users: usersWithProfiles, counts });
 });
 
 // @desc    Update user role
@@ -242,8 +275,30 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     return res.status(403).json({ message: 'This account is protected and cannot be modified' });
   }
 
+  const oldRole = user.role;
   user.role = role;
   await user.save();
+
+  // Sync Guide profile when role changes
+  if (oldRole !== role) {
+    if (role === 'guide') {
+      // Became a guide — create Guide profile if not exists
+      const existing = await Guide.findOne({ userId: user._id });
+      if (!existing) {
+        const guide = await Guide.create({
+          name: `${user.profile?.firstName || ''} ${user.profile?.lastName || ''}`.trim() || user.username,
+          email: user.email,
+          phone: user.profile?.phone || '',
+          userId: user._id,
+        });
+        guideSocket.created(guide);
+      }
+    } else if (oldRole === 'guide') {
+      // Was a guide, now admin — remove Guide profile
+      const guide = await Guide.findOneAndDelete({ userId: user._id });
+      if (guide) guideSocket.deleted(guide._id);
+    }
+  }
 
   userSocket.updated(user);
   res.json({
@@ -268,6 +323,12 @@ export const deleteUser = asyncHandler(async (req, res) => {
   // Prevent deleting the protected (first) admin
   if (user.isProtected) {
     return res.status(403).json({ message: 'This account is protected and cannot be deleted' });
+  }
+
+  // If guide, also delete the linked Guide profile
+  if (user.role === 'guide') {
+    const guide = await Guide.findOneAndDelete({ userId: user._id });
+    if (guide) guideSocket.deleted(guide._id);
   }
 
   await user.deleteOne();

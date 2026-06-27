@@ -17,7 +17,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-900 dark:bg-slate-950 text-slate-300 border-t border-slate-800">
+    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800">
       {/* Imigongo cultural band at the top of footer */}
       <ImigongoBorder />
 
@@ -77,7 +77,7 @@ const Footer = () => {
 
         <ImigongoDivider className="my-6 text-amber-500" />
 
-        <div className="text-center text-xs text-slate-500">
+        <div className="text-center text-xs text-slate-400">
           &copy; {new Date().getFullYear()} Kandt House Museum of Natural History, Kigali, Rwanda. All rights reserved.
         </div>
       </div>
@@ -89,7 +89,7 @@ const Layout = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       {/* Skip to content link for keyboard users */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-amber-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
         Skip to main content

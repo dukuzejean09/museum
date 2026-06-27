@@ -45,8 +45,8 @@ const Modal = ({ title, children, onClose }) => {
  aria-labelledby="modal-title"
  className="card w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl animate-scale-in"
  >
- <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
- <h2 id="modal-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+ <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+ <h2 id="modal-title" className="text-lg font-semibold text-slate-100">
  {title}
  </h2>
  <button

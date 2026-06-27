@@ -11,7 +11,7 @@ const StarRating = ({ value, onChange }) => (
  <div className="flex gap-1">
  {[1, 2, 3, 4, 5].map(star => (
  <button key={star} type="button" onClick={() => onChange(star)} className="focus:outline-none">
- <Star size={32} className={star <= value ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'} />
+ <Star size={32} className={star <= value ? 'fill-amber-400 text-amber-400' : 'text-slate-300'} />
  </button>
  ))}
  </div>
@@ -83,10 +83,10 @@ const Feedback = () => {
  if (surveySubmitted) {
  return (
  <div className="flex items-center justify-center py-20">
- <div className="text-center bg-white dark:bg-slate-900 rounded-2xl p-10 shadow-sm border border-slate-200 dark:border-slate-700 max-w-md">
+ <div className="text-center bg-slate-900 rounded-2xl p-10 shadow-sm border border-slate-700 max-w-md">
  <CheckCircle size={64} className="text-green-500 mx-auto mb-4" />
- <h2 className="text-2xl font-bold dark:text-white mb-2">{t('survey.thanks')}</h2>
- <p className="text-slate-600 dark:text-slate-400 mb-6">{t('survey.thanksMsg')}</p>
+ <h2 className="text-2xl font-bold mb-2">{t('survey.thanks')}</h2>
+ <p className="text-slate-400 mb-6">{t('survey.thanksMsg')}</p>
  <div className="flex flex-col sm:flex-row gap-3 justify-center">
  <Link to="/exhibitions" className="btn btn-primary btn-md">
  <Sparkles size={16} /> {t('nav.exhibitions')}
@@ -124,7 +124,7 @@ const Feedback = () => {
  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition ${
  tab === id
  ? 'bg-amber-600 text-white shadow-sm'
- : 'text-slate-600 dark:text-slate-400 hover:text-amber-600'
+ : 'text-slate-400 hover:text-amber-600'
  }`}
  >
  <Icon size={16} /> {label}
@@ -167,7 +167,7 @@ const Feedback = () => {
  <div className="flex items-center gap-3">
  <input type="checkbox" name="wouldRecommend" checked={surveyForm.wouldRecommend} onChange={handleSurveyChange}
  className="w-5 h-5 text-amber-600 rounded border-slate-300" id="recommend" />
- <label htmlFor="recommend" className="dark:text-slate-300">{t('survey.recommend')}</label>
+ <label htmlFor="recommend" className="text-slate-300">{t('survey.recommend')}</label>
  </div>
 
  <div>
