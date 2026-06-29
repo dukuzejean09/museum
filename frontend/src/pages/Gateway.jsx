@@ -8,7 +8,7 @@ import { Html5Qrcode } from 'html5-qrcode';
 import {
   QrCode, KeyRound, Loader2, AlertCircle, Landmark, Globe,
   Calendar, ArrowRight, ShieldCheck, Lock, Eye, EyeOff, X,
-  Camera, ScanLine, Mountain, Sparkles,
+  Camera, ScanLine, Mountain, Sparkles, Clock, Ban,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import GatewayBackgroundVideo from '../components/GatewayBackgroundVideo';
@@ -166,6 +166,36 @@ const Gateway = () => {
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(() => {
+    const saved = localStorage.getItem('loginAttempts');
+    if (saved) {
+      const { count, lockedUntil } = JSON.parse(saved);
+      if (lockedUntil && new Date(lockedUntil) > new Date()) return { count, lockedUntil: new Date(lockedUntil) };
+      if (count >= 5) { localStorage.removeItem('loginAttempts'); return { count: 0, lockedUntil: null }; }
+      return { count, lockedUntil: null };
+    }
+    return { count: 0, lockedUntil: null };
+  });
+  const [lockCountdown, setLockCountdown] = useState(0);
+
+  // Visitor error type detection
+  const [errorType, setErrorType] = useState(''); // 'expired', 'deactivated', 'limit', or ''
+
+  // Login lockout countdown
+  useEffect(() => {
+    if (!loginAttempts.lockedUntil) { setLockCountdown(0); return; }
+    const update = () => {
+      const diff = Math.max(0, Math.ceil((loginAttempts.lockedUntil - new Date()) / 1000));
+      setLockCountdown(diff);
+      if (diff <= 0) {
+        setLoginAttempts({ count: 0, lockedUntil: null });
+        localStorage.removeItem('loginAttempts');
+      }
+    };
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [loginAttempts.lockedUntil]);
 
   const redirectTo = location.state?.from || '/home';
 
@@ -187,11 +217,17 @@ const Gateway = () => {
     if (!c.trim()) return;
     setValidating(true);
     setError('');
+    setErrorType('');
     try {
       clearAccess();
       await activateAccess(c.trim());
       navigate(redirectTo, { replace: true });
     } catch (err) {
+      const msg = (err.response?.data?.message || '').toLowerCase();
+      if (msg.includes('expired')) setErrorType('expired');
+      else if (msg.includes('deactivat')) setErrorType('deactivated');
+      else if (msg.includes('usage limit') || msg.includes('max')) setErrorType('limit');
+      else setErrorType('');
       setError(err.response?.data?.message || t('gateway.invalidCode'));
     } finally {
       setValidating(false);
@@ -203,15 +239,29 @@ const Gateway = () => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    if (loginAttempts.lockedUntil && new Date() < loginAttempts.lockedUntil) return;
     setLoginLoading(true);
     setLoginError('');
     try {
       const { data } = await loginAdmin({ email: loginEmail, password: loginPassword });
+      // Reset attempts on success
+      setLoginAttempts({ count: 0, lockedUntil: null });
+      localStorage.removeItem('loginAttempts');
       login(data);
       toast.success(t('gateway.loginSuccess'));
       navigate('/admin/dashboard');
     } catch (err) {
-      setLoginError(err.response?.data?.message || t('gateway.loginFailed'));
+      const newCount = loginAttempts.count + 1;
+      if (newCount >= 5) {
+        const lockedUntil = new Date(Date.now() + 5 * 60 * 1000); // 5-minute lockout
+        setLoginAttempts({ count: newCount, lockedUntil });
+        localStorage.setItem('loginAttempts', JSON.stringify({ count: newCount, lockedUntil }));
+        setLoginError('Too many failed attempts. Please wait 5 minutes before trying again.');
+      } else {
+        setLoginAttempts({ count: newCount, lockedUntil: null });
+        localStorage.setItem('loginAttempts', JSON.stringify({ count: newCount, lockedUntil: null }));
+        setLoginError(`${err.response?.data?.message || t('gateway.loginFailed')} (${5 - newCount} attempts remaining)`);
+      }
     } finally {
       setLoginLoading(false);
     }
@@ -410,12 +460,44 @@ const Gateway = () => {
                   </p>
                 </div>
 
-                {/* Error */}
+                {/* Error — styled by type */}
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2.5 rounded-xl mb-4 flex items-center gap-2 justify-center text-sm">
-                    <AlertCircle size={14} />
-                    {error}
-                  </div>
+                  errorType === 'expired' ? (
+                    <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl mb-4 p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-10 h-10 bg-orange-500/20 rounded-full mb-2">
+                        <Clock size={20} className="text-orange-400" />
+                      </div>
+                      <p className="text-orange-300 font-semibold text-sm mb-1">Access Code Expired</p>
+                      <p className="text-slate-400 text-xs leading-relaxed">This code is no longer valid. Please request a new access code at the reception desk or book a new visit.</p>
+                      <button
+                        onClick={() => navigate('/book')}
+                        className="mt-3 text-xs text-amber-400 hover:text-amber-300 underline underline-offset-2 transition"
+                      >
+                        Book a new visit &rarr;
+                      </button>
+                    </div>
+                  ) : errorType === 'deactivated' ? (
+                    <div className="bg-red-500/10 border border-red-500/30 rounded-xl mb-4 p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-10 h-10 bg-red-500/20 rounded-full mb-2">
+                        <Ban size={20} className="text-red-400" />
+                      </div>
+                      <p className="text-red-300 font-semibold text-sm mb-1">Code Deactivated</p>
+                      <p className="text-slate-400 text-xs leading-relaxed">This access code has been deactivated. Please contact the reception for assistance.</p>
+                    </div>
+                  ) : errorType === 'limit' ? (
+                    <div className="bg-red-500/10 border border-red-500/30 rounded-xl mb-4 p-4 text-center">
+                      <div className="inline-flex items-center justify-center w-10 h-10 bg-red-500/20 rounded-full mb-2">
+                        <Ban size={20} className="text-red-400" />
+                      </div>
+                      <p className="text-red-300 font-semibold text-sm mb-1">Usage Limit Reached</p>
+                      <p className="text-slate-400 text-xs leading-relaxed">This access code has reached its maximum number of uses. Please request a new code.</p>
+                    </div>
+                  ) : (
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2.5 rounded-xl mb-4 flex items-center gap-2 justify-center text-sm">
+                      <AlertCircle size={14} />
+                      {error}
+                    </div>
+                  )
                 )}
 
                 {/* Auto-validating spinner */}
@@ -602,56 +684,72 @@ const Gateway = () => {
             </div>
 
             <form onSubmit={handleLoginSubmit} className="p-5 space-y-4">
-              {loginError && (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-xl flex items-center gap-2 text-sm">
-                  <AlertCircle size={14} />
-                  {loginError}
+              {/* Lockout warning */}
+              {lockCountdown > 0 ? (
+                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
+                  <div className="inline-flex items-center justify-center w-10 h-10 bg-orange-500/20 rounded-full mb-2">
+                    <Clock size={20} className="text-orange-400" />
+                  </div>
+                  <p className="text-orange-300 font-semibold text-sm mb-1">Account Temporarily Locked</p>
+                  <p className="text-slate-400 text-xs mb-3">Too many failed login attempts. Please wait before trying again.</p>
+                  <div className="text-2xl font-bold text-orange-400 font-mono">
+                    {Math.floor(lockCountdown / 60)}:{String(lockCountdown % 60).padStart(2, '0')}
+                  </div>
                 </div>
-              )}
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">{t('gateway.email')}</label>
-                <input
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-                  placeholder="staff@museum.rw"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">{t('gateway.password')}</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                    className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition pr-10"
-                    placeholder="••••••••"
-                  />
+              ) : (
+                <>
+                  {loginError && (
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-xl flex items-center gap-2 text-sm">
+                      <AlertCircle size={14} />
+                      {loginError}
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5">{t('gateway.email')}</label>
+                    <input
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                      placeholder="staff@museum.rw"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5">{t('gateway.password')}</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                        className="w-full px-3 py-2.5 bg-black/30 border border-white/15 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition pr-10"
+                        placeholder="••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                  </div>
                   <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
+                    type="submit"
+                    disabled={loginLoading}
+                    className="w-full bg-amber-600 text-white py-2.5 rounded-xl hover:bg-amber-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                   >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {loginLoading ? (
+                      <><Loader2 size={16} className="animate-spin" />{t('gateway.signingIn')}</>
+                    ) : (
+                      <><Lock size={14} />{t('gateway.signIn')}</>
+                    )}
                   </button>
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={loginLoading}
-                className="w-full bg-amber-600 text-white py-2.5 rounded-xl hover:bg-amber-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
-              >
-                {loginLoading ? (
-                  <><Loader2 size={16} className="animate-spin" />{t('gateway.signingIn')}</>
-                ) : (
-                  <><Lock size={14} />{t('gateway.signIn')}</>
-                )}
-              </button>
+                </>
+              )}
             </form>
           </div>
         </div>
