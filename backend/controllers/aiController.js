@@ -267,7 +267,8 @@ const buildNarrationText = async (body) => {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   TTS Narration — OpenAI TTS with Gemini text-only fallback
+   TTS Narration — multi-provider fallback chain
+   Priority: OpenAI TTS → Google Cloud TTS → Groq PlayAI → text
 ═══════════════════════════════════════════════════════════════ */
 export const narrateExhibit = asyncHandler(async (req, res) => {
   const { lang = 'en' } = req.body;
@@ -277,54 +278,28 @@ export const narrateExhibit = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'No text, exhibitionId, or artifactId provided' });
   }
 
-  // Try OpenAI TTS first
-  const openaiKey = process.env.OPENAI_API_KEY;
-  if (openaiKey) {
-    try {
-      const openai = new OpenAI({ apiKey: openaiKey });
-      const voice = (lang === 'fr' || lang === 'rw') ? 'alloy' : 'nova';
+  // Import the shared TTS fallback chain
+  const { generateTTSWithFallback } = await import('../jobs/audioGeneration.js');
 
-      const mp3Response = await openai.audio.speech.create({
-        model: 'tts-1',
-        voice,
-        input: narrationText,
-        response_format: 'mp3',
-        speed: 0.78,  // human museum-guide pace (~115 WPM)
-      });
+  const result = await generateTTSWithFallback(narrationText);
 
-      res.setHeader('Content-Type', 'audio/mpeg');
-      res.setHeader('Transfer-Encoding', 'chunked');
-      res.setHeader('Cache-Control', 'no-cache');
+  if (result) {
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.end(result.buffer);
 
-      const nodeStream = mp3Response.body;
-      const chunks = [];
+    // Background: upload to Cloudinary for caching
+    uploadToCloudinary(result.buffer, {
+      folder: 'museum/narrations',
+      resource_type: 'video',
+      public_id: `narration-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      format: 'mp3',
+    }).catch(() => {});
 
-      for await (const chunk of nodeStream) {
-        chunks.push(chunk);
-        res.write(chunk);
-      }
-      res.end();
-
-      // Background: upload to Cloudinary for caching
-      const fullBuffer = Buffer.concat(chunks);
-      uploadToCloudinary(fullBuffer, {
-        folder: 'museum/narrations',
-        resource_type: 'video',
-        public_id: `narration-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-        format: 'mp3',
-      }).catch(() => {});
-
-      return;
-    } catch (error) {
-      // If streaming already started, just end
-      if (res.headersSent) return res.end();
-
-      // If quota/auth error, fall through to text fallback
-      if (!shouldFallback(error)) throw error;
-      console.warn(`[TTS Fallback] OpenAI TTS failed: ${error.message}. Returning text narration.`);
-    }
+    return;
   }
 
-  // Fallback: return narration as plain text (frontend can use browser Speech Synthesis)
+  // All TTS providers failed — return text for browser Speech Synthesis
+  console.warn('[TTS] All providers exhausted. Returning text narration.');
   res.json({ text: narrationText, fallback: true });
 });
