@@ -109,6 +109,17 @@ const normaliseTrailBody = (body) => {
     try { data.stops = JSON.parse(data.stops); } catch { data.stops = []; }
   }
 
+  // Clean up stops — remove empty artifactId strings that fail ObjectId cast
+  if (Array.isArray(data.stops)) {
+    data.stops = data.stops.map(s => {
+      if (s.artifactId === '' || s.artifactId === null) {
+        const { artifactId, ...rest } = s;
+        return rest;
+      }
+      return s;
+    });
+  }
+
   // Parse tags if sent as JSON string
   if (typeof data.tags === 'string') {
     try {

@@ -61,8 +61,18 @@ export const getExhibitionById = asyncHandler(async (req, res) => {
 export const createExhibition = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.admin._id };
 
-  // Handle audio/video uploads to Cloudinary
+  // Handle file uploads to Cloudinary
   if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/exhibitions' });
+      data.coverImage = result.url;
+    }
+    if (req.files.galleryImages?.length) {
+      const uploads = await Promise.all(
+        req.files.galleryImages.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/exhibitions' }))
+      );
+      data.galleryImages = uploads.map(u => u.url);
+    }
     if (req.files.narrationFull?.[0]) {
       const result = await uploadToCloudinary(req.files.narrationFull[0].buffer, {
         folder: 'museum/narrations', resource_type: 'video',
@@ -115,8 +125,21 @@ export const updateExhibition = asyncHandler(async (req, res) => {
 
   const data = { ...req.body };
 
-  // Handle audio/video uploads to Cloudinary
+  // Handle file uploads to Cloudinary
   if (req.files) {
+    if (req.files.coverImage?.[0]) {
+      const result = await uploadToCloudinary(req.files.coverImage[0].buffer, { folder: 'museum/exhibitions' });
+      data.coverImage = result.url;
+    }
+    if (req.files.galleryImages?.length) {
+      const uploads = await Promise.all(
+        req.files.galleryImages.map(f => uploadToCloudinary(f.buffer, { folder: 'museum/exhibitions' }))
+      );
+      data.galleryImages = [
+        ...(exhibition.galleryImages || []),
+        ...uploads.map(u => u.url),
+      ];
+    }
     if (req.files.narrationFull?.[0]) {
       const result = await uploadToCloudinary(req.files.narrationFull[0].buffer, {
         folder: 'museum/narrations', resource_type: 'video',

@@ -10,9 +10,9 @@ import {
 const publicRouter = express.Router();
 const adminRouter = express.Router();
 
-// No image uploads — exhibitions get images from linked artifacts.
-// Only audio narrations are uploaded here.
 const exhibitionUpload = upload.fields([
+  { name: 'coverImage', maxCount: 1 },
+  { name: 'galleryImages', maxCount: 20 },
   { name: 'narrationFull', maxCount: 1 },
   { name: 'narrationPreview', maxCount: 1 },
   { name: 'videos', maxCount: 5 },

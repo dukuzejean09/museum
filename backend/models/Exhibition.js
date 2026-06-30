@@ -41,6 +41,7 @@ const exhibitionSchema = new mongoose.Schema({
     preview: { en: String, fr: String, rw: String },
   },
   coverImage: String,
+  galleryImages: [String],
   accessLevel: {
     type: String,
     enum: ['public_preview', 'authenticated', 'museum_access'],
