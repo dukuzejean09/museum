@@ -11,7 +11,7 @@ const FeedbackReport = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ period: 'month' });
+  const [filters, setFilters] = useState({});
   const [ratingFilter, setRatingFilter] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -38,7 +38,7 @@ const FeedbackReport = () => {
 
   const columns = [
     { key: 'visitorName', label: 'Visitor' },
-    { key: 'date', label: 'Date', accessor: (r) => new Date(r.date).toLocaleDateString() },
+    { key: 'date', label: 'Date', accessor: (r) => new Date(r.date).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' }) },
     { key: 'rating', label: 'Rating' },
     { key: 'comment', label: 'Comment', accessor: (r) => r.comment?.slice(0, 80) || '' },
   ];
@@ -195,7 +195,7 @@ const FeedbackReport = () => {
                   {paginated.map((row) => (
                     <tr key={row._id} className="border-t border-slate-800/50 hover:bg-slate-800/30">
                       <td className="px-4 py-3 text-slate-200">{row.visitorName}</td>
-                      <td className="px-4 py-3 text-slate-300 text-xs">{new Date(row.date).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 text-slate-300 text-xs">{new Date(row.date).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' })}</td>
                       <td className="px-4 py-3">
                         <span className="flex items-center gap-0.5">
                           {[...Array(5)].map((_, i) => (

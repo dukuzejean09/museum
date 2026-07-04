@@ -9,35 +9,54 @@ import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import AccessCode from '../models/AccessCode.js';
 import { asyncHandler } from '../utils/errors.js';
 
-// Helper: build date filter from query params
+const KIGALI_TZ = 'Africa/Kigali';
+const KIGALI_OFFSET_MS = 2 * 60 * 60 * 1000; // UTC+2, no DST
+
+// Get current date parts in Kigali timezone
+const kigaliNow = () => {
+  const now = new Date();
+  const kigali = new Date(now.getTime() + KIGALI_OFFSET_MS);
+  return {
+    utcNow: now,
+    year: kigali.getUTCFullYear(),
+    month: kigali.getUTCMonth(),
+    date: kigali.getUTCDate(),
+    day: kigali.getUTCDay(),
+  };
+};
+
+// Create a UTC Date from Kigali date parts (midnight Kigali = 22:00 UTC previous day)
+const kigaliMidnight = (year, month, date) => {
+  return new Date(Date.UTC(year, month, date) - KIGALI_OFFSET_MS);
+};
+
+// Helper: build date filter from query params (all boundaries in Kigali time)
 const buildDateFilter = (query) => {
   const { period, from, to } = query;
-  const now = new Date();
+  const k = kigaliNow();
   let start, end;
 
   switch (period) {
     case 'today':
-      start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      end = new Date(start);
-      end.setDate(end.getDate() + 1);
+      start = kigaliMidnight(k.year, k.month, k.date);
+      end = kigaliMidnight(k.year, k.month, k.date + 1);
       break;
     case 'week':
-      start = new Date(now);
-      start.setDate(now.getDate() - now.getDay());
-      start.setHours(0, 0, 0, 0);
-      end = new Date(now);
-      end.setDate(end.getDate() + 1);
+      start = kigaliMidnight(k.year, k.month, k.date - k.day);
+      end = kigaliMidnight(k.year, k.month, k.date + 1);
       break;
     case 'month':
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-      end = new Date(now);
-      end.setDate(end.getDate() + 1);
+      start = kigaliMidnight(k.year, k.month, 1);
+      end = kigaliMidnight(k.year, k.month, k.date + 1);
       break;
     case 'custom':
-      if (from) start = new Date(from);
+      if (from) {
+        const [fy, fm, fd] = from.split('-').map(Number);
+        start = kigaliMidnight(fy, fm - 1, fd);
+      }
       if (to) {
-        end = new Date(to);
-        end.setDate(end.getDate() + 1);
+        const [ty, tm, td] = to.split('-').map(Number);
+        end = kigaliMidnight(ty, tm - 1, td + 1);
       }
       break;
     default:
@@ -46,7 +65,7 @@ const buildDateFilter = (query) => {
 
   const filter = {};
   if (start) filter.$gte = start;
-  if (end) filter.$lte = end;
+  if (end) filter.$lt = end;
   return Object.keys(filter).length > 0 ? filter : null;
 };
 
@@ -54,17 +73,12 @@ const buildDateFilter = (query) => {
 // @route   GET /api/admin/reports/visitors
 export const getVisitorReport = asyncHandler(async (req, res) => {
   const dateFilter = buildDateFilter(req.query);
-  const now = new Date();
+  const k = kigaliNow();
 
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const todayEnd = new Date(todayStart);
-  todayEnd.setDate(todayEnd.getDate() + 1);
-
-  const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - now.getDay());
-  weekStart.setHours(0, 0, 0, 0);
-
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const todayStart = kigaliMidnight(k.year, k.month, k.date);
+  const todayEnd = kigaliMidnight(k.year, k.month, k.date + 1);
+  const weekStart = kigaliMidnight(k.year, k.month, k.date - k.day);
+  const monthStart = kigaliMidnight(k.year, k.month, 1);
 
   // Count unique visitors by period
   const [todayVisitors, weekVisitors, monthVisitors] = await Promise.all([
@@ -74,14 +88,14 @@ export const getVisitorReport = asyncHandler(async (req, res) => {
   ]);
 
   // Daily trends (last 30 days or custom range)
-  const trendStart = dateFilter?.$gte || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const trendEnd = dateFilter?.$lte || todayEnd;
+  const trendStart = dateFilter?.$gte || new Date(k.utcNow.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const trendEnd = dateFilter?.$lt || todayEnd;
 
   const dailyTrends = await AnalyticsEvent.aggregate([
-    { $match: { timestamp: { $gte: trendStart, $lte: trendEnd } } },
+    { $match: { timestamp: { $gte: trendStart, $lt: trendEnd } } },
     {
       $group: {
-        _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } },
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp', timezone: KIGALI_TZ } },
         visitors: { $addToSet: '$visitorId' },
       },
     },
@@ -91,11 +105,11 @@ export const getVisitorReport = asyncHandler(async (req, res) => {
 
   // Weekly trends
   const weeklyTrends = await AnalyticsEvent.aggregate([
-    { $match: { timestamp: { $gte: trendStart, $lte: trendEnd } } },
+    { $match: { timestamp: { $gte: trendStart, $lt: trendEnd } } },
     {
       $group: {
-        _id: { $isoWeek: '$timestamp' },
-        year: { $first: { $isoWeekYear: '$timestamp' } },
+        _id: { $isoWeek: { date: '$timestamp', timezone: KIGALI_TZ } },
+        year: { $first: { $isoWeekYear: { date: '$timestamp', timezone: KIGALI_TZ } } },
         visitors: { $addToSet: '$visitorId' },
       },
     },
@@ -104,11 +118,15 @@ export const getVisitorReport = asyncHandler(async (req, res) => {
   ]);
 
   // Monthly trends
+  const yearStart = kigaliMidnight(k.year, 0, 1);
   const monthlyTrends = await AnalyticsEvent.aggregate([
-    { $match: { timestamp: { $gte: new Date(now.getFullYear(), 0, 1), $lte: trendEnd } } },
+    { $match: { timestamp: { $gte: yearStart, $lt: trendEnd } } },
     {
       $group: {
-        _id: { month: { $month: '$timestamp' }, year: { $year: '$timestamp' } },
+        _id: {
+          month: { $month: { date: '$timestamp', timezone: KIGALI_TZ } },
+          year: { $year: { date: '$timestamp', timezone: KIGALI_TZ } },
+        },
         visitors: { $addToSet: '$visitorId' },
       },
     },
@@ -345,7 +363,7 @@ export const getFeedbackReport = asyncHandler(async (req, res) => {
   // Monthly trends
   const monthlyTrends = {};
   surveys.forEach((s) => {
-    const month = new Date(s.createdAt).toISOString().slice(0, 7);
+    const month = new Date(s.createdAt).toLocaleDateString('en-CA', { timeZone: KIGALI_TZ, year: 'numeric', month: '2-digit' }).slice(0, 7);
     if (!monthlyTrends[month]) monthlyTrends[month] = { count: 0, totalRating: 0 };
     monthlyTrends[month].count++;
     monthlyTrends[month].totalRating += s.overallRating;
@@ -437,8 +455,8 @@ export const getUserActivityReport = asyncHandler(async (req, res) => {
 // @desc    Museum Summary Report
 // @route   GET /api/admin/reports/summary
 export const getMuseumSummaryReport = asyncHandler(async (req, res) => {
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const k = kigaliNow();
+  const monthStart = kigaliMidnight(k.year, k.month, 1);
 
   const [
     totalArtifacts,
@@ -464,10 +482,10 @@ export const getMuseumSummaryReport = asyncHandler(async (req, res) => {
       { $group: { _id: null, avgRating: { $avg: '$overallRating' }, total: { $sum: 1 } } },
     ]),
     AnalyticsEvent.aggregate([
-      { $match: { timestamp: { $gte: new Date(now.getFullYear(), 0, 1) } } },
+      { $match: { timestamp: { $gte: kigaliMidnight(k.year, 0, 1) } } },
       {
         $group: {
-          _id: { month: { $month: '$timestamp' } },
+          _id: { month: { $month: { date: '$timestamp', timezone: KIGALI_TZ } } },
           visitors: { $addToSet: '$visitorId' },
         },
       },

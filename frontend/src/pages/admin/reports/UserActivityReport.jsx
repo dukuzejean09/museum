@@ -10,7 +10,7 @@ const UserActivityReport = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ period: 'month' });
+  const [filters, setFilters] = useState({});
   const [roleFilter, setRoleFilter] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -40,7 +40,7 @@ const UserActivityReport = () => {
     { key: 'name', label: 'Full Name' },
     { key: 'role', label: 'Role' },
     { key: 'email', label: 'Email' },
-    { key: 'lastLogin', label: 'Last Login', accessor: (r) => r.lastLogin ? new Date(r.lastLogin).toLocaleString() : 'Never' },
+    { key: 'lastLogin', label: 'Last Login', accessor: (r) => r.lastLogin ? new Date(r.lastLogin).toLocaleString('en-US', { timeZone: 'Africa/Kigali' }) : 'Never' },
     { key: 'isActive', label: 'Status', accessor: (r) => r.isActive ? 'Active' : 'Inactive' },
   ];
 
@@ -145,7 +145,7 @@ const UserActivityReport = () => {
                         }`}>{row.role}</span>
                       </td>
                       <td className="px-4 py-3 text-slate-300 text-xs">{row.email}</td>
-                      <td className="px-4 py-3 text-slate-300 text-xs">{row.lastLogin ? new Date(row.lastLogin).toLocaleString() : 'Never'}</td>
+                      <td className="px-4 py-3 text-slate-300 text-xs">{row.lastLogin ? new Date(row.lastLogin).toLocaleString('en-US', { timeZone: 'Africa/Kigali' }) : 'Never'}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
                           row.isActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'

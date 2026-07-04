@@ -10,7 +10,7 @@ const ExhibitionReport = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ period: 'month' });
+  const [filters, setFilters] = useState({});
   const [sortBy, setSortBy] = useState('date');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -38,7 +38,7 @@ const ExhibitionReport = () => {
   const columns = [
     { key: 'name', label: 'Exhibition Name' },
     { key: 'description', label: 'Description', accessor: (r) => r.description?.slice(0, 60) || '' },
-    { key: 'startDate', label: 'Start Date', accessor: (r) => new Date(r.startDate).toLocaleDateString() },
+    { key: 'startDate', label: 'Start Date', accessor: (r) => new Date(r.startDate).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' }) },
     { key: 'status', label: 'Status' },
     { key: 'visitors', label: 'Visitors' },
   ];
@@ -138,7 +138,7 @@ const ExhibitionReport = () => {
                           'bg-slate-500/20 text-slate-400'
                         }`}>{row.status}</span>
                       </td>
-                      <td className="px-4 py-3 text-slate-300 text-xs">{new Date(row.startDate).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 text-slate-300 text-xs">{new Date(row.startDate).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' })}</td>
                       <td className="px-4 py-3 text-slate-200 font-semibold">{row.visitors}</td>
                     </tr>
                   ))}

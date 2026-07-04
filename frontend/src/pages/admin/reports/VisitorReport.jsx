@@ -11,7 +11,7 @@ const VisitorReport = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ period: 'month' });
+  const [filters, setFilters] = useState({});
 
   const loadData = async (params) => {
     try {

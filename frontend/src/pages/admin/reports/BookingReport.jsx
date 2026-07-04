@@ -11,7 +11,7 @@ const BookingReport = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ period: 'month' });
+  const [filters, setFilters] = useState({});
   const [guideFilter, setGuideFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');
@@ -40,7 +40,7 @@ const BookingReport = () => {
   const columns = [
     { key: 'referenceNumber', label: 'Booking ID' },
     { key: 'visitorName', label: 'Visitor Name' },
-    { key: 'tourDate', label: 'Tour Date', accessor: (r) => new Date(r.tourDate).toLocaleDateString() },
+    { key: 'tourDate', label: 'Tour Date', accessor: (r) => new Date(r.tourDate).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' }) },
     { key: 'guide', label: 'Guide' },
     { key: 'participants', label: 'Participants' },
     { key: 'status', label: 'Status' },
@@ -169,7 +169,7 @@ const BookingReport = () => {
                     <tr key={row._id} className="border-t border-slate-800/50 hover:bg-slate-800/30">
                       <td className="px-4 py-3 text-slate-300 text-xs font-mono">{row.referenceNumber}</td>
                       <td className="px-4 py-3 text-slate-200">{row.visitorName}</td>
-                      <td className="px-4 py-3 text-slate-300 text-xs">{new Date(row.tourDate).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 text-slate-300 text-xs">{new Date(row.tourDate).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' })}</td>
                       <td className="px-4 py-3 text-slate-300 text-xs">{row.guide}</td>
                       <td className="px-4 py-3 text-slate-200">{row.participants}</td>
                       <td className="px-4 py-3">

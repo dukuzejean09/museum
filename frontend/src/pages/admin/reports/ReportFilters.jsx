@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Calendar, Filter, Download, Printer, FileText, FileSpreadsheet } from 'lucide-react';
 
-const ReportFilters = ({ onFilterChange, onExportCSV, onExportExcel, onExportPDF, onPrint }) => {
-  const [period, setPeriod] = useState('month');
+const ReportFilters = ({ onFilterChange, onExportCSV, onExportExcel, onExportPDF, onPrint, defaultPeriod = 'all' }) => {
+  const [period, setPeriod] = useState(defaultPeriod);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
 
@@ -25,6 +25,7 @@ const ReportFilters = ({ onFilterChange, onExportCSV, onExportExcel, onExportPDF
       <div className="flex flex-wrap items-center gap-2">
         <Filter size={16} className="text-slate-400" />
         {[
+          { value: 'all', label: 'All Time' },
           { value: 'today', label: 'Today' },
           { value: 'week', label: 'This Week' },
           { value: 'month', label: 'This Month' },

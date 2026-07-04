@@ -13,7 +13,7 @@ const ArtifactReport = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ period: 'month' });
+  const [filters, setFilters] = useState({});
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');
@@ -44,7 +44,7 @@ const ArtifactReport = () => {
     { key: 'category', label: 'Category' },
     { key: 'exhibition', label: 'Exhibition' },
     { key: 'status', label: 'Status' },
-    { key: 'acquisitionDate', label: 'Acquisition Date', accessor: (r) => r.acquisitionDate ? new Date(r.acquisitionDate).toLocaleDateString() : 'N/A' },
+    { key: 'acquisitionDate', label: 'Acquisition Date', accessor: (r) => r.acquisitionDate ? new Date(r.acquisitionDate).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' }) : 'N/A' },
   ];
 
   const filtered = (data?.data || []).filter((r) =>
@@ -184,7 +184,7 @@ const ArtifactReport = () => {
                           'bg-slate-500/20 text-slate-400'
                         }`}>{row.status}</span>
                       </td>
-                      <td className="px-4 py-3 text-slate-300 text-xs">{row.acquisitionDate ? new Date(row.acquisitionDate).toLocaleDateString() : 'N/A'}</td>
+                      <td className="px-4 py-3 text-slate-300 text-xs">{row.acquisitionDate ? new Date(row.acquisitionDate).toLocaleDateString('en-US', { timeZone: 'Africa/Kigali' }) : 'N/A'}</td>
                     </tr>
                   ))}
                 </tbody>
