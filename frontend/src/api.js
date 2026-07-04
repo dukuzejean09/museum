@@ -251,6 +251,15 @@ export const adminDeleteEvaluation = (id) => AdminAPI.delete(`/admin/evaluations
 export const fetchAnalyticsInsights = (params) => AdminAPI.get('/admin/analytics/insights', { params });
 export const fetchHeatmapData = (params) => AdminAPI.get('/admin/analytics/heatmap', { params });
 
+// Reports
+export const fetchVisitorReport = (params) => AdminAPI.get('/admin/reports/visitors', { params });
+export const fetchExhibitionReport = (params) => AdminAPI.get('/admin/reports/exhibitions', { params });
+export const fetchArtifactReport = (params) => AdminAPI.get('/admin/reports/artifacts', { params });
+export const fetchBookingReport = (params) => AdminAPI.get('/admin/reports/bookings', { params });
+export const fetchFeedbackReport = (params) => AdminAPI.get('/admin/reports/feedback', { params });
+export const fetchUserActivityReport = (params) => AdminAPI.get('/admin/reports/user-activity', { params });
+export const fetchMuseumSummaryReport = () => AdminAPI.get('/admin/reports/summary');
+
 // Translation
 export const translateText = (data) => API.post('/translate', data);
 export const translateBatch = (data) => API.post('/translate/batch', data);

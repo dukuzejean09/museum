@@ -7,12 +7,12 @@ import {
   LayoutDashboard, MapPin, MessageSquare, LogOut,
   CalendarDays, ClipboardList, Menu, X, QrCode,
   Presentation, BookOpen, UserCog, Gem, UserCircle, Users,
-  BarChart3, FileCheck
+  BarChart3, FileCheck, FileBarChart
 } from 'lucide-react';
 
 const allSidebarLinks = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'guide'] },
-  { to: '/admin/guide-profile', label: 'My Profile', icon: UserCircle, roles: ['guide'] },
+  { to: '/admin/guide-profile', label: 'My Profile', icon: UserCircle, roles: ['admin', 'guide'] },
   { to: '/admin/exhibitions', label: 'Exhibitions', icon: Presentation, roles: ['admin', 'guide'] },
   { to: '/admin/artifacts', label: 'Artifacts', icon: Gem, roles: ['admin', 'guide'] },
   { to: '/admin/stories', label: 'Stories', icon: BookOpen, roles: ['admin', 'guide'] },
@@ -23,6 +23,7 @@ const allSidebarLinks = [
   { to: '/admin/messages', label: 'Messages', icon: MessageSquare, roles: ['admin', 'guide'] },
   { to: '/admin/access-codes', label: 'Access Codes', icon: QrCode, roles: ['admin', 'guide'] },
   { to: '/admin/evaluation', label: 'Evaluation', icon: FileCheck, roles: ['admin'] },
+  { to: '/admin/reports', label: 'Reports', icon: FileBarChart, roles: ['admin'] },
   { to: '/admin/analytics-insights', label: 'Analytics', icon: BarChart3, roles: ['admin'] },
   { to: '/admin/users', label: 'Users', icon: UserCog, roles: ['admin'] },
 ];

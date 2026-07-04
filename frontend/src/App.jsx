@@ -50,6 +50,14 @@ const AdminGuides = React.lazy(() => import('./pages/admin/AdminGuides'));
 const GuideForm = React.lazy(() => import('./pages/admin/GuideForm'));
 const EvaluationDashboard = React.lazy(() => import('./pages/admin/EvaluationDashboard'));
 const AnalyticsInsights = React.lazy(() => import('./pages/admin/AnalyticsInsights'));
+const ReportsPage = React.lazy(() => import('./pages/admin/reports/ReportsPage'));
+const VisitorReport = React.lazy(() => import('./pages/admin/reports/VisitorReport'));
+const ExhibitionReport = React.lazy(() => import('./pages/admin/reports/ExhibitionReport'));
+const ArtifactReport = React.lazy(() => import('./pages/admin/reports/ArtifactReport'));
+const BookingReport = React.lazy(() => import('./pages/admin/reports/BookingReport'));
+const FeedbackReport = React.lazy(() => import('./pages/admin/reports/FeedbackReport'));
+const UserActivityReport = React.lazy(() => import('./pages/admin/reports/UserActivityReport'));
+const MuseumSummaryReport = React.lazy(() => import('./pages/admin/reports/MuseumSummaryReport'));
 
 // Loading fallback
 const PageLoader = () => (
@@ -207,6 +215,14 @@ function App() {
                           <Route path="users" element={<AdminUsers />} />
                           <Route path="evaluation" element={<EvaluationDashboard />} />
                           <Route path="analytics-insights" element={<AnalyticsInsights />} />
+                          <Route path="reports" element={<ReportsPage />} />
+                          <Route path="reports/visitors" element={<VisitorReport />} />
+                          <Route path="reports/exhibitions" element={<ExhibitionReport />} />
+                          <Route path="reports/artifacts" element={<ArtifactReport />} />
+                          <Route path="reports/bookings" element={<BookingReport />} />
+                          <Route path="reports/feedback" element={<FeedbackReport />} />
+                          <Route path="reports/user-activity" element={<UserActivityReport />} />
+                          <Route path="reports/summary" element={<MuseumSummaryReport />} />
                         </Route>
                       </Route>
                     </Route>

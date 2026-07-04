@@ -22,6 +22,7 @@ import { publicRouter as artifactPublic, adminRouter as artifactAdmin } from './
 import { publicRouter as storyPublic, adminRouter as storyAdmin } from './routes/storyRoutes.js';
 import { publicRouter as searchPublic } from './routes/searchRoutes.js';
 import { adminRouter as analyticsAdmin, publicRouter as analyticsPublic } from './routes/adminAnalyticsRoutes.js';
+import reportsRoutes from './routes/reportsRoutes.js';
 
 // Standalone routes
 import authRoutes from './routes/authRoutes.js';
@@ -189,6 +190,7 @@ app.use('/api/admin/messages', messageAdmin);
 app.use('/api/admin/bookings', bookingAdmin);
 app.use('/api/admin/surveys', surveyAdmin);
 app.use('/api/admin/analytics', analyticsAdmin);
+app.use('/api/admin/reports', reportsRoutes);
 app.use('/api/qr', qrRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin/ar', arAdmin);
